@@ -10,13 +10,13 @@ This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation
 
 ## Running
 
-For now, only the raw binary is created. A build step that adds a `CO` file header is coming _Eventually™_. It is meant to be loaded a `$E290` (`58000`). This process will eventually be less painful.
+For now, only the raw binary is created. A build step that adds a `CO` file header is coming _Eventually™_. It is meant to be loaded at `$E290` (`58000`). This process will eventually be less painful.
 
 Before either method, get into the BASIC prompt and run `clear 256, 58000`.
 
 ### Physical Model 100
 
-If you have a serial connection established with a PC running an application that can send binary files, you can use the `loadhx.ba` BASIC program under `utils`. It will wait for an intel hex format file to be sent over `COM:88N1E` and `POKE` each byte into memory beginning at `$E290`. You'll want to run the `clear` command above before loading `loadhx` into BASIC. It will immediately start waiting for the first byte of the hex file when run, so start it before triggering file send.
+If you have a serial connection established with a PC running an application that can send ascii files, you can use the `loadhx.ba` BASIC program under `utils`. It will wait for an intel hex format file to be sent over `COM:88N1E` and `POKE` each byte into memory beginning at `$E290`. You'll want to run the `clear` command above before loading `loadhx` into BASIC. It will immediately start waiting for the first byte of the hex file when run, so start it before triggering file send.
 
 > **Note:** This has only been tested with [`Tera Term`](https://tera-term.en.softonic.com/) and a 50ms delay between characters.
 
