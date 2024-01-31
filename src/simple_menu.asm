@@ -7,6 +7,7 @@ menu_address_counter: .dw 0
 
 ; Displays a simple menu with data starting at HL of option length A and stores the selected value in A.
 ; Menu options are defined as a single byte value followed by the two-byte address of a string.
+; This is the same format as enums in "enums.asm"
 ; Destroys all registers
 simple_menu_ui::
     ld (menu_address), hl

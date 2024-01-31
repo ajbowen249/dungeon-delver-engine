@@ -11,6 +11,8 @@ chr_label: .asciz "CHR"
 character_loc: .dw 0
 counter: .db 0
 
+enum_buffer:  .asciz "          "
+
 ; Presents the Character Sheet for the character data beginning in HL
 ; Currently display-only and will exit on keypress.
 character_sheet_ui::
@@ -18,6 +20,7 @@ character_sheet_ui::
     call init_screen
 
     call rom_chget
+    call rom_clear_screen
 
     ret
 
@@ -68,6 +71,42 @@ stats_loop:
 
     cp 6
     jp nz, stats_loop
+
+    ; print race
+    ld h, 10
+    ld l, 2
+    call rom_set_cursor
+
+    ld hl, (character_loc)
+    ld bc, pl_offs_race
+    add hl, bc
+
+    ld a, (hl)
+    ld hl, en_race
+    call get_enum_label
+
+    ld hl, bc
+    ld bc, (hl)
+    ld hl, bc
+    call print_string
+
+    ; print class
+    ld h, 10
+    ld l, 3
+    call rom_set_cursor
+
+    ld hl, (character_loc)
+    ld bc, pl_offs_class
+    add hl, bc
+
+    ld a, (hl)
+    ld hl, en_class
+    call get_enum_label
+
+    ld hl, bc
+    ld bc, (hl)
+    ld hl, bc
+    call print_string
 
     ret
 .endlocal

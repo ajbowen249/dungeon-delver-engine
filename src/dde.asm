@@ -10,6 +10,7 @@
 
 #include "util.asm"
 #include "constants.asm"
+#include "enums.asm"
 #include "rom_api.asm"
 #include "random.asm"
 #include "dice.asm"
