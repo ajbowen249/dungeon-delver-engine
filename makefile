@@ -4,7 +4,7 @@ SRC_DIR := ./src
 BUILD_DIR := ./build
 
 ROOT_INPUT_FILE := $(SRC_DIR)/dde.asm
-ASM_FILES := $(SRC_DIR)/**/*.asm
+ASM_FILES := $(SRC_DIR)/**/*.asm $(SRC_DIR)/*.asm
 
 HEX_FILE_OUTPUT := $(BUILD_DIR)/dde.hex
 
