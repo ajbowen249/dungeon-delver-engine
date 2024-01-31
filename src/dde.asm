@@ -2,7 +2,7 @@
 ; This is a CRPG engine that implements a subset of OGL SRD 5.1
 
 ; Test assembly program for Model 100
-.org $E290
+.org $C000
 
 ; Keep this at the top; this is the entry point
     call main
