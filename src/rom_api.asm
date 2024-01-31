@@ -12,7 +12,9 @@
 #define rom_enable_interrupt_7_5 $743C
 #define rom_chget $12CB
 #define rom_kyread $7242
+#define rom_inlin $4644
 
 ; memory locations
 #define seconds_10s $F934
 #define seconds_1s $F933
+#define inlin_result $F685

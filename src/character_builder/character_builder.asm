@@ -1,11 +1,14 @@
 #include "./roll_abilities_ui.asm"
 #include "./select_race_ui.asm"
 #include "./select_class_ui.asm"
+#include "./enter_name_ui.asm"
 
 .local
 
 copy_source: .dw 0
 copy_destination: .dw 0
+
+name_buffer: .asciz "          "
 
 ; Runs through all steps necessary to create a new character
 ; Copies the following values to the array starting at HL:
@@ -22,6 +25,9 @@ create_character_ui::
 
     call select_race_ui
     call select_class_ui
+
+    ld bc, name_buffer
+    call enter_name_ui
 
     ret
 

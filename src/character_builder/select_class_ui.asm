@@ -1,7 +1,7 @@
 .local
 header: .asciz "Select Your Class"
 
-fighter_label: .asci "Fighter"
+fighter_label: .asciz "Fighter"
 wizard_label: .asciz "Wizard"
 cleric_label: .asciz "Cleric"
 barbarian_label: .asciz "Barbarian"
