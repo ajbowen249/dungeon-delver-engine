@@ -22,15 +22,23 @@
 #define ch_printable_arrow_right $9A
 #define ch_printable_arrow_left $9B
 
+#define ch_mushroom $90
+#define ch_chest $91
+#define ch_up_down_arrows $92
 #define ch_stick_person_1 $93
 #define ch_stick_person_2 $94
 
+; analogous mappings
 #charset map "┌" = $F0
 #charset map "┐" = $F2
 #charset map "└" = $F6
 #charset map "┘" = $F7
 #charset map "│" = $F5
 #charset map "─" = $F1
+
+; replacement mappings (character in source doesn't resemble character in game)
+#charset map "∩" = ch_chest
+#charset map "α" = ch_stick_person_2
 
 ; SRD 5.1 stuff
 #define ability_max_value 20

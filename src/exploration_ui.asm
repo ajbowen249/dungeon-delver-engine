@@ -2,13 +2,13 @@
 
 hard_screen_data:
 hard_screen_background:
-.asciz "┌Test Screen───────┐"
+.asciz "┌──────────────────┐"
+.asciz "│    α             │"
+.asciz "│           ∩      │"
 .asciz "│                  │"
 .asciz "│                  │"
-.asciz "│                  │"
-.asciz "│                  │"
-.asciz "│                  │"
-.asciz "│                  │"
+.asciz "│         ∩        │"
+.asciz "│∩∩          α     │"
 .asciz "└──────────────────┘"
 start_x: .db 2 ; 1-indexed since it's screen coordinates!
 start_y: .db 2
