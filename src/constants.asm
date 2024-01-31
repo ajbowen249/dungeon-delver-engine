@@ -48,3 +48,17 @@
 #define class_rogue    10
 #define class_sorcerer 11
 #define class_warlock  12
+
+; player attributes structure
+#define pl_name_max_len 10
+#define pl_name_data_len 11
+
+#define pl_offs_str 0
+#define pl_offs_dex 1
+#define pl_offs_con 2
+#define pl_offs_int 3
+#define pl_offs_wis 4
+#define pl_offs_chr 5
+#define pl_offs_race 6
+#define pl_offs_class 7
+#define pl_offs_name 8

@@ -46,15 +46,6 @@ copy_loop:
 
 copy_done:
 
-    ld l, 3
-    ld h, 3
-    call rom_set_cursor
-
-    ld hl, (destination_og)
-    call print_string
-
-    call rom_chget
-
     ret
 
 init_screen:

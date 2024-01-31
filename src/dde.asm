@@ -17,22 +17,17 @@
 #include "simple_menu.asm"
 
 #include "character_builder/character_builder.asm"
+#include "character_sheet_ui.asm"
 
-test_character:
-tc_str: .db 0
-tc_dex: .db 0
-tc_con: .db 0
-tc_int: .db 0
-tc_wis: .db 0
-tc_chr: .db 0
-tc_race: .db 0
-tc_class: .db 0
-tc_name: .asciz "          "
+    ALLOCATE_PLAYER test_character
 
 main:
     call seed_random
 
     ld hl, test_character
     call create_character_ui
+
+    ld hl, test_character
+    call character_sheet_ui
 
     ret
