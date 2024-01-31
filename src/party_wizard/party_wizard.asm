@@ -23,16 +23,8 @@ party_wizard::
 
 add_players_loop:
     ld a, (member_index)
-    ld b, a
-
-    ld a, pl_data_size
-    call mul_a_b
-
-    ld b, 0
-    ld c, a
-
     ld hl, (party_location)
-    add hl, bc
+    call get_party_member
     call character_wizard
 
     ld a, (member_index)

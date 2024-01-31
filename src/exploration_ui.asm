@@ -10,8 +10,20 @@ hard_screen_background:
 .asciz "│         ∩        │"
 .asciz "│∩∩          α     │"
 .asciz "└──────────────────┘"
-start_x: .db 2 ; 1-indexed since it's screen coordinates!
-start_y: .db 2
+hard_title: .asciz "Test Room"
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+hard_start_x: .db 2 ; 1-indexed since it's screen coordinates!
+hard_start_y: .db 2
 
 screen_data: .dw 0
 
@@ -78,12 +90,19 @@ init_screen:
 
     ld a, (hl)
     ld (avatar_x), a
-    inc hl
+
+    ld hl, (screen_data)
+    ld b, 0
+    ld c, sc_offs_start_y
+    add hl, bc
+
+    ld a, (hl)
     ld (avatar_y), a
 
     call rom_clear_screen
     call draw_background
     call draw_avatar
+    call draw_status_window_base
 
     ret
 
@@ -192,7 +211,7 @@ get_background_address:
 
     ret
 
-; If the player may walk to column H, row L A is zero. Otherwize, A is non-zero
+; If the player may walk to column H, row L, A is zero. Otherwise, A is non-zero
 ; Destroys HL
 can_player_enter_hl:
     ld a, h
@@ -222,5 +241,16 @@ position_good:
 
 cannot_enter:
     ld a, 1
+    ret
+
+draw_status_window_base:
+    ld h, 21
+    ld l, 1
+    call rom_set_cursor
+
+    ld hl, (screen_data)
+    ld bc, sc_offs_title
+    add hl, bc
+    call print_string
     ret
 .endlocal
