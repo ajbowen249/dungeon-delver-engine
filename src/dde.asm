@@ -20,16 +20,19 @@
 
 #include "character_wizard/character_wizard.asm"
 #include "character_sheet_ui.asm"
+#include "exploration_ui.asm"
 
     ALLOCATE_PLAYER test_character
 
 main:
     call seed_random
 
-    ld hl, test_character
-    call character_wizard
+    ; ld hl, test_character
+    ; call character_wizard
 
-    ld hl, test_character
-    call character_sheet_ui
+    ; ld hl, test_character
+    ; call character_sheet_ui
+
+    call exploration_ui
 
     ret

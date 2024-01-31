@@ -40,7 +40,7 @@ The user interface is divided into three levels:
 
 - **Components** - Re-usable data entry screens
 - **UIs** - Specific, modal screens that get data and may or may not extend a component
-- **Wizards** - Multi-step processes that show multiple modal UIs in sequence.
+- **Wizards** - Multi-step processes that show multiple modal UIs in sequence
 
 Note that a "Component" in this context is a configurable singular UI (for example, `enum_menu` allows selection from a list of options all shown on one screen), rather than a sub-screen element that would share the screen with other components.
 

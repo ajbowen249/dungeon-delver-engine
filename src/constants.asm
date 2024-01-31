@@ -1,4 +1,6 @@
 ; character set
+#charset ascii
+
 #define ch_A $41
 #define ch_D $44
 #define ch_R $52
@@ -19,6 +21,13 @@
 
 #define ch_printable_arrow_right $9A
 #define ch_printable_arrow_left $9B
+
+#charset map "┌" = $F0
+#charset map "┐" = $F2
+#charset map "└" = $F6
+#charset map "┘" = $F7
+#charset map "│" = $F5
+#charset map "─" = $F1
 
 ; SRD 5.1 stuff
 #define ability_max_value 20
