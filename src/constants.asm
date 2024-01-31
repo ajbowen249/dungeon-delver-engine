@@ -17,6 +17,8 @@
 #define ch_up_arrow $1E
 #define ch_down_arrow $1F
 
+
+
 #define ch_printable_arrow_right $9A
 #define ch_printable_arrow_left $9B
 

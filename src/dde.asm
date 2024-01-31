@@ -16,7 +16,7 @@
 #include "string.asm"
 #include "simple_menu.asm"
 
-#include "character_builder.asm"
+#include "character_builder/character_builder.asm"
 
 test_character:
 tc_str: .db 0

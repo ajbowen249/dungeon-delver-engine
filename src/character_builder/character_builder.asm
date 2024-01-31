@@ -1,5 +1,6 @@
-#include "./character_builder/roll_abilities_ui.asm"
-#include "./character_builder/select_race_ui.asm"
+#include "./roll_abilities_ui.asm"
+#include "./select_race_ui.asm"
+#include "./select_class_ui.asm"
 
 .local
 
@@ -20,6 +21,7 @@ create_character_ui::
     ; todo: copy over stats
 
     call select_race_ui
+    call select_class_ui
 
     ret
 
