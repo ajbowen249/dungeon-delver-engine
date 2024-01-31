@@ -21,9 +21,16 @@ avatar_data:
 avatar_x: .db 0
 avatar_y: .db 0
 
+party_location: .dw 0
+party_size: .db 0
+
 ; Displays the exploration screen until exited
+; HL should contain a pointer to the party array, and A should contain party size.
 ; TODO: Pass a pointer to a block of screen data
 exploration_ui::
+    ld (party_location), hl
+    ld (party_size), a
+
     ld hl, hard_screen_data
     ld (screen_data), hl
     call init_screen

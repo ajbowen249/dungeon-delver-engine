@@ -91,6 +91,10 @@ show_sheets:
     call character_sheet_ui
 
 sheets_done:
+
+    ld hl, test_characters
+    ld a, (party_size)
+    call exploration_ui
     ret
 
 rom_file_end:
