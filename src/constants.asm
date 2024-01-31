@@ -83,6 +83,8 @@
 #define pl_offs_class 7
 #define pl_offs_name 8
 
+#define pl_data_size 1 + pl_offs_name + pl_name_data_len
+
 ; screen data structure
 #define sc_offs_background 0
 #define sc_offs_start_x 168
