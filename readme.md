@@ -34,6 +34,10 @@ Once the binary is loaded into memory, you can also save it with `savem "dde", 4
 
 The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). To that end, the `dde` main binary is currently just for testing features as they are built, and a `campaigns` folder will eventually be added to the project that contains the top-level driver programs.
 
+### Syntax
+
+Even though this is for an 8085 CPU, It's using Z80 Assembler syntax. This is a feature of `zasm`, and additional Z80 instructions not available in i8080 are disabled via the `--8080` flag. This is encouraged by `zasm` as i8080 mnemonics are harder to read, and this author already has some familiarity with Z80 syntax as well.
+
 ### User Interface
 
 The user interface is divided into three levels:
@@ -44,4 +48,9 @@ The user interface is divided into three levels:
 
 Note that a "Component" in this context is a configurable singular UI (for example, `enum_menu` allows selection from a list of options all shown on one screen), rather than a sub-screen element that would share the screen with other components.
 
-All three levels are implemented as subroutines with the same calling convention as the Model 100 ROM routines, where arguments and return values (or pointers thereto) are passed in registers. For example, the Character Wizard accepts a pointer to character data that will be filled in completely by the time it exits. The individual screens' function interfaces each set up their data by exit, too, which is wrangled into place by the Wizard between steps. Further down, each screen of that UI may or may not defer some of its work to a common Component. Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call.
+All three levels are implemented as subroutines with the same calling convention as the Model 100 ROM routines, where arguments and return values (or pointers thereto) are passed in registers. For example, the Character Wizard accepts a pointer to character data that will be filled in completely by the time it exits. The individual screens' function interfaces each set up their data by exit, too, which is wrangled into place by the Wizard between steps. Further down, each screen of that UI may or may not defer some of its work to a common Component.
+
+Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call. Also of note is that _all screens are currently static_, rather than using stack space for their local data. This may change eventually, but, for now, as a general rule, UI pages _should not nest calls to one another_. It should technically be fine for unrelated screens to nest calls, but a screen can't, for example, use an `enum_menu` and nest a call to another screen that uses an `enum_menu`, since the second would overwrite the first's workspace.
+
+### Unit Tests
+Tests are located in `tests/tests.asm`, and are compiled and run automatically by `zasm`.

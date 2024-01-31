@@ -8,6 +8,7 @@
     call main
     ret
 
+#include "math.asm"
 #include "util.asm"
 #include "constants.asm"
 #include "enums.asm"
@@ -36,3 +37,10 @@ main:
     call exploration_ui
 
     ret
+
+rom_end:
+
+#target ram
+#test TESTS, rom_end
+#include "./tests/tests.asm" ; Nothing in here should make it into the final binary. Including it at this point so that
+                             ; tests are automatically loaded up at the end of the binary when run.
