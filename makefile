@@ -4,6 +4,7 @@ SRC_DIR := ./src
 BUILD_DIR := ./build
 
 ROOT_INPUT_FILE := $(SRC_DIR)/dde.asm
+ASM_FILES := $(SRC_DIR)/**/*.asm
 
 HEX_FILE_OUTPUT := $(BUILD_DIR)/dde.hex
 
@@ -15,7 +16,7 @@ hex: $(HEX_FILE_OUTPUT)
 
 all: $(HEX_FILE_OUTPUT)
 
-$(BUILD_DIR)/dde.hex:
+$(BUILD_DIR)/%.hex: $(ASM_FILES)
 	@mkdir -p $(BUILD_DIR)
 	$(ZASM) --8080 -x $(ROOT_INPUT_FILE) -o $(BUILD_DIR)
 
