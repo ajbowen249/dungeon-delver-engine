@@ -34,6 +34,34 @@ en_race:
 .db race_half_elf
 .dw en_race_half_elf_label
 
+en_count_selection_label_1: .asciz "1"
+en_count_selection_label_2: .asciz "2"
+en_count_selection_label_3: .asciz "3"
+en_count_selection_label_4: .asciz "4"
+
+en_count_selection:
+.db 1
+.dw en_count_selection_label_1
+
+.db 2
+.dw en_count_selection_label_2
+
+.db 3
+.dw en_count_selection_label_3
+
+.db 4
+.dw en_count_selection_label_4
+
+en_yes_no_label_yes .asciz "Yes"
+en_yes_no_label_no .asciz "No"
+
+en_yes_no:
+.db 0
+.dw en_yes_no_label_yes
+
+.db 1
+.dw en_yes_no_label_no
+
 .local
 ; Sets the address of the label portion of the enum in HL with the value in A to BC
 get_enum_label::

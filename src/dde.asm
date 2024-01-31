@@ -20,10 +20,16 @@
 #include "./ui_components/ui_components.asm"
 
 #include "character_wizard/character_wizard.asm"
+#include "party_wizard/party_wizard.asm"
+
 #include "character_sheet_ui.asm"
 #include "exploration_ui.asm"
 
-    ALLOCATE_PLAYER test_character
+test_characters:
+    ALLOCATE_PLAYER test_character1
+    ALLOCATE_PLAYER test_character2
+    ALLOCATE_PLAYER test_character3
+    ALLOCATE_PLAYER test_character4
 
 main:
     call seed_random
@@ -34,7 +40,8 @@ main:
     ; ld hl, test_character
     ; call character_sheet_ui
 
-    call exploration_ui
+    ld hl, test_characters
+    call party_wizard
 
     ret
 
