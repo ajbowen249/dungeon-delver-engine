@@ -1,6 +1,7 @@
 .local
 ; multiplies A * B, storing the result in A
 ; destroys B, C
+; Result data is communitive, but B < A is faster
 mul_a_b::
     ld c, a
     ld a, 0

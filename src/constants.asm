@@ -22,6 +22,9 @@
 #define ch_printable_arrow_right $9A
 #define ch_printable_arrow_left $9B
 
+#define ch_stick_person_1 $93
+#define ch_stick_person_2 $94
+
 #charset map "┌" = $F0
 #charset map "┐" = $F2
 #charset map "└" = $F6
@@ -71,3 +74,8 @@
 #define pl_offs_race 6
 #define pl_offs_class 7
 #define pl_offs_name 8
+
+; screen data structure
+#define sc_offs_background 0
+#define sc_offs_start_x 168
+#define sc_offs_start_y 169
