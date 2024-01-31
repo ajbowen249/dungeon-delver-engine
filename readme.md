@@ -10,7 +10,7 @@ This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation
 
 ## System Requirements
 
-DDE is designed to be run on systems with at least 24k of RAM (i.e, `21446` Bytes Free upon cold boot).
+DDE is designed for systems with at least 24k of RAM (i.e, `21446` Bytes Free upon cold boot).
 
 ## Running
 
@@ -29,3 +29,19 @@ If you have a serial connection established with a PC running an application tha
 Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear 256, 49152`. Then, using the `Memory Editor` tool, load the output hex file starting and address `$C000`.
 
 Once the binary is loaded into memory, you can also save it with `savem "dde", 49152,<end address>,49152`. `<end address>` will vary by build, and is `49152` + file size (of the binary, not the hex file!)
+
+## Architecture
+
+The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). To that end, the `dde` main binary is currently just for testing features as they are built, and a `campaigns` folder will eventually be added to the project that contains the top-level driver programs.
+
+### User Interface
+
+The user interface is divided into three levels:
+
+- **Components** - Re-usable data entry screens
+- **UIs** - Specific, modal screens that get data and may or may not extend a component
+- **Wizards** - Multi-step processes that show multiple modal UIs in sequence.
+
+Note that a "Component" in this context is a configurable singular UI (for example, `enum_menu` allows selection from a list of options all shown on one screen), rather than a sub-screen element that would share the screen with other components.
+
+All three levels are implemented as subroutines with the same calling convention as the Model 100 ROM routines, where arguments and return values (or pointers thereto) are passed in registers. For example, the Character Wizard accepts a pointer to character data that will be filled in completely by the time it exits. The individual screens' function interfaces each set up their data by exit, too, which is wrangled into place by the Wizard between steps. Further down, each screen of that UI may or may not defer some of its work to a common Component. Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call.

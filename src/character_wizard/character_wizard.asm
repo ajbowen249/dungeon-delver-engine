@@ -14,7 +14,7 @@ copy_destination: .dw 0
 ;   race byte
 ;   class byte
 ;   name (up to 10 chars)
-create_character_ui::
+character_wizard::
     ld (copy_destination), hl
 
     call roll_abilities_ui

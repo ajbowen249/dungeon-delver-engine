@@ -9,7 +9,7 @@ menu_address_counter: .dw 0
 ; Menu options are defined as a single byte value followed by the two-byte address of a string.
 ; This is the same format as enums in "enums.asm"
 ; Destroys all registers
-simple_menu_ui::
+enum_menu_ui::
     ld (menu_address), hl
     ld (menu_address_counter), hl
     ld (option_count), a
@@ -61,7 +61,7 @@ read_loop:
 
     ON_KEY_JUMP ch_enter, on_enter
 
-.macro SIMPLE_MENU_ARROW_UP_DOWN &LIMIT, &INC_OR_DEC
+.macro ENUM_MENU_ARROW_UP_DOWN &LIMIT, &INC_OR_DEC
     cp a, &LIMIT
     jp z, screen_loop
 
@@ -79,11 +79,11 @@ on_down_arrow:
     ld a, (option_count)
     dec a ; because max index is option_count - 1
 
-    SIMPLE_MENU_ARROW_UP_DOWN b, inc
+    ENUM_MENU_ARROW_UP_DOWN b, inc
 
 on_up_arrow:
     ld a, (selected_index)
-    SIMPLE_MENU_ARROW_UP_DOWN 0, dec
+    ENUM_MENU_ARROW_UP_DOWN 0, dec
 
 on_enter:
     ; find the value of our selected choice

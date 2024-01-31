@@ -15,9 +15,10 @@
 #include "random.asm"
 #include "dice.asm"
 #include "string.asm"
-#include "simple_menu.asm"
 
-#include "character_builder/character_builder.asm"
+#include "./ui_components/ui_components.asm"
+
+#include "character_wizard/character_wizard.asm"
 #include "character_sheet_ui.asm"
 
     ALLOCATE_PLAYER test_character
@@ -26,7 +27,7 @@ main:
     call seed_random
 
     ld hl, test_character
-    call create_character_ui
+    call character_wizard
 
     ld hl, test_character
     call character_sheet_ui

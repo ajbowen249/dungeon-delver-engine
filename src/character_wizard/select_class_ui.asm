@@ -8,7 +8,7 @@ select_class_ui::
 
     ld a, 4
     ld hl, en_class
-    call simple_menu_ui
+    call enum_menu_ui
     ret
 
 init_screen:

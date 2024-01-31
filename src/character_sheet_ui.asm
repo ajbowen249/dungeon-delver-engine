@@ -19,8 +19,9 @@ character_sheet_ui::
     ld (character_loc), hl
     call init_screen
 
-    call rom_chget
-    call rom_clear_screen
+read_loop:
+    call rom_kyread
+    jp z, read_loop
 
     ret
 
