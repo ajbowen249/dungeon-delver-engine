@@ -81,7 +81,8 @@
 #define pl_offs_chr 5
 #define pl_offs_race 6
 #define pl_offs_class 7
-#define pl_offs_name 8
+#define pl_offs_level 8
+#define pl_offs_name 9
 
 #define pl_data_size pl_offs_name + pl_name_data_len
 

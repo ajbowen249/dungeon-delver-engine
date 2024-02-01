@@ -13,10 +13,11 @@
 &NAME_chr: .db 0
 &NAME_race: .db 0
 &NAME_class: .db 0
+&NAME_level: .db 1
 &NAME_name: .asciz "          "
 .endm
 
-.macro DEFINE_PLAYER &LABEL_NAME, &STR, &DEX, &CON, &INT, &WIS, &CHR, &RACE, &CLASS, &NAME
+.macro DEFINE_PLAYER &LABEL_NAME, &STR, &DEX, &CON, &INT, &WIS, &CHR, &RACE, &CLASS, &LEVEL, &NAME
 &LABEL_NAME:
 &LABEL_NAME_str: .db &STR
 &LABEL_NAME_dex: .db &DEX
@@ -26,6 +27,7 @@
 &LABEL_NAME_chr: .db &CHR
 &LABEL_NAME_race: .db &RACE
 &LABEL_NAME_class: .db &CLASS
+&LABEL_NAME_level: .db &LEVEL
 &LABEL_NAME_name: .asciz &NAME
 .endm
 

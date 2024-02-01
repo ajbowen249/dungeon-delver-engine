@@ -9,11 +9,9 @@ copy_source: .dw 0
 copy_destination: .dw 0
 
 ; Runs through all steps necessary to create a new character
-; Copies the following values to the array starting at HL:
-;   ability bytes: str, dex, con, int, wis, chr
-;   race byte
-;   class byte
-;   name (up to 10 chars)
+; Copies character data to HL
+; Note: This DOES NOT touch the Level field. It is up to the campaign to initialize the character level, as some may
+; wish to start the party above level one.
 character_wizard::
     ld (copy_destination), hl
 
@@ -30,6 +28,7 @@ character_wizard::
     call write_a_to_character_info
 
     ld hl, (copy_destination)
+    inc hl ; skip level
     ld bc, hl
     call enter_name_ui
 
