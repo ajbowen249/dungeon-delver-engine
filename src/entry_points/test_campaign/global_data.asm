@@ -1,4 +1,4 @@
-test_characters:
+player_party:
     DEFINE_PLAYER test_character1, 1, 2, 3, 4, 5, 6, race_human, class_barbarian, 1, "Fronk"
 .db 0
 .db 0
@@ -22,6 +22,11 @@ test_characters:
 .db 0
 
 party_size: .db 0
+
+    DEFINE_PLAYER test_npc_1, 1, 2, 3, 4, 5, 6, race_human, class_barbarian, 1, "Bossman"
+.db 0
+.db 0
+.db 0
 
 last_screen_exit_code: .db 0
 last_screen_exit_argument: .db 0

@@ -38,7 +38,7 @@ screen_2_interact_callback: .dw on_interact
 empty_prompt: .db 0
 
 screen_2::
-    ld hl, test_characters
+    ld hl, player_party
     ld a, (party_size)
     ld bc, screen_2_data
     call exploration_ui

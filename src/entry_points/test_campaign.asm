@@ -16,7 +16,7 @@
 main:
     call seed_random
 
-    ld hl, test_characters
+    ld hl, player_party
     call party_wizard
     cp a, 0
     jp nz, show_sheets
@@ -64,6 +64,10 @@ screen_loop:
     jp screen_loop
 
 test_npc_battle:
+    ld hl, player_party
+    ld a, (party_size)
+    ld bc, test_npc_1
+    ld d, 1
     call battle_ui
     jp screen_loop
     ret

@@ -26,7 +26,7 @@ screen_1_start_y: .db 2
 screen_1_interactables:
     DEFINE_INTERACTABLE chest_1, in_chest, 0, 3, 13
     DEFINE_INTERACTABLE door_1, in_door, $01, 2, 20
-    DEFINE_INTERACTABLE test_npc, in_npc, 0, 7, 14
+    DEFINE_INTERACTABLE test_npc, in_npc, 0, 2, 6
     DEFINE_INTERACTABLE blank_4, 0, 0, 0, 0
     DEFINE_INTERACTABLE blank_5, 0, 0, 0, 0
     DEFINE_INTERACTABLE blank_6, 0, 0, 0, 0
@@ -44,7 +44,7 @@ chest_response: .asciz "It's locked"
 test_npc_prompt .asciz "Test Fight"
 
 screen_1::
-    ld hl, test_characters
+    ld hl, player_party
     ld a, (party_size)
     ld bc, screen_1_data
     call exploration_ui

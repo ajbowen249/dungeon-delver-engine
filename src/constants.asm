@@ -126,3 +126,21 @@
 #define in_dialog 2
 #define in_door 3
 #define in_npc 4
+
+; combatant data
+#define cbt_offs_flags 0
+; combatant flags fields (msb-lsb):
+; 7: reserved
+; 6: reserved
+; 5: reserved
+; 4: reserved
+; 3: reserved
+; 2: battle line (0: front, 1: back)
+; 1: 0: dead, 1: alive (1 here with 0 HP is "down")
+; 0: faction (0: party, 1: enemy)
+#define cbt_offst_hit_points cbt_offs_flags + 1 ; 2 bytes!
+#define cbt_data_length cbt_offst_hit_points + 2
+
+; start everyone in the back for now.
+#define cbt_initial_party_flags $06
+#define cbt_initial_enemy_flags $07
