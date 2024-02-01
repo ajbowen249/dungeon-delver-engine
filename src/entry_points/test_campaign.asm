@@ -10,6 +10,7 @@
 #include "../dde.asm"
 #include "./test_campaign/global_data.asm"
 #include "./test_campaign/screen_1.asm"
+#include "./test_campaign/screen_2.asm"
 
 main:
     call seed_random
@@ -49,5 +50,9 @@ show_sheets:
 
 sheets_done:
 
+screen_loop:
     call screen_1
+    call screen_2
+    jp screen_loop
+
     ret

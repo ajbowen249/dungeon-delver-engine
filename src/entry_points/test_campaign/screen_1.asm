@@ -6,7 +6,7 @@ screen_1_background:
 .asciz "│           ∩      │"
 .asciz "│                  │"
 .asciz "│                  │"
-.asciz "│         ∩        │"
+.asciz "│                  │"
 .asciz "│∩∩          α     │"
 .asciz "└──────────────────┘"
 screen_1_title: .asciz "Test Room"
