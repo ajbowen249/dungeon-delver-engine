@@ -1,3 +1,14 @@
+; Unit tests
+
+.org $C000
+
+#include "../dde.asm"
+
+rom_file_end:
+
+#target ram
+#test TESTS, rom_file_end
+
 .local
     jp test_entry
 

@@ -6,7 +6,7 @@ This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizar
 
 ## Building
 
-This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html) and [make](https://www.gnu.org/software/make/manual/make.html). To build it, just run `make` from the project root. This should create a `build/dde.hex` file.
+This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html) and [make](https://www.gnu.org/software/make/manual/make.html). To build all campaigns and run the unit tests, just run `make` from the project root. This should create one or more `.hex` files under `build`. The engine currently powers one "test" campaign, though more may come eventually. If you only care to build a specific campaign, use `make <campaign name>`.
 
 ## System Requirements
 
@@ -14,7 +14,7 @@ DDE is designed for systems with at least 24k of RAM (i.e, `21446` Bytes Free up
 
 ## Running
 
-For now, only the raw binary is created. A build step that adds a `CO` file header is coming _Eventually™_. It is meant to be loaded at `$C000` (`49152`). This process will eventually be less painful.
+Select a campaign, and find its hex file. For now, only the raw binary is created. A build step that adds a `CO` file header is coming _Eventually™_. All campaigns are meant to be loaded at `$C000` (`49152`). This process will eventually be less painful.
 
 Before either method, get into the BASIC prompt and run `clear 256, 49152`.
 
@@ -28,11 +28,13 @@ If you have a serial connection established with a PC running an application tha
 
 Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear 256, 49152`. Then, using the `Memory Editor` tool, load the output hex file starting and address `$C000`.
 
-Once the binary is loaded into memory, you can also save it with `savem "dde", 49152,<end address>,49152`. `<end address>` will vary by build, and is `49152` + file size (of the binary, not the hex file!)
+#### Once Loaded
+
+Once the binary is loaded into memory through any method, you can also save it with `savem "<name>", 49152,<end address>,49152`. `<end address>` will vary by build, and is `49152` + file size (of the binary, not the hex file). `<name>` is capped at 6 chars on the Model 100, so pick anything you'll remember for the given campaign name.
 
 ## Architecture
 
-The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). To that end, the `dde` main binary is currently just for testing features as they are built, and a `campaigns` folder will eventually be added to the project that contains the top-level driver programs.
+The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). The top-level entry points are under `src/entry_points`, and they include `src/dde.asm`. This means everything within `DDE` itself could end up located anywhere once assembled, depending on the campaign. `src/entry_points` also contains the unit tests entry point.
 
 ### Syntax
 
@@ -53,4 +55,4 @@ All three levels are implemented as subroutines with the same calling convention
 Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call. Also of note is that _all screens are currently static_, rather than using stack space for their local data. This may change eventually, but, for now, as a general rule, UI pages _should not nest calls to one another_. It should technically be fine for unrelated screens to nest calls, but a screen can't, for example, use an `enum_menu` and nest a call to another screen that uses an `enum_menu`, since the second would overwrite the first's workspace.
 
 ### Unit Tests
-Tests are located in `tests/tests.asm`, and are compiled and run automatically by `zasm`.
+Tests are located in `entry_points/tests.asm`, and are compiled and run automatically by `zasm`. They can be run individually with `make test`.
