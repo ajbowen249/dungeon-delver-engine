@@ -1,7 +1,6 @@
 .local
 
 blank_20_char_string: .asciz "                   "
-test_string_1: .asciz "here"
 
 screen_data: .dw 0
 
@@ -29,7 +28,6 @@ should_exit: .db 0
 ; Displays the exploration screen until exited
 ; HL should contain a pointer to the party array, and A should contain party size.
 ; BC should contain a pointer to the screen data
-; TODO: Pass a pointer to a block of screen data
 exploration_ui::
     ld (party_location), hl
     ld (party_size), a

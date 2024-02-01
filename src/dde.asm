@@ -18,3 +18,4 @@
 
 #include "character_sheet_ui.asm"
 #include "exploration_ui.asm"
+#include "battle_ui.asm"

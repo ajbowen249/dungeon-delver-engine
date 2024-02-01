@@ -64,5 +64,6 @@ screen_loop:
     jp screen_loop
 
 test_npc_battle:
-
+    call battle_ui
+    jp screen_loop
     ret

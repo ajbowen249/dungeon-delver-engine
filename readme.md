@@ -33,6 +33,22 @@ Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, firs
 
 Once the binary is loaded into memory through any method, you can also save it with `savem "<name>", 49152,<end address>,49152`. `<end address>` will vary by build, and is `49152` + file size (of the binary, not the hex file). `<name>` is capped at 6 chars on the Model 100, so pick anything you'll remember for the given campaign name.
 
+## Gameplay
+
+DDE follows a typical RPG setup with screens for exploration, combat, and dialog interactions. It has a handful of simplifications from the full OGL 5.1 experience. These may eventually be expanded on, but not with any current concrete plans:
+1. **Automatic Leveling**: Choices normally offered to players when advancing their level are not implemented. Instead, things like spells or specializations are hardcoded for each level of each class.
+    - This also means that spell preparation is automatic, and a caster will never learn more spells than they can have prepared.
+    - This may also end up applying to equipment. Shops and inventory management are currently a stretch goal.
+2. **Automatic Resting**: It is simply implied, for now, that the party takes a long rest after each combat encounter. HP, Spell Slots, and other resources that regenerate with rest automatically reset after each encounter.
+3. **Combat Positioning**: Combat takes a simplified, JRPG-inspired approach of having "battle rows," where each player may be at the "front" or "back" of their respective line. This is swizzled with SRD rules as follows:
+    - Each side has its own two lines, for a total of 4.
+    - Players are limited to their side's lines.
+    - Players may move between lines at least once each turn.
+        - Stretch goal: Allow players with a high enough movement speed to make multiple moves in one turn.
+    - Normal melee rules apply when attacker and defender are 1 line apart (both in the "front"). If both players are in the back line, they are out of melee range. If one player is in the back and the other the front, the attacker has disadvantage. (If there was a hard range cutoff, then ranged characters could always beat melee-only combatants by never going up front in this system.)
+    - Ranged attacks more-or-less follow SRD rules, but the range is determined by battle line distance, and ranges of weapons and spells are defined in terms of that distance. For example, a short bow may work normally with the attacker in the back and the defender in the front, and have disadvantage if the defender is also in the back. A long bow, then, would not have disadvantage at long distance. Both bows would have disadvantage if both attacker and defender are in the front.
+    - Stretch goal: Opportunity attacks still fit in with this system, if you consider 1 line of distance normal melee range.
+
 ## Architecture
 
 The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). The top-level entry points are under `src/entry_points`, and they include `src/dde.asm`. This means everything within `DDE` itself could end up located anywhere once assembled, depending on the campaign. `src/entry_points` also contains the unit tests entry point.
