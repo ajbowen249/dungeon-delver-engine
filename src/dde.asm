@@ -3,7 +3,7 @@
 
 #include "math.asm"
 #include "util.asm"
-#include "party_util.asm"
+#include "array_util.asm"
 #include "constants.asm"
 #include "enums.asm"
 #include "rom_api.asm"
