@@ -54,8 +54,7 @@ stats_loop:
 
     ld d, 0
     ld e, a
-    ld bc, glob_de_to_hex_str_buffer
-    call de_to_hex_str
+    call de_to_decimal_string
 
     ld h, 5
     ld a, (counter)

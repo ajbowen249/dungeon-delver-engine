@@ -257,18 +257,16 @@ total_loop:
     ld (ability_roll_total), a
     ld d, 0
     ld e, a
-    ld bc, glob_de_to_hex_str_buffer
-    call de_to_hex_str
-    PRINT_AT_LOCATION abilities_first_row, abilities_column + 17, glob_de_to_hex_str_buffer
+    call de_to_decimal_string
+    PRINT_AT_LOCATION abilities_first_row, abilities_column + 17, bc
 
 .macro PRINT_ABILITY_SCORE &VALUE, &ROW
     ld d, 0
     ld a, (&VALUE)
     ld e, a
-    ld bc, glob_de_to_hex_str_buffer
-    call de_to_hex_str
+    call de_to_decimal_string
 
-    PRINT_AT_LOCATION &ROW, abilities_column, glob_de_to_hex_str_buffer
+    PRINT_AT_LOCATION &ROW, abilities_column, bc
 .endm
 
     PRINT_ABILITY_SCORE str_val, 2
@@ -301,10 +299,9 @@ update_points:
     ; ability value to string
     ld d, 0
     ld e, a
-    ld bc, glob_de_to_hex_str_buffer
-    call de_to_hex_str
+    call de_to_decimal_string
 
-    ld hl, glob_de_to_hex_str_buffer
+    ld hl, bc
     call print_string
 
     ; move to remaining points position
@@ -316,10 +313,9 @@ update_points:
     ld a, (remaining_points)
     ld d, 0
     ld e, a
-    ld bc, glob_de_to_hex_str_buffer
-    call de_to_hex_str
+    call de_to_decimal_string
 
-    ld hl, glob_de_to_hex_str_buffer
+    ld hl, bc
     call print_string
 
     ret
