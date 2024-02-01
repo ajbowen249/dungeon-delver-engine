@@ -85,12 +85,38 @@
 
 #define pl_data_size pl_offs_name + pl_name_data_len
 
+; interactables data
+#define in_type_offset 0
+#define in_flags_offset 1
+#define in_row_offset 2
+#define in_col_offset 3
+#define in_data_length 4 ; type, flags, row, col
+
+; flags fields (msb-lsb):
+; 7: reserved
+; 6: reserved
+; 5: reserved
+; 4: reserved
+; 3: reserved
+; 2: reserved
+; 1: reserved
+; 0: is trigger (interact on location match)
+
 ; screen data structure
 #define sc_background_data_len 21 * 8
 #define sc_title_max_len 20
 #define sc_title_data_len sc_title_max_len + 1
+#define sc_interactable_array_elements 10
+#define sc_interactable_array_length in_data_length * sc_interactable_array_elements
 
 #define sc_offs_background 0
 #define sc_offs_title sc_background_data_len
 #define sc_offs_start_x sc_offs_title + sc_title_data_len
 #define sc_offs_start_y sc_offs_start_x + 1
+#define sc_offs_interactables_start sc_offs_start_y + 1
+
+; interactable types
+#define in_none 0
+#define in_chest 1
+#define in_dialog 2
+#define in_door 3

@@ -28,3 +28,11 @@
 &LABEL_NAME_class: .db &CLASS
 &LABEL_NAME_name: .asciz &NAME
 .endm
+
+.macro DEFINE_INTERACTABLE &LABEL, &TYPE, &FLAGS, &ROW, &COL
+&LABEL:
+&LABEL_type: .db &TYPE
+&LABEL_flags: .db &FLAGS
+&LABEL_row: .db &ROW
+&LABEL_col: .db &COL
+.endm
