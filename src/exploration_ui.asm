@@ -17,6 +17,7 @@ party_size: .db 0
 position_changed: .db 0
 near_interactable: .db 0
 auto_interact: .db 0
+should_exit: .db 0
 
 .macro EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
     ld a, (avatar_x)
@@ -39,9 +40,19 @@ exploration_ui::
     ld a, 255
     ld (near_interactable), a
 
+    ld a, 0
+    ld (should_exit), a
+
     call init_screen
 
 read_loop:
+    ld a, (should_exit)
+    cp a, 0
+    jp z, keep_reading
+
+    ret
+
+keep_reading:
     call rom_kyread
     jp z, read_loop
 
@@ -403,17 +414,16 @@ on_position_changed_stepped_on_interactable:
 on_position_changed_found_interactable:
     ld (near_interactable), a
 
-    ld e, a
-    ld h, 21
-    ld l, 2
-    call rom_set_cursor
-
-    ld d, 0
-    ld bc, glob_de_to_hex_str_buffer
-    call de_to_hex_str
-
+    ld hl, (screen_data)
+    ld bc, sc_offs_get_interaction_prompt
+    add hl, bc
+    ld bc, (hl)
     ld hl, bc
-    call print_string
+    call call_indirect_func
+
+    ld bc, hl
+
+    PRINT_AT_LOCATION 2, 21, bc
 
     ret
 
@@ -430,13 +440,16 @@ on_interact:
     ld hl, bc
 
     ld a, (near_interactable)
+    call call_indirect_func
 
-    ; Z80 doesn't have indirect call, but if we "call" down to that label, it will set up the stack with the right
-    ; return value, and then jumping indirect to our address calls into the function, which will ret like normal.
-    call call_interact_func
+    ; a has our exit flag now
+    ld (should_exit), a
+
     ret
 
-call_interact_func:
+; Z80 doesn't have indirect call, but if we "call" down to this label, it will set up the stack with the right
+; return value, and then jumping indirect to our address calls into the function, which will ret like normal.
+call_indirect_func:
     jp hl
     ret
 

@@ -34,9 +34,12 @@ screen_1_interactables:
     DEFINE_INTERACTABLE blank_8, 0, 0, 0, 0
     DEFINE_INTERACTABLE blank_9, 0, 0, 0, 0
     DEFINE_INTERACTABLE blank_0, 0, 0, 0, 0
+screen_1_get_interaction_prompt: .dw get_interaction_prompt
 screen_1_interact_callback: .dw on_interact
 
-test_string: .asciz "TEST STRING HERE"
+empty_prompt: .db 0
+chest_prompt: .asciz "Open Chest"
+chest_response: .asciz "It's locked"
 
 screen_1::
     ld hl, test_characters
@@ -46,8 +49,29 @@ screen_1::
 
     ret
 
+get_interaction_prompt:
+    cp a, 0
+    jp z, ret_chest_prompt
+    ld hl, empty_prompt
+    ret
+
+ret_chest_prompt:
+    ld hl, chest_prompt
+    ret
+
 on_interact:
-    PRINT_AT_LOCATION 4, 21, test_string
+    cp a, 0
+    jp z, chest_interact
+
+    jp door_interact
+
+chest_interact:
+    PRINT_AT_LOCATION 4, 21, chest_response
+    ld a, 0
+    ret
+
+door_interact:
+    ld a, 1
     ret
 
 .endlocal

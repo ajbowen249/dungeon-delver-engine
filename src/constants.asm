@@ -114,7 +114,10 @@
 #define sc_offs_start_x sc_offs_title + sc_title_data_len
 #define sc_offs_start_y sc_offs_start_x + 1
 #define sc_offs_interactables_start sc_offs_start_y + 1
-#define sc_offs_interact_callback sc_offs_interactables_start + sc_interactable_array_length
+; interact prompt func takes index in A and returns string in HL
+#define sc_offs_get_interaction_prompt sc_offs_interactables_start + sc_interactable_array_length
+; interact callback takes index in A and sets A non-zero if the area should be exited
+#define sc_offs_interact_callback sc_offs_get_interaction_prompt + 2
 
 ; interactable types
 #define in_none 0
