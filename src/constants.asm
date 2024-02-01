@@ -124,3 +124,4 @@
 #define in_chest 1
 #define in_dialog 2
 #define in_door 3
+#define in_npc 4

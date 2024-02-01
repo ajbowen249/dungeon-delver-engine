@@ -8,6 +8,7 @@
     ret
 
 #include "../dde.asm"
+#include "./test_campaign/constants.asm"
 #include "./test_campaign/global_data.asm"
 #include "./test_campaign/screen_1.asm"
 #include "./test_campaign/screen_2.asm"
@@ -52,7 +53,16 @@ sheets_done:
 
 screen_loop:
     call screen_1
+
+    ld a, (last_screen_exit_code)
+
+    cp a, ec_npc
+    jp z, test_npc_battle
+
     call screen_2
+    ; screen 2 only has a door at the moment
     jp screen_loop
+
+test_npc_battle:
 
     ret

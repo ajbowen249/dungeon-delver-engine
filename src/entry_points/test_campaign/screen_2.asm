@@ -50,6 +50,11 @@ get_interaction_prompt:
     ret
 
 on_interact:
+    ld a, ec_door
+    ld (last_screen_exit_code), a
+    ld a, 0
+    ld (last_screen_exit_argument), a
+
     ld a, 1
     ret
 
