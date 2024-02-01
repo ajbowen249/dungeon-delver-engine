@@ -1,3 +1,4 @@
+.local
 screen_1_data:
 screen_1_background:
 .asciz "┌──────────────────┐"
@@ -33,3 +34,20 @@ screen_1_interactables:
     DEFINE_INTERACTABLE blank_8, 0, 0, 0, 0
     DEFINE_INTERACTABLE blank_9, 0, 0, 0, 0
     DEFINE_INTERACTABLE blank_0, 0, 0, 0, 0
+screen_1_interact_callback: .dw on_interact
+
+test_string: .asciz "TEST STRING HERE"
+
+screen_1::
+    ld hl, test_characters
+    ld a, (party_size)
+    ld bc, screen_1_data
+    call exploration_ui
+
+    ret
+
+on_interact:
+    PRINT_AT_LOCATION 4, 21, test_string
+    ret
+
+.endlocal

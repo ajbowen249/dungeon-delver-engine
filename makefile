@@ -3,7 +3,7 @@ ZASM := "zasm"
 SRC_DIR := ./src
 BUILD_DIR := ./build
 
-ASM_FILES := $(SRC_DIR)/**/*.asm $(SRC_DIR)/*.asm
+ASM_FILES := $(SRC_DIR)/**/*.asm $(SRC_DIR)/*.asm $(SRC_DIR)/**/**/*.asm
 
 # campaign for testing, not to be confused with the test binary
 TEST_CAMPAIGN_ROOT_FILE := $(SRC_DIR)/entry_points/test_campaign.asm

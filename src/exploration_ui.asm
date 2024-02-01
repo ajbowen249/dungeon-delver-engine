@@ -1,5 +1,8 @@
 .local
 
+blank_20_char_string: .asciz "                   "
+test_string_1: .asciz "here"
+
 screen_data: .dw 0
 
 background_index: .dw 0
@@ -12,6 +15,8 @@ party_location: .dw 0
 party_size: .db 0
 
 position_changed: .db 0
+near_interactable: .db 0
+auto_interact: .db 0
 
 .macro EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
     ld a, (avatar_x)
@@ -30,6 +35,10 @@ exploration_ui::
 
     ld hl, bc
     ld (screen_data), hl
+
+    ld a, 255
+    ld (near_interactable), a
+
     call init_screen
 
 read_loop:
@@ -39,6 +48,7 @@ read_loop:
     ld b, a
     ld a, 0
     ld (position_changed), a
+    ld (auto_interact), a
     ld a, b
 
     ON_KEY_JUMP ch_down_arrow, on_down_arrow
@@ -57,6 +67,8 @@ read_loop:
     ON_KEY_JUMP ch_d, on_right_arrow
     ON_KEY_JUMP ch_D, on_right_arrow
 
+    ON_KEY_JUMP ch_enter, on_press_enter
+
 on_down_arrow:
     call handle_down_arrow
     jp read_loop_continue
@@ -70,9 +82,23 @@ on_right_arrow:
     call handle_right_arrow
     jp read_loop_continue
 
+on_press_enter:
+    ld a, (near_interactable)
+    cp a, 255
+    jp z, read_loop_continue
+
+    call on_interact
+
+    jp read_loop_continue
+
 read_loop_continue:
     ld a, (position_changed)
+    cp a, 0
     call nz, on_position_changed
+
+    ld a, (auto_interact)
+    cp a, 0
+    call nz, on_interact
 
     jp read_loop
 
@@ -352,21 +378,31 @@ find_interactable_around_avatar_found:
     ret
 
 on_position_changed:
-    ; first check to see if we've stepped on something (this will auto-interact eventually)
+    call clear_message_area
+    ; first check to see if we've stepped on something
     EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
     ld b, $01
     ld c, $01
     call search_interactables_at_hl
     cp a, 255
-    jp nz, on_position_changed_found_interactable
+    jp nz, on_position_changed_stepped_on_interactable
 
     ; then look "around" the player for something we can button interact with
     call find_interactable_around_avatar
 
     cp a, 255
-    jp z, on_position_changed_end
+    jp z, on_position_changed_no_interactable
 
+    jp on_position_changed_found_interactable
+
+on_position_changed_stepped_on_interactable:
+    ld e, a
+    ld a, 1
+    ld (auto_interact), a
+    ld a, e
 on_position_changed_found_interactable:
+    ld (near_interactable), a
+
     ld e, a
     ld h, 21
     ld l, 2
@@ -379,6 +415,38 @@ on_position_changed_found_interactable:
     ld hl, bc
     call print_string
 
-on_position_changed_end:
+    ret
+
+on_position_changed_no_interactable:
+    ld a, 255
+    ld (near_interactable), a
+    ret
+
+on_interact:
+    ld hl, (screen_data)
+    ld bc, sc_offs_interact_callback
+    add hl, bc
+    ld bc, (hl)
+    ld hl, bc
+
+    ld a, (near_interactable)
+
+    ; Z80 doesn't have indirect call, but if we "call" down to that label, it will set up the stack with the right
+    ; return value, and then jumping indirect to our address calls into the function, which will ret like normal.
+    call call_interact_func
+    ret
+
+call_interact_func:
+    jp hl
+    ret
+
+clear_message_area:
+    PRINT_AT_LOCATION 2, 21, blank_20_char_string
+    PRINT_AT_LOCATION 3, 21, blank_20_char_string
+    PRINT_AT_LOCATION 4, 21, blank_20_char_string
+    PRINT_AT_LOCATION 5, 21, blank_20_char_string
+    PRINT_AT_LOCATION 6, 21, blank_20_char_string
+    PRINT_AT_LOCATION 7, 21, blank_20_char_string
+    PRINT_AT_LOCATION 8, 21, blank_20_char_string
     ret
 .endlocal

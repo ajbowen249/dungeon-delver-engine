@@ -114,6 +114,7 @@
 #define sc_offs_start_x sc_offs_title + sc_title_data_len
 #define sc_offs_start_y sc_offs_start_x + 1
 #define sc_offs_interactables_start sc_offs_start_y + 1
+#define sc_offs_interact_callback sc_offs_interactables_start + sc_interactable_array_length
 
 ; interactable types
 #define in_none 0
