@@ -27,7 +27,7 @@ If you have a serial connection established with a PC running an application tha
 
 ### Virtual-T
 
-Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear 256, 49152`. Then, using the `Memory Editor` tool, load the output hex file starting and address `$C000`.
+Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear` command above. Then, using the `Memory Editor` tool, load the output hex file starting at address `$C000`.
 
 #### Once Loaded
 
