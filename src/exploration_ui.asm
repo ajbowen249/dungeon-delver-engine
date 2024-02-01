@@ -1,40 +1,5 @@
 .local
 
-hard_screen_data:
-hard_screen_background:
-.asciz "┌──────────────────┐"
-.asciz "│    α              "
-.asciz "│           ∩      │"
-.asciz "│                  │"
-.asciz "│                  │"
-.asciz "│         ∩        │"
-.asciz "│∩∩          α     │"
-.asciz "└──────────────────┘"
-hard_title: .asciz "Test Room"
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-hard_start_x: .db 2 ; 1-indexed since it's screen coordinates!
-hard_start_y: .db 2
-interactables:
-    DEFINE_INTERACTABLE chest_1, in_chest, 0, 3, 13
-    DEFINE_INTERACTABLE door_1, in_door, $01, 2, 20
-    DEFINE_INTERACTABLE blank_3, 0, 0, 0, 0
-    DEFINE_INTERACTABLE blank_4, 0, 0, 0, 0
-    DEFINE_INTERACTABLE blank_5, 0, 0, 0, 0
-    DEFINE_INTERACTABLE blank_6, 0, 0, 0, 0
-    DEFINE_INTERACTABLE blank_7, 0, 0, 0, 0
-    DEFINE_INTERACTABLE blank_8, 0, 0, 0, 0
-    DEFINE_INTERACTABLE blank_9, 0, 0, 0, 0
-    DEFINE_INTERACTABLE blank_0, 0, 0, 0, 0
 screen_data: .dw 0
 
 background_index: .dw 0
@@ -57,12 +22,13 @@ position_changed: .db 0
 
 ; Displays the exploration screen until exited
 ; HL should contain a pointer to the party array, and A should contain party size.
+; BC should contain a pointer to the screen data
 ; TODO: Pass a pointer to a block of screen data
 exploration_ui::
     ld (party_location), hl
     ld (party_size), a
 
-    ld hl, hard_screen_data
+    ld hl, bc
     ld (screen_data), hl
     call init_screen
 

@@ -8,6 +8,7 @@
     ret
 
 #include "../dde.asm"
+#include "./test_campaign/screens.asm"
 
 test_characters:
     DEFINE_PLAYER test_character1, 1, 2, 3, 4, 5, 6, race_human, class_barbarian, "Fronk"
@@ -74,5 +75,6 @@ sheets_done:
 
     ld hl, test_characters
     ld a, (party_size)
+    ld bc, screen_1_data
     call exploration_ui
     ret
