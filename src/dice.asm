@@ -63,7 +63,7 @@ roll_d16::
 .endlocal
 
 .local
-; loads HL with a random number 1-10
+; loads HL with a random number 1-20
 ; Uses bc
 roll_d20::
     ADD_ROLLS roll_d4, roll_d16

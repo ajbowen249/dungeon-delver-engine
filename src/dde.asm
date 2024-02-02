@@ -10,6 +10,7 @@
 #include "random.asm"
 #include "dice.asm"
 #include "string.asm"
+#include "class_mechanics/class_mechanics.asm"
 
 #include "./ui_components/ui_components.asm"
 
