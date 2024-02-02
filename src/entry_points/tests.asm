@@ -4,6 +4,50 @@
 
 #include "../dde.asm"
 
+test_associative_array:
+test_assoc_0:
+.db 2
+.db 2
+
+test_assoc_1:
+.db 3
+.db 1
+
+test_assoc_2:
+.db 4
+.db 0
+
+
+test_assoc_3:
+.db 0
+.db 4
+
+test_assoc_4:
+.db 1
+.db 3
+
+test_sort_swap_space:
+.db 55
+.db 55
+
+copy_test_src:
+.db "a"
+.db "b"
+.db "c"
+.db "d"
+.db "e"
+.db "f"
+.db "g"
+
+copy_test_dst:
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+
 rom_file_end:
 
 #target ram
@@ -68,11 +112,76 @@ test_decimal:
     DECIMAL_TEST $03, $E7, "9", "9", "9"
     ret
 
+test_copy:
+    ld a, (copy_test_dst)
+.expect a = 0
+
+    ld a, 7
+    ld hl, copy_test_src
+    ld bc, copy_test_dst
+    call copy_hl_bc
+
+    ld a, (copy_test_dst)
+.expect a = "a"
+    ld a, (copy_test_dst + 1)
+.expect a = "b"
+    ld a, (copy_test_dst + 2)
+.expect a = "c"
+    ld a, (copy_test_dst + 3)
+.expect a = "d"
+    ld a, (copy_test_dst + 4)
+.expect a = "e"
+    ld a, (copy_test_dst + 5)
+.expect a = "f"
+    ld a, (copy_test_dst + 6)
+.expect a = "g"
+    ret
+
+test_sort:
+    ld d, 2
+    ld a, 5
+    ld hl, test_associative_array
+    ld bc, test_sort_swap_space
+    call sort_associative_array
+
+    ld a, (test_assoc_0)
+.expect a = 0
+    ld a, (test_assoc_0 + 1)
+.expect a = 4
+
+    ld a, (test_assoc_1)
+.expect a = 1
+    ld a, (test_assoc_1 + 1)
+.expect a = 3
+
+    ld a, (test_assoc_2)
+.expect a = 2
+    ld a, (test_assoc_2 + 1)
+.expect a = 2
+
+    ld a, (test_assoc_3)
+.expect a = 3
+    ld a, (test_assoc_3 + 1)
+.expect a = 1
+
+    ld a, (test_assoc_4)
+.expect a = 4
+    ld a, (test_assoc_4 + 1)
+.expect a = 0
+
+    ret
+
+array_tests:
+    call test_copy
+    call test_sort
+    ret
+
 test_start:
     call math_tests
+    call test_decimal
+    call array_tests
     ret
 
 test_entry:
     call test_start
-    call test_decimal
 .endlocal
