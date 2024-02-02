@@ -5,7 +5,6 @@ blank_message_string: .asciz "                               "
 #define combatants_first_row 2
 
 initiative_header: .asciz "Initiative:"
-order_header: .asciz "Turn Order:"
 
 screen_data: .dw 0
 
@@ -138,7 +137,6 @@ read_loop_continue:
 
 init_screen:
     call initialize_combatants
-    call display_initiative_results
     call display_initiative_order
     call rom_clear_screen
     call draw_combatants
@@ -407,7 +405,7 @@ initiative_counter: .db 0
 display_initiative_order:
     call rom_clear_screen
 
-    PRINT_AT_LOCATION 1, 1, order_header
+    PRINT_AT_LOCATION 1, 1, initiative_header
 
     ld a, 0
     ld (initiative_counter), a
@@ -464,59 +462,6 @@ display_initiative_order_loop:
 initiative_order_wait_loop:
     call rom_kyread
     jp z, initiative_order_wait_loop
-
-    ret
-
-initiative_display_counter: .db 0
-display_initiative_results:
-    call rom_clear_screen
-
-    PRINT_AT_LOCATION 1, 1, initiative_header
-
-    ld a, 0
-    ld (initiative_display_counter), a
-
-    ld hl, display_initiative_results_foreach_callback
-    call for_each_combatant
-
-
-initiative_wait_loop:
-    call rom_kyread
-    jp z, initiative_wait_loop
-    ret
-
-display_initiative_results_foreach_callback:
-    ld a, (initiative_display_counter)
-    add a, 1
-    ld l, a
-    ld h, 14
-    call rom_set_cursor
-
-    ld hl, (foreach_player_address)
-    ld bc, pl_offs_name
-    add hl, bc
-    call print_string
-
-    ld a, (initiative_display_counter)
-    add a, 1
-    ld l, a
-    ld h, 24
-    call rom_set_cursor
-
-    ld hl, (foreach_combat_address)
-    ld bc, cbt_offs_initiative
-    add hl, bc
-    ld a, (hl)
-    ld d, 0
-    ld e, a
-    call de_to_decimal_string
-
-    ld hl, bc
-    call print_string
-
-    ld a, (initiative_display_counter)
-    inc a
-    ld (initiative_display_counter), a
 
     ret
 
