@@ -28,6 +28,8 @@ remaining_points: .db 0
 ability_index: .db 0
 ability_roll_total: .db 0
 
+should_exit: .db 0
+
 ; rolls abilities for a new character
 ; At exit, HL is set to the beginning of the Abilities array
 roll_abilities_ui::
@@ -36,47 +38,34 @@ roll_abilities_ui::
 
     ld a, 0
     ld (ability_index), a
+    ld (should_exit), a
+
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm
 
 screen_loop:
     call draw_arrows
-read_loop:
-    call rom_kyread
-    jp z, read_loop
+    call iterate_input_table
 
-    ON_KEY_JUMP ch_down_arrow, on_down_arrow
-    ON_KEY_JUMP ch_s, on_down_arrow
-    ON_KEY_JUMP ch_S, on_down_arrow
+    ld a, (should_exit)
+    cp a, 0
+    jp z, screen_loop
 
-    ON_KEY_JUMP ch_up_arrow, on_up_arrow
-    ON_KEY_JUMP ch_w, on_up_arrow
-    ON_KEY_JUMP ch_W, on_up_arrow
-
-    ON_KEY_JUMP ch_left_arrow, on_left_arrow
-    ON_KEY_JUMP ch_a, on_left_arrow
-    ON_KEY_JUMP ch_A, on_left_arrow
-
-    ON_KEY_JUMP ch_right_arrow, on_right_arrow
-    ON_KEY_JUMP ch_d, on_right_arrow
-    ON_KEY_JUMP ch_D, on_right_arrow
-
-    ON_KEY_JUMP ch_R, roll_abilities_ui
-    ON_KEY_JUMP ch_r, roll_abilities_ui
-
-    ON_KEY_JUMP ch_enter, exit_ability_ui
-
-    jp screen_loop
+    ; give the caller the location of our abilities array
+    ld hl, ability_values
+    ret
 
 .macro ROLL_ABILITIES_ARROW_UP_DOWN &LIMIT, &INC_OR_DEC
     ld a, (ability_index)
     cp a, &LIMIT
-    jp z, screen_loop
+    jp z, ON_&INC_OR_DEC_END
     call clear_arrows
 
     ld a, (ability_index)
     &INC_OR_DEC a
     ld (ability_index), a
 
-    jp screen_loop
+ON_&INC_OR_DEC_END:
+    ret
 .endm
 
 on_down_arrow:
@@ -94,8 +83,8 @@ on_left_arrow:
     add hl, bc
     ld a, (hl)
 
-    cp 0
-    jp z, screen_loop
+    cp 1
+    jp z, on_left_arrow_end
 
     dec a
     ld (hl), a
@@ -106,7 +95,8 @@ on_left_arrow:
 
     call update_points
 
-    jp screen_loop
+on_left_arrow_end:
+    ret
 
 on_right_arrow:
     ; can't increment if 20
@@ -118,14 +108,14 @@ on_right_arrow:
     ld a, (hl)
 
     cp ability_max_value
-    jp z, screen_loop
+    jp z, on_right_arrow_end
 
     ld b, a ; save ability value since we're about to check remaining
 
     ; don't increment if we have no points to pull from
     ld a, (remaining_points)
     cp 0
-    jp z, screen_loop
+    jp z, on_right_arrow_end
 
     dec a
     ld (remaining_points), a
@@ -136,11 +126,12 @@ on_right_arrow:
 
     call update_points
 
-    jp screen_loop
+on_right_arrow_end:
+    ret
 
-exit_ability_ui:
-    ; give the caller the location of our abilities array
-    ld hl, ability_values
+on_confirm:
+    ld a, 1
+    ld (should_exit), a
     ret
 
 draw_arrows:
@@ -155,7 +146,7 @@ draw_arrows:
     ld a, ch_printable_arrow_left
     call rom_print_a
 
-    ld h, abilities_column + 4
+    ld h, abilities_column + 3
     ; l should still have row
     call rom_set_cursor
 
@@ -176,7 +167,7 @@ clear_arrows:
     ld a, " "
     call rom_print_a
 
-    ld h, abilities_column + 4
+    ld h, abilities_column + 3
     ; l should still have row
     call rom_set_cursor
 

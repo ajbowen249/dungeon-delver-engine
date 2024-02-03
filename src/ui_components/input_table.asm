@@ -32,7 +32,6 @@ iterate_input_table::
     call rom_kyread
     jp z, exit_input_table
 
-
     ON_KEY_JUMP ch_up_arrow, on_arrow_up
     ON_KEY_JUMP ch_w, on_arrow_up
     ON_KEY_JUMP ch_W, on_arrow_up
