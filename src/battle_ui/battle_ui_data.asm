@@ -1,6 +1,3 @@
-
-#define message_column 8
-blank_message_string: .asciz "                               "
 #define combatants_first_row 2
 
 initiative_header: .asciz "Initiative:"
@@ -126,6 +123,27 @@ get_character_from_enemy_list:
     ld a, pl_data_size
     ld hl, (enemy_party_location)
     call get_array_item
+    ret
+
+get_character_in_turn:
+    ld hl, initiative_order
+    ld a, (player_turn_index)
+    ld b, 2
+    call get_array_item
+    inc hl
+    ld a, (hl)
+
+    call get_character_at_index_a
+    ret
+
+; Returns nonzero in A if the player party is alive, Zero if all dead
+is_player_party_dead:
+    ld a, 1
+    ret
+
+; Returns nonzero in A if the enemy party is alive, Zero if all dead
+is_enemy_party_dead:
+    ld a, 1
     ret
 
 call_hl:
