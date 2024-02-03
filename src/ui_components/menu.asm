@@ -41,11 +41,20 @@ list_loop:
 
     ld hl, (menu_address_counter)
     inc hl ; skip value
-    inc hl ; skip flags
+
+    ; IMPROVE: For now, just skip printing if it's disabled and disallow selection
+    ld a, (hl)
+    ld c, $01
+    and a, c
+    cp a, 0
+    jp z, list_loop_continue
+
+    inc hl ; pass flags
     ld de, (hl)
     ld hl, de
     call print_string
 
+list_loop_continue:
     ; move up to next option
     ld hl, (menu_address_counter)
     inc hl
@@ -119,6 +128,13 @@ seek_loop:
 
 found_index:
     ld a, (hl)
+    ld b, a
+    inc hl ; check flags
+    ld a, (hl)
+    ld c, $01
+    and a, c
+    jp z, screen_loop
+    ld a, b
     ret
 
 draw_arrow:
