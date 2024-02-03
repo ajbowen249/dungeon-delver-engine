@@ -1,7 +1,9 @@
 # Dungeon Delver Engine
 
+_All screens extremely WIP_
 ![demo](/gh_media/exploration_demo.gif)
 ![demo](/gh_media/roll_abilities_demo.gif)
+![demo](/gh_media/battle_demo.gif)
 
 This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizards.com/resources/systems-reference-document) for the [Tandy TRS-80 Model 100](https://en.wikipedia.org/wiki/TRS-80_Model_100).
 
