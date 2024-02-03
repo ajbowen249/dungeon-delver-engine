@@ -27,6 +27,7 @@
 #define ch_up_down_arrows $92
 #define ch_stick_person_1 $93
 #define ch_stick_person_2 $94
+#define ch_diamond $9D
 
 ; analogous mappings
 #charset map "┌" = $F0
