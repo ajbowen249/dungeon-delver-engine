@@ -7,9 +7,9 @@ party_size_ui::
     call init_screen
 
     ld a, 4
-    ld hl, en_count_selection
+    ld hl, opt_count_selection
     LOAD_ENUM_MENU_DEFAULT_COORDS
-    call enum_menu_ui
+    call menu_ui
     ret
 
 init_screen:

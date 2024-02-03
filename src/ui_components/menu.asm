@@ -19,7 +19,7 @@ menu_row: .db 0
 ; Menu options are defined as a single byte value followed by the two-byte address of a string.
 ; This is the same format as enums in "enums.asm"
 ; Destroys all registers
-enum_menu_ui::
+menu_ui::
     ld (menu_address), hl
     ld (menu_address_counter), hl
     ld (option_count), a
@@ -145,5 +145,27 @@ clear_arrow:
     ld a, " "
     call rom_print_a
 
+    ret
+.endlocal
+
+; Helpers for other things using menu options
+.local
+; Sets the address of the label portion of the enum in HL with the value in A to BC
+get_option_label::
+    ld b, a
+
+search:
+    ld a, (hl)
+
+    cp a, b
+    jp z, found
+    inc hl
+    inc hl
+    inc hl
+    jp search
+
+found:
+    inc hl
+    ld bc, hl
     ret
 .endlocal

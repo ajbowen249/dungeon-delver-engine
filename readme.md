@@ -65,11 +65,11 @@ The user interface is divided into three levels:
 - **UIs** - Specific, modal screens that get data and may or may not extend a component
 - **Wizards** - Multi-step processes that show multiple modal UIs in sequence
 
-Note that a "Component" in this context is a configurable singular UI (for example, `enum_menu` allows selection from a list of options all shown on one screen), rather than a sub-screen element that would share the screen with other components.
+Note that a "Component" in this context is a configurable singular UI (for example, `menu` allows selection from a list of options all shown on one screen), rather than a sub-screen element that would share the screen with other components.
 
 All three levels are implemented as subroutines with the same calling convention as the Model 100 ROM routines, where arguments and return values (or pointers thereto) are passed in registers. For example, the Character Wizard accepts a pointer to character data that will be filled in completely by the time it exits. The individual screens' function interfaces each set up their data by exit, too, which is wrangled into place by the Wizard between steps. Further down, each screen of that UI may or may not defer some of its work to a common Component.
 
-Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call. Also of note is that _all screens are currently static_, rather than using stack space for their local data. This may change eventually, but, for now, as a general rule, UI pages _should not nest calls to one another_. It should technically be fine for unrelated screens to nest calls, but a screen can't, for example, use an `enum_menu` and nest a call to another screen that uses an `enum_menu`, since the second would overwrite the first's workspace.
+Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call. Also of note is that _all screens are currently static_, rather than using stack space for their local data. This may change eventually, but, for now, as a general rule, UI pages _should not nest calls to one another_. It should technically be fine for unrelated screens to nest calls, but a screen can't, for example, use a `menu` and nest a call to another screen that uses a `menu`, since the second would overwrite the first's workspace.
 
 ### Unit Tests
 Tests are located in `entry_points/tests.asm`, and are compiled and run automatically by `zasm`. They can be run individually with `make test`.

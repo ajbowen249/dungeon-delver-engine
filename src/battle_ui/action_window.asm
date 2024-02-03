@@ -21,8 +21,8 @@ execute_player_turn:
     ld b, action_menu_column
     ld c, 2
     ld a, 1
-    ld hl, en_bm_root
-    call enum_menu_ui
+    ld hl, opt_bm_root
+    call menu_ui
 
     ret
 

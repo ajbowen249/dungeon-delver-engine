@@ -5,7 +5,7 @@
 #include "util.asm"
 #include "array_util.asm"
 #include "constants.asm"
-#include "enums.asm"
+#include "common_options.asm"
 #include "rom_api.asm"
 #include "random.asm"
 #include "dice.asm"

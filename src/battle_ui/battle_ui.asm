@@ -8,7 +8,7 @@
 ; HL should contain a pointer to an array of player data for the controlled party, and A the size of the party
 ; BC should contain a pointer to an array of player data for the enemy party, and D the number of enemies
 ; Both groups are capped at 4, for now.
-; This UI is sort of a UI/Wizard hybred in that it has custom controls sometimes, but relies heavily on enum_menu.
+; This UI is sort of a UI/Wizard hybred in that it has custom controls sometimes, but relies heavily on menu.
 ; To that end, it breaks the UI not calling UI rule, but is safe in doing so since it's not recursive.
 battle_ui::
     ld (party_location), hl

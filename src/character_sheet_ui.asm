@@ -82,8 +82,8 @@ stats_loop:
     add hl, bc
 
     ld a, (hl)
-    ld hl, en_race
-    call get_enum_label
+    ld hl, opt_race
+    call get_option_label
 
     ld hl, bc
     ld bc, (hl)
@@ -100,8 +100,8 @@ stats_loop:
     add hl, bc
 
     ld a, (hl)
-    ld hl, en_class
-    call get_enum_label
+    ld hl, opt_class
+    call get_option_label
 
     ld hl, bc
     ld bc, (hl)
