@@ -41,12 +41,14 @@ list_loop:
 
     ld hl, (menu_address_counter)
     inc hl ; skip value
+    inc hl ; skip flags
     ld de, (hl)
     ld hl, de
     call print_string
 
     ; move up to next option
     ld hl, (menu_address_counter)
+    inc hl
     inc hl
     inc hl
     inc hl
@@ -111,6 +113,7 @@ seek_loop:
     inc hl ; skip past all three values.
     inc hl
     inc hl
+    inc hl
     dec a
     jp seek_loop
 
@@ -162,9 +165,11 @@ search:
     inc hl
     inc hl
     inc hl
+    inc hl
     jp search
 
 found:
+    inc hl
     inc hl
     ld bc, hl
     ret
