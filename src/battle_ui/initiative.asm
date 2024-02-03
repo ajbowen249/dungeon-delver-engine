@@ -48,8 +48,11 @@ initialize_combatants_foreach_callback:
     ld c, 20 ; TODO: Get from class+level
     ld (hl), bc
 
-    cp a, 0
-    jp nz, init_enemy_combatant
+    ld b, a
+    ld a, (party_size)
+    dec a
+    cp a, b
+    jp m, init_enemy_combatant
 
     ld hl, (foreach_combat_address)
     ld b, 0

@@ -136,6 +136,41 @@ get_character_in_turn:
     call get_character_at_index_a
     ret
 
+get_combatant_at_index_a:
+    ld b, a
+    ld a, (party_size)
+    dec a
+
+    cp a, b
+    jp m, get_combatant_from_enemy_list
+
+    ld a, cbt_data_length
+    ld hl, (party_combatants)
+    call get_array_item
+    ret
+get_combatant_from_enemy_list:
+    ld a, (party_size)
+    ld c, a
+    ld a, b
+    sub a, c
+
+    ld b, a
+    ld a, cbt_data_length
+    ld hl, (enemy_combatants)
+    call get_array_item
+    ret
+
+get_combatant_in_turn:
+    ld hl, initiative_order
+    ld a, (player_turn_index)
+    ld b, 2
+    call get_array_item
+    inc hl
+    ld a, (hl)
+
+    call get_combatant_at_index_a
+    ret
+
 ; Returns nonzero in A if the player party is alive, Zero if all dead
 is_player_party_dead:
     ld a, 1
