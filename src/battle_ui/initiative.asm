@@ -1,3 +1,4 @@
+initiative_header: .asciz "Initiative:"
 
 initialize_index: .db 0
 initialize_combatants:

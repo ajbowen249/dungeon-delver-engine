@@ -1,7 +1,5 @@
 #define combatants_first_row 2
 
-initiative_header: .asciz "Initiative:"
-
 screen_data: .dw 0
 
 should_exit: .db 0
@@ -101,6 +99,15 @@ for_each_&LABEL_combatant:
 
     ret
 
+get_index_of_player_in_turn:
+    ld hl, initiative_order
+    ld a, (player_turn_index)
+    ld b, 2
+    call get_array_item
+    inc hl
+    ld a, (hl)
+    ret
+
 get_character_at_index_a:
     ld b, a
     ld a, (party_size)
@@ -126,13 +133,7 @@ get_character_from_enemy_list:
     ret
 
 get_character_in_turn:
-    ld hl, initiative_order
-    ld a, (player_turn_index)
-    ld b, 2
-    call get_array_item
-    inc hl
-    ld a, (hl)
-
+    call get_index_of_player_in_turn
     call get_character_at_index_a
     ret
 
@@ -145,7 +146,7 @@ get_combatant_at_index_a:
     jp m, get_combatant_from_enemy_list
 
     ld a, cbt_data_length
-    ld hl, (party_combatants)
+    ld hl, party_combatants
     call get_array_item
     ret
 get_combatant_from_enemy_list:
@@ -156,18 +157,12 @@ get_combatant_from_enemy_list:
 
     ld b, a
     ld a, cbt_data_length
-    ld hl, (enemy_combatants)
+    ld hl, enemy_combatants
     call get_array_item
     ret
 
 get_combatant_in_turn:
-    ld hl, initiative_order
-    ld a, (player_turn_index)
-    ld b, 2
-    call get_array_item
-    inc hl
-    ld a, (hl)
-
+    call get_index_of_player_in_turn
     call get_combatant_at_index_a
     ret
 

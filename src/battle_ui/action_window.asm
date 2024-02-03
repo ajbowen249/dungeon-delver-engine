@@ -101,7 +101,6 @@ set_flag:
     or a, b
 
 handle_move_done:
-    ld a, $02
     ld (hl), a
     call draw_combatants
 

@@ -145,3 +145,7 @@
 ; start everyone in the back for now.
 #define cbt_initial_party_flags $06
 #define cbt_initial_enemy_flags $07
+
+#define cbt_flag_line $04
+#define cbt_flag_alive $02
+#define cbt_flag_faction $01

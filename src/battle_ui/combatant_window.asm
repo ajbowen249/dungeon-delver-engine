@@ -1,63 +1,86 @@
 
 ; combat_row_buffer: .asciz "      "
 combat_string_buffer: .asciz "   "
+#define enemy_screen_column 1
+#define party_screen_column 4
+#define combat_start_row 1
+#define back_index 1
+#define enemy_front_index 2
+#define party_front_index 0
 
+combat_draw_player_index: .db 0
 draw_combatants:
-    call draw_party_combatants
-    call draw_enemy_combatants
-    ret
-
-.macro DRAW_COMBATANTS_SIDE &SIDE, &SIZE_FIELD, &BLANK_INDEX, &FRONT_INDEX, &BACK_INDEX, &COLUMN
-
-draw_&SIDE_combatants:
     ld a, 0
-    ld (general_counter), a
+    ld (combat_draw_player_index), a
 
-draw_&SIDE_combatants_loop:
+draw_combatants_loop:
+    ; clear the buffer
     ld a, " "
-    ld (combat_string_buffer + &BLANK_INDEX), a
+    ld (combat_string_buffer + 0), a
+    ld (combat_string_buffer + 1), a
+    ld (combat_string_buffer + 2), a
 
-    ld hl, &SIDE_combatants
-    ld b, cbt_data_length
-    ld a, (general_counter)
-    call get_array_item
+    ; read flags
+    ld a, (combat_draw_player_index)
+    call get_combatant_at_index_a
     ld b, 0
     ld c, cbt_offs_flags
     add hl, bc
-
     ld a, (hl)
-    ld b, $04
+    ld c, a
+
+    ld b, cbt_flag_line
     and a, b
-    jp z, draw_&SIDE_front
+    jp z, draw_combatant_front
+    ; back is same index on either side
     ld a, ch_stick_person_1
-    ld (combat_string_buffer + &BACK_INDEX), a
-    jp draw_&SIDE_continue
+    ld (combat_string_buffer + back_index), a
+    jp draw_combatants_loop_continue
 
-draw_&SIDE_front:
+draw_combatant_front:
+    ld a, c
+    ld b, cbt_flag_faction
+    and a, b
+    jp nz, draw_combatant_front_enemy
     ld a, ch_stick_person_1
-    ld (combat_string_buffer + &FRONT_INDEX), a
-draw_&SIDE_continue:
+    ld (combat_string_buffer + party_front_index), a
+    jp draw_combatants_loop_continue
 
-    ld a, (general_counter)
-    inc a
-    inc a
+draw_combatant_front_enemy:
+    ld a, ch_stick_person_1
+    ld (combat_string_buffer + enemy_front_index), a
+
+draw_combatants_loop_continue:
+    ld a, (combat_draw_player_index)
+    ld b, combat_start_row
+    add a, b
     ld l, a
-    ld h, &COLUMN
+
+    ld a, c
+    ld b, cbt_flag_faction
+    and a, b
+    jp nz, draw_combatant_enemy_column
+    ld h, party_screen_column
+    jp draw_combatants_loop_print
+
+draw_combatant_enemy_column:
+    ld h, enemy_screen_column
+    ld a, l
+    ld b, 4
+    sub a, b
+    ld l, a
+
+draw_combatants_loop_print:
     call rom_set_cursor
     ld hl, combat_string_buffer
     call print_string
 
-    ld a, (general_counter)
+    ld a, (combat_draw_player_index)
     inc a
-    ld (general_counter), a
+    ld (combat_draw_player_index), a
     ld b, a
-    ld a, (&SIZE_FIELD)
+    ld a, (total_number_of_combatants)
     cp a, b
-    jp nz, draw_&SIDE_combatants_loop
+    jp nz, draw_combatants_loop
 
     ret
-
-.endm
-
-    DRAW_COMBATANTS_SIDE party, party_size, 2, 0, 1, 4
-    DRAW_COMBATANTS_SIDE enemy, enemy_party_size, 0, 2, 1, 1
