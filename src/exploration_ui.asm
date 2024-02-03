@@ -42,65 +42,19 @@ exploration_ui::
     ld (should_exit), a
 
     call init_screen
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm
 
 read_loop:
-    ld a, (should_exit)
-    cp a, 0
-    jp z, keep_reading
-
-    ret
-
-keep_reading:
-    call rom_kyread
-    jp z, read_loop
-
-    ld b, a
     ld a, 0
     ld (position_changed), a
     ld (auto_interact), a
-    ld a, b
 
-    ON_KEY_JUMP ch_down_arrow, on_down_arrow
-    ON_KEY_JUMP ch_s, on_down_arrow
-    ON_KEY_JUMP ch_S, on_down_arrow
+    ld a, (should_exit)
+    cp a, 0
+    jp nz, exit_exploration
 
-    ON_KEY_JUMP ch_up_arrow, on_up_arrow
-    ON_KEY_JUMP ch_w, on_up_arrow
-    ON_KEY_JUMP ch_W, on_up_arrow
+    call iterate_input_table
 
-    ON_KEY_JUMP ch_left_arrow, on_left_arrow
-    ON_KEY_JUMP ch_a, on_left_arrow
-    ON_KEY_JUMP ch_A, on_left_arrow
-
-    ON_KEY_JUMP ch_right_arrow, on_right_arrow
-    ON_KEY_JUMP ch_d, on_right_arrow
-    ON_KEY_JUMP ch_D, on_right_arrow
-
-    ON_KEY_JUMP ch_enter, on_press_enter
-
-on_down_arrow:
-    call handle_down_arrow
-    jp read_loop_continue
-on_up_arrow:
-    call handle_up_arrow
-    jp read_loop_continue
-on_left_arrow:
-    call handle_left_arrow
-    jp read_loop_continue
-on_right_arrow:
-    call handle_right_arrow
-    jp read_loop_continue
-
-on_press_enter:
-    ld a, (near_interactable)
-    cp a, 255
-    jp z, read_loop_continue
-
-    call on_interact
-
-    jp read_loop_continue
-
-read_loop_continue:
     ld a, (position_changed)
     cp a, 0
     call nz, on_position_changed
@@ -111,6 +65,7 @@ read_loop_continue:
 
     jp read_loop
 
+exit_exploration:
     ret
 
 init_screen:
@@ -178,17 +133,23 @@ exit_exploration_ui_movement_{exploration_ui_movement_count}:
 exploration_ui_movement_count = exploration_ui_movement_count + 1
 .endm
 
-handle_down_arrow:
+on_down_arrow:
     EXPLORATION_UI_MOVEMENT inc, l, avatar_y
 
-handle_up_arrow:
+on_up_arrow:
     EXPLORATION_UI_MOVEMENT dec, l, avatar_y
 
-handle_left_arrow:
+on_left_arrow:
     EXPLORATION_UI_MOVEMENT dec, h, avatar_x
 
-handle_right_arrow:
+on_right_arrow:
     EXPLORATION_UI_MOVEMENT inc, h, avatar_x
+
+on_confirm:
+    ld a, (near_interactable)
+    cp a, 255
+    call nz, on_interact
+    ret
 
 draw_background:
     ld hl, (screen_data)
