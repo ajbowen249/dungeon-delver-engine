@@ -10,6 +10,9 @@ selected_combatant_location: .dw 0
 #define enemy_inspect_column 1
 
 .local
+lvl_string: .asciz " lvl "
+hp_string: .asciz "HP: "
+ac_string: .asciz "AC: "
 
 should_exit_iui: .db 0
 
@@ -17,7 +20,6 @@ inspect_ui::
     call clear_action_window
 
     ld a, 0
-    ld (last_inspected_index), a
     ld (should_exit_iui), a
 
     call on_selection_changed
@@ -49,8 +51,6 @@ on_up_arrow:
     ld a, (last_inspected_index)
     cp a, 0
     jp z, on_up_arrow_end
-
-
 
     call clear_diamond
 
@@ -124,8 +124,74 @@ clear_diamond:
 on_selection_changed:
     call load_player_from_index
     call position_inspect_cursor_location
+
     ld a, ch_diamond
     call rom_print_a
+
+    PRINT_AT_LOCATION 2, action_menu_column, blank_menu_string
+
+    ld l, 2
+    ld h, action_menu_column
+    call rom_set_cursor
+
+    ld hl, (selected_character_location)
+    ld bc, pl_offs_name
+    add hl, bc
+    call print_string
+
+    ld hl, lvl_string
+    call print_string
+
+    ld hl, (selected_character_location)
+    ld bc, pl_offs_level
+    add hl, bc
+    ld a, (hl)
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld a, " "
+    call rom_print_a
+
+    ld hl, (selected_character_location)
+    ld bc, pl_offs_class
+    add hl, bc
+
+    ld a, (hl)
+    ld hl, opt_class
+    call get_option_label
+
+    ld hl, bc
+    ld bc, (hl)
+    ld hl, bc
+    call print_string
+
+    ld l, 3
+    ld h, action_menu_column
+    call rom_set_cursor
+
+    ld hl, hp_string
+    call print_string
+
+    ld hl, (selected_combatant_location)
+    ld bc, cbt_offst_hit_points
+    add hl, bc
+    ld bc, (hl)
+    ld de, bc
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld l, 4
+    ld h, action_menu_column
+    call rom_set_cursor
+
+    ld hl, ac_string
+    call print_string
+
+
 
     ret
 .endlocal

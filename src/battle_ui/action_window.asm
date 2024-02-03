@@ -2,6 +2,7 @@
 
 #define action_menu_column 8
 blank_menu_string: .asciz "                               "
+turn_header: .asciz "'s turn"
 
 should_end_turn: .db 0
 current_menu_address: .dw 0
@@ -51,6 +52,9 @@ show_selected_menu:
     ld b, 0
     ld c, pl_offs_name
     add hl, bc
+    call print_string
+
+    ld hl, turn_header
     call print_string
 
     ld b, action_menu_column
@@ -112,5 +116,7 @@ handle_move_done:
     ret
 
 handle_inspect:
+    call get_index_of_player_in_turn
+    ld (last_inspected_index), a
     call inspect_ui
     ret
