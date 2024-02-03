@@ -417,7 +417,7 @@ on_position_changed_found_interactable:
     add hl, bc
     ld bc, (hl)
     ld hl, bc
-    call call_indirect_func
+    call call_hl
 
     ld bc, hl
 
@@ -438,17 +438,11 @@ on_interact:
     ld hl, bc
 
     ld a, (near_interactable)
-    call call_indirect_func
+    call call_hl
 
     ; a has our exit flag now
     ld (should_exit), a
 
-    ret
-
-; Z80 doesn't have indirect call, but if we "call" down to this label, it will set up the stack with the right
-; return value, and then jumping indirect to our address calls into the function, which will ret like normal.
-call_indirect_func:
-    jp hl
     ret
 
 clear_message_area:

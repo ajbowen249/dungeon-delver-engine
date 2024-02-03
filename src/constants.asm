@@ -149,3 +149,8 @@
 #define cbt_flag_line $04
 #define cbt_flag_alive $02
 #define cbt_flag_faction $01
+
+#define mi_offs_value 0
+#define mi_offs_flags mi_offs_value + 1
+#define mi_offs_label mi_offs_flags + 1 ; 2 bytes
+#define mi_data_size mi_offs_label + 2

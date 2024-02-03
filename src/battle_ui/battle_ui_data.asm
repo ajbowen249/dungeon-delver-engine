@@ -176,6 +176,3 @@ is_enemy_party_dead:
     ld a, 1
     ret
 
-call_hl:
-    jp hl
-    ret

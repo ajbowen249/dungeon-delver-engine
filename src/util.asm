@@ -38,3 +38,9 @@
 &LABEL_row: .db &ROW
 &LABEL_col: .db &COL
 .endm
+
+; Z80 doesn't have indirect call, but if we "call" down to this label, it will set up the stack with the right
+; return value, and then jumping indirect to our address calls into the function, which will ret like normal.
+call_hl:
+    jp hl
+    ret

@@ -8,6 +8,8 @@
 menu_address: .dw 0
 option_count: .db 0
 selected_index: .db 0
+should_exit: .db 0
+selected_value: .db 0
 
 menu_address_counter: .dw 0
 menu_column: .db 0
@@ -70,33 +72,35 @@ list_loop_continue:
 
     ld a, 0
     ld (selected_index), a
+    ld (should_exit), a
+    ld (selected_value), a
 
-screen_loop:
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, 0, 0, on_confirm
+
     call draw_arrow
 read_loop:
-    call rom_kyread
+    call iterate_input_table
+
+    ld a, (should_exit)
+    cp a, 0
     jp z, read_loop
 
-    ON_KEY_JUMP ch_down_arrow, on_down_arrow
-    ON_KEY_JUMP ch_s, on_down_arrow
-    ON_KEY_JUMP ch_S, on_down_arrow
+    ld a, (selected_value)
+    ret
 
-    ON_KEY_JUMP ch_up_arrow, on_up_arrow
-    ON_KEY_JUMP ch_w, on_up_arrow
-    ON_KEY_JUMP ch_W, on_up_arrow
-
-    ON_KEY_JUMP ch_enter, on_enter
 
 .macro ENUM_MENU_ARROW_UP_DOWN &LIMIT, &INC_OR_DEC
     cp a, &LIMIT
-    jp z, screen_loop
+    jp z, arrow_&INC_OR_DEC_exit
 
     call clear_arrow
     ld a, (selected_index)
     &INC_OR_DEC a
     ld (selected_index), a
+    call draw_arrow
 
-    jp screen_loop
+arrow_&INC_OR_DEC_exit:
+    ret
 .endm
 
 on_down_arrow:
@@ -111,30 +115,29 @@ on_up_arrow:
     ld a, (selected_index)
     ENUM_MENU_ARROW_UP_DOWN 0, dec
 
-on_enter:
-    ; find the value of our selected choice
+on_confirm:
     ld hl, (menu_address)
     ld a, (selected_index)
+    ld b, mi_data_size
+    call get_array_item
+    ld de, hl
 
-seek_loop:
-    cp a, 0
-    jp z, found_index
-    inc hl ; skip past all three values.
-    inc hl
-    inc hl
-    inc hl
-    dec a
-    jp seek_loop
+    ld b, 0
+    ld c, mi_offs_flags
+    add hl, bc
+    ld a, (hl)
+    ld b, $01
+    and a, b
+    jp z, on_confirm_exit
 
-found_index:
+    ld hl, de
     ld a, (hl)
-    ld b, a
-    inc hl ; check flags
-    ld a, (hl)
-    ld c, $01
-    and a, c
-    jp z, screen_loop
-    ld a, b
+    ld (selected_value), a
+
+    ld a, 1
+    ld (should_exit), a
+
+on_confirm_exit:
     ret
 
 draw_arrow:
