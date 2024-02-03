@@ -8,6 +8,7 @@ select_class_ui::
 
     ld a, 4
     ld hl, en_class
+    LOAD_ENUM_MENU_DEFAULT_COORDS
     call enum_menu_ui
     ret
 

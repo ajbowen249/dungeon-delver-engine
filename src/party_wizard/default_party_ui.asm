@@ -8,6 +8,7 @@ default_party_ui::
 
     ld a, 2
     ld hl, en_yes_no
+    LOAD_ENUM_MENU_DEFAULT_COORDS
     call enum_menu_ui
     ret
 

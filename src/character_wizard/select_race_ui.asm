@@ -8,6 +8,7 @@ select_race_ui::
 
     ld a, 4
     ld hl, en_race
+    LOAD_ENUM_MENU_DEFAULT_COORDS
     call enum_menu_ui
     ret
 

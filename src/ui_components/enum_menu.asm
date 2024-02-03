@@ -1,11 +1,21 @@
+; loads BC to set the enum menu at column 2, row 2
+.macro LOAD_ENUM_MENU_DEFAULT_COORDS
+    ld bc, $0202
+.endm
+
+
 .local
 menu_address: .dw 0
 option_count: .db 0
 selected_index: .db 0
 
 menu_address_counter: .dw 0
+menu_column: .db 0
+menu_row: .db 0
 
 ; Displays a simple menu with data starting at HL of option length A and stores the selected value in A.
+; The menu is rendered starting at column, row BC. The column is the column where the arrow is drawn, and the text is
+; one column to the right of that.
 ; Menu options are defined as a single byte value followed by the two-byte address of a string.
 ; This is the same format as enums in "enums.asm"
 ; Destroys all registers
@@ -13,14 +23,19 @@ enum_menu_ui::
     ld (menu_address), hl
     ld (menu_address_counter), hl
     ld (option_count), a
+    ld a, b
+    ld (menu_column), a
+    ld a, c
+    ld (menu_row), a
 
     ld b, 0
 
 list_loop:
-    ; set cursor to row b+2, column 3
-    ld h, 3
-    ld a, b
-    add a, 2
+    ld a, (menu_column)
+    ld h, a
+    inc h ; one column to the right of the arrow
+    ld a, (menu_row)
+    add a, b
     ld l, a
     call rom_set_cursor
 
@@ -105,9 +120,12 @@ found_index:
 
 draw_arrow:
     ld a, (selected_index)
-    add 2
+    ld b, a
+    ld a, (menu_row)
+    add a, b
     ld l, a
-    ld h, 2
+    ld a, (menu_column)
+    ld h, a
     call rom_set_cursor
 
     ld a, ch_printable_arrow_right
@@ -116,9 +134,12 @@ draw_arrow:
 
 clear_arrow:
     ld a, (selected_index)
-    add 2
+    ld b, a
+    ld a, (menu_row)
+    add a, b
     ld l, a
-    ld h, 2
+    ld a, (menu_column)
+    ld h, a
     call rom_set_cursor
 
     ld a, " "

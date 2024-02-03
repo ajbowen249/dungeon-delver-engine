@@ -59,6 +59,9 @@ initiative_sort_space:
 
 total_number_of_combatants: .db 0
 
+player_turn_index: .db 0
+
+
 ; Displays the combat screen until the encounter is resolved
 ; HL should contain a pointer to an array of player data for the controlled party, and A the size of the party
 ; BC should contain a pointer to an array of player data for the enemy party, and D the number of enemies
