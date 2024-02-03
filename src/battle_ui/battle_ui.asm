@@ -2,6 +2,7 @@
 #include "./battle_ui_data.asm"
 #include "./initiative.asm"
 #include "./combatant_window.asm"
+#include "./inspect_ui.asm"
 #include "./action_window.asm"
 
 ; Displays the combat screen until the encounter is resolved

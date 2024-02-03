@@ -20,7 +20,7 @@ execute_player_turn:
     ld (current_menu_address), hl
 
 menu_loop:
-    call clear_menu_area
+    call clear_action_window
     call show_selected_menu
     call process_option
 
@@ -30,7 +30,7 @@ menu_loop:
 
     ret
 
-clear_menu_area:
+clear_action_window:
     PRINT_AT_LOCATION 1, action_menu_column, blank_menu_string
     PRINT_AT_LOCATION 2, action_menu_column, blank_menu_string
     PRINT_AT_LOCATION 3, action_menu_column, blank_menu_string
@@ -68,6 +68,11 @@ process_option:
     ld b, bm_option_move_value
     cp a, b
     jp z, handle_move
+
+    ld b, bm_option_inspect_value
+    cp a, b
+    jp z, handle_inspect
+
     ret
 
 handle_end_turn:
@@ -104,4 +109,8 @@ handle_move_done:
     ld (hl), a
     call draw_combatants
 
+    ret
+
+handle_inspect:
+    call inspect_ui
     ret
