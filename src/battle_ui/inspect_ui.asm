@@ -191,7 +191,15 @@ on_selection_changed:
     ld hl, ac_string
     call print_string
 
-
+    ld hl, (selected_combatant_location)
+    ld bc, cbt_offs_armor_class
+    add hl, bc
+    ld a, (hl)
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
 
     ret
 .endlocal

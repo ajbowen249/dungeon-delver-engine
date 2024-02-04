@@ -12,8 +12,9 @@ enemy_party_size: .db 0
 
 .macro ALLOCATE_COMBATANT &LABEL
 &LABEL:
-&LABEL_initiative: .db 0
 &LABEL_flags: .db 0
+&LABEL_initiative: .db 0
+&LABEL_armor_class: .db 0
 &LABEL_hit_points: .dw 0
 .endm
 

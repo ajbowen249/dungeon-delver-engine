@@ -140,7 +140,8 @@
 ; 1: 0: dead, 1: alive (1 here with 0 HP is "down")
 ; 0: faction (0: party, 1: enemy)
 #define cbt_offs_initiative cbt_offs_flags + 1
-#define cbt_offst_hit_points cbt_offs_initiative + 1 ; 2 bytes!
+#define cbt_offs_armor_class cbt_offs_initiative + 1
+#define cbt_offst_hit_points cbt_offs_armor_class + 1 ; 2 bytes!
 #define cbt_data_length cbt_offst_hit_points + 2
 
 ; start everyone in the back for now.
