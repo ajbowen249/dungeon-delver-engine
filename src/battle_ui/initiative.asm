@@ -1,9 +1,6 @@
 initiative_header: .asciz "Initiative:"
 
-initialize_index: .db 0
 initialize_combatants:
-    ld a, 0
-    ld (initialize_index), a
     ld hl, initialize_combatants_foreach_callback
     call for_each_combatant
 
@@ -30,7 +27,7 @@ initialize_combatants_foreach_callback:
     ld (hl), a
 
     ; save initiative for future sort
-    ld a, (initialize_index)
+    ld a, (for_each_combatant_index)
     ld b, 2
     ld hl, initiative_order
     call get_array_item
@@ -38,7 +35,7 @@ initialize_combatants_foreach_callback:
     ld a, (initiative_result)
     ld (hl), a
     inc hl
-    ld a, (initialize_index)
+    ld a, (for_each_combatant_index)
     ld (hl), a
 
     ld hl, (foreach_combat_address)
@@ -72,9 +69,6 @@ init_enemy_combatant:
     ld (hl), a
 
 initialize_combatants_foreach_callback_done:
-    ld a, (initialize_index)
-    inc a
-    ld (initialize_index), a
     ret
 
 
