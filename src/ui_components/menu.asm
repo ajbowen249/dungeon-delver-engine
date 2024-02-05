@@ -1,3 +1,5 @@
+#include "./consolidate_menu.asm"
+
 ; loads BC to set the enum menu at column 2, row 2
 .macro LOAD_ENUM_MENU_DEFAULT_COORDS
     ld bc, $0202

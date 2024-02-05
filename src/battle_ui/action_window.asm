@@ -73,9 +73,17 @@ show_selected_menu:
 
     ld b, action_menu_column
     ld c, 2
+
     ld a, opt_bm_root_option_count
     ld hl, opt_bm_root
+    ld bc, consolidated_battle_menu
+
+    call consolidate_menu_hl_bc
+    ld b, action_menu_column
+    ld c, 2
+    ld hl, consolidated_battle_menu
     call menu_ui
+
     ret
 
 process_option:
