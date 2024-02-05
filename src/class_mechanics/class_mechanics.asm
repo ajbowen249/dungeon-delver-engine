@@ -63,3 +63,56 @@ roll_&ABILITY_check::
     ABILITY_CHECK_SUBROUTINE charisma
 
 .endlocal
+
+.local
+class_functions:
+.dw get_fighter_ac
+.dw get_wizard_ac
+.dw get_cleric_ac
+.dw get_barbarian_ac
+
+resolving_character: .dw 0
+get_character_armor_class::
+    ld (resolving_character), hl
+    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+
+    ld b, 2
+    ld hl, class_functions
+    call get_array_item
+    ld bc, (hl)
+    ld hl, bc
+
+    call call_hl
+
+    ret
+
+get_fighter_ac:
+    ld a, 15; Ring Mail + Fighting Style: Defense
+    ret
+
+get_wizard_ac:
+    ld hl, (resolving_character)
+    call get_character_dexterity
+    add a, 10
+    ret
+
+get_cleric_ac:
+    ld hl, (resolving_character)
+    call get_character_dexterity
+    cp a, 2 ; Medium armor, max 2 bonus
+    jp z, cleric_apply_medium_armor
+    jp m, cleric_apply_medium_armor
+    ld a, 2
+
+cleric_apply_medium_armor:
+    ld b, a
+    ld a, 14; Scale Mail
+    add a, b
+    ret
+
+get_barbarian_ac:
+    ld hl, (resolving_character)
+    call get_character_dexterity
+    add a, 11 ; Leather Armor
+    ret
+.endlocal
