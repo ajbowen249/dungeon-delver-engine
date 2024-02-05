@@ -48,6 +48,13 @@ copy_test_dst:
 .db 0
 .db 0
 
+    DEFINE_PLAYER test_character1, 15, 8, 5, 5, 4, 8, race_human, class_barbarian, 1, "Fronk"
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+
 rom_file_end:
 
 #target ram
@@ -176,10 +183,52 @@ array_tests:
     call test_sort
     ret
 
+test_class_mechanics:
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 17
+    ld a, 2
+    ld (test_character1 + pl_offs_level), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 29
+    ld a, 3
+    ld (test_character1 + pl_offs_level), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 41
+    ld a, 4
+    ld (test_character1 + pl_offs_level), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 53
+    ld a, 5
+    ld (test_character1 + pl_offs_level), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 65
+    ld a, class_wizard
+    ld (test_character1 + pl_offs_class), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 47
+    ld a, class_cleric
+    ld (test_character1 + pl_offs_class), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 53
+    ld a, class_fighter
+    ld (test_character1 + pl_offs_class), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 59
+    ret
+
 test_start:
     call math_tests
     call test_decimal
     call array_tests
+    call test_class_mechanics
     ret
 
 test_entry:

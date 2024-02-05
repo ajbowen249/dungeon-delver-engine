@@ -46,14 +46,19 @@ initialize_combatants_foreach_callback:
     ld b, 0
     ld c, cbt_offs_armor_class
     add hl, bc
-    ld a, d ; TODO: Get from class+level
+    ld a, d
     ld (hl), a
+
+    ld hl, (foreach_player_address)
+    call get_hit_points
+    ld d, a
 
     ld hl, (foreach_combat_address)
     ld b, 0
     ld c, cbt_offst_hit_points
     add hl, bc
-    ld bc, 20 ; TODO: Get from class+level
+    ld b, 0
+    ld c, d
     ld (hl), bc
 
     ld a, (for_each_combatant_index)

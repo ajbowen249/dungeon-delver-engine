@@ -55,11 +55,11 @@
 #define race_tiefling   7
 #define race_dragonborn 8
 
-; none yet implemented
 #define class_fighter   0
 #define class_wizard    1
 #define class_cleric    2
 #define class_barbarian 3
+; unimplemented below here
 #define class_artificer 4
 #define class_bard      5
 #define class_druid     6

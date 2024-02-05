@@ -115,4 +115,62 @@ get_barbarian_ac:
     call get_character_dexterity
     add a, 11 ; Leather Armor
     ret
+
+hit_dice_array:
+hit_dice_fighter: .db 10
+hit_dice_wizard: .db 6
+hit_dice_cleric: .db 8
+hit_dice_barbarian: .db 12
+
+; TODO: This can overflow at the moment on high enough levels! Needs 16-bit math!!!
+resolving_contitution: .db 0
+get_hit_points::
+    ld (resolving_character), hl
+    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    ld hl, hit_dice_array
+    ld b, 0
+    ld c, a
+    add hl, bc
+    ld a, (hl)
+    ld d, a ; d has hit dice
+
+    ld hl, (resolving_character)
+    LOAD_BASE_ATTR_FROM_HL pl_offs_con
+    ld (resolving_contitution), a
+
+    ld hl, (resolving_character)
+    LOAD_BASE_ATTR_FROM_HL pl_offs_level
+    ld e, a ; e has level
+    cp a, 1
+    jp nz, higher_level_hit_points
+
+    ld a, (resolving_contitution)
+    add a, d
+    ret
+
+higher_level_hit_points:
+    ld a, d
+    ; cut it in half and add 1
+    rra
+    and a, $7F
+    add a, 1
+
+    ; b = half_hit + con
+    ld b, a
+    ld a, (resolving_contitution)
+    add a, b
+    ld b, a
+
+    ; multiply by level-1
+    ld a, e
+    dec a
+    call mul_a_b
+
+    ; add original base
+    add a, d
+    ld b, a
+    ld a, (resolving_contitution)
+    add a, b
+
+    ret
 .endlocal
