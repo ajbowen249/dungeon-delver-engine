@@ -80,7 +80,7 @@ campaign_class_2_hit_die. db 0
 campaign_class_3_hit_die. db 0
 
 .local
-class_functions:
+ac_table:
 .dw get_fighter_ac
 .dw get_wizard_ac
 .dw get_cleric_ac
@@ -110,7 +110,7 @@ get_character_armor_class::
 
     ld a, b
     ld b, 2
-    ld hl, class_functions
+    ld hl, ac_table
     call get_array_item
     ld bc, (hl)
     ld hl, bc
@@ -143,6 +143,8 @@ get_cleric_ac:
 cleric_apply_medium_armor:
     ld b, a
     ld a, 14; Scale Mail
+    add a, b
+    ld b, 2 ; shield
     add a, b
     ret
 
@@ -248,5 +250,75 @@ monster_dice:
 roll_hit_dice::
     call get_hit_dice
     call roll_b_a
+    ret
+.endlocal
+
+.local
+damage_table:
+.dw get_fighter_damage
+.dw get_wizard_damage
+.dw get_cleric_damage
+.dw get_barbarian_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_placeholder_damage
+.dw get_m_badger_damage
+
+; returns pre-rolled or looked-up damage value in A
+get_damage_value::
+    ld (resolving_character), hl
+    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    ld b, 2
+    ld hl, damage_table
+    call get_array_item
+    ld bc, (hl)
+    ld hl, bc
+
+    call call_hl
+    ret
+
+get_fighter_damage:
+    ; whip
+    ld a, 4
+    call roll_a
+    ld a, l
+    ret
+
+get_wizard_damage:
+    ; quarterstaff
+    ld a, 6
+    call roll_a
+    ld a, l
+    ret
+
+get_cleric_damage:
+    ; mace
+    ld a, 6
+    call roll_a
+    ld a, l
+    ret
+
+get_barbarian_damage:
+    ; battleaxe
+    ld a, 8
+    call roll_a
+    ld a, l
+    ret
+
+get_placeholder_damage:
+    ld a, 0
+    ret
+
+get_m_badger_damage:
+    ld a, 1
     ret
 .endlocal

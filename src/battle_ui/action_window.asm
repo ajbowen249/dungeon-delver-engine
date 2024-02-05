@@ -5,6 +5,7 @@ blank_window_string: .asciz "                               "
 blank_message_row_string: .asciz "                                       "
 turn_header: .asciz "'s turn"
 hit_roll_str: .asciz "Attack Roll: "
+damage_roll_str: .asciz "Damage Roll: "
 critical_str: .asciz "Critical"
 hit_str: .asciz " Hit"
 miss_str: .asciz " Miss"
@@ -138,6 +139,7 @@ handle_inspect:
     ret
 
 hit_result: .db 0
+damage_result: .db 0
 handle_attack:
     ; TODO: Forbid attack if both players are in the back, and apply disadvantage if one is in the back.
     ld a, (party_size) ; start at first enemy
@@ -181,18 +183,35 @@ handle_attack:
     jp m, miss
     jp hit
 
-critical_hit:
-    ld hl, critical_str
-    call print_string
-hit:
-    ld hl, hit_str
-    call print_string
-    ret
-
 critical_miss:
     ld hl, critical_str
     call print_string
 miss:
     ld hl, miss_str
     call print_string
+    ret
+
+critical_hit:
+    ld hl, critical_str
+    call print_string
+hit:
+    ld hl, hit_str
+    call print_string
+
+    ld h, 1
+    ld l, 8
+    call rom_set_cursor
+
+    ld hl, damage_roll_str
+    call print_string
+
+    ld hl, (character_in_turn)
+    call get_damage_value
+    ld (damage_result), a
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
     ret
