@@ -11,12 +11,24 @@
     ret
 .endm
 
-.macro ADD_ROLLS &FIRST_ROLL, &SECOND_ROLL
-    call &FIRST_ROLL
-    ld b, l
-    call &SECOND_ROLL
+.macro ADD_MASK &MASK_1, &MASK_2
+    call random_16
+    ; mask down to the bits that cap to 0-(N-1)
+    ld a, h
+    and &MASK_1
+    ld h, a
+
+    ; mask down to the bits that cap to 0-(N-1)
     ld a, l
-    add b
+    and &MASK_2
+    ld l, a
+
+    ld a, h
+    add a, l
+    inc a ; this is 0-(N-1) now, so get up to 1-N
+
+    ld h, 0
+    ld l, a
     ret
 .endm
 
@@ -38,7 +50,7 @@ roll_d4::
 ; loads HL with a random number 1-8
 ; Uses a, b
 roll_d6::
-    ADD_ROLLS roll_d2, roll_d4
+    ADD_MASK $01, $03
 .endlocal
 
 .local
@@ -52,14 +64,14 @@ roll_d8::
 ; loads HL with a random number 1-10
 ; Uses bc
 roll_d10::
-    ADD_ROLLS roll_d2, roll_d8
+    ADD_MASK $01, $07
 .endlocal
 
 .local
 ; loads HL with a random number 1-12
 ; Uses bc
 roll_d12::
-    ADD_ROLLS roll_d4, roll_d8
+    ADD_MASK $03, $04
 .endlocal
 
 .local
@@ -73,7 +85,7 @@ roll_d16::
 ; loads HL with a random number 1-20
 ; Uses bc
 roll_d20::
-    ADD_ROLLS roll_d4, roll_d16
+    ADD_MASK $03, $0F
 .endlocal
 
 .local
