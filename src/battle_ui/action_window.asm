@@ -1,11 +1,14 @@
 #include "./battle_menu_options.asm"
 
 #define action_menu_column 8
-blank_menu_string: .asciz "                               "
+blank_window_string: .asciz "                               "
+blank_message_row_string: .asciz "                                       "
 turn_header: .asciz "'s turn"
+hit_roll_str: .asciz "Hit Roll: "
 
 should_end_turn: .db 0
 current_menu_address: .dw 0
+character_in_turn: .dw 0
 
 ; shows menus needed for the player to take actions on their turn, and returns when their turn is over
 execute_player_turn:
@@ -20,6 +23,9 @@ execute_player_turn:
     ld hl, opt_bm_root
     ld (current_menu_address), hl
 
+    call get_character_in_turn
+    ld (character_in_turn), hl
+
 menu_loop:
     call clear_action_window
     call show_selected_menu
@@ -32,14 +38,17 @@ menu_loop:
     ret
 
 clear_action_window:
-    PRINT_AT_LOCATION 1, action_menu_column, blank_menu_string
-    PRINT_AT_LOCATION 2, action_menu_column, blank_menu_string
-    PRINT_AT_LOCATION 3, action_menu_column, blank_menu_string
-    PRINT_AT_LOCATION 4, action_menu_column, blank_menu_string
-    PRINT_AT_LOCATION 5, action_menu_column, blank_menu_string
-    PRINT_AT_LOCATION 6, action_menu_column, blank_menu_string
-    PRINT_AT_LOCATION 7, action_menu_column, blank_menu_string
-    PRINT_AT_LOCATION 8, action_menu_column, blank_menu_string
+    PRINT_AT_LOCATION 1, action_menu_column, blank_window_string
+    PRINT_AT_LOCATION 2, action_menu_column, blank_window_string
+    PRINT_AT_LOCATION 3, action_menu_column, blank_window_string
+    PRINT_AT_LOCATION 4, action_menu_column, blank_window_string
+    PRINT_AT_LOCATION 5, action_menu_column, blank_window_string
+    PRINT_AT_LOCATION 6, action_menu_column, blank_window_string
+    ret
+
+clear_message_rows:
+    PRINT_AT_LOCATION 7, 1, blank_message_row_string
+    PRINT_AT_LOCATION 8, 1, blank_message_row_string
     ret
 
 show_selected_menu:
@@ -76,6 +85,10 @@ process_option:
     ld b, bm_option_inspect_value
     cp a, b
     jp z, handle_inspect
+
+    ld b, bm_option_attack_value
+    cp a, b
+    jp z, handle_attack
 
     ret
 
@@ -119,4 +132,31 @@ handle_inspect:
     call get_index_of_player_in_turn
     ld (last_inspected_index), a
     call inspect_ui
+    ret
+
+handle_attack:
+    ld a, (party_size) ; start at first enemy
+    ld (last_inspected_index), a
+    call inspect_ui
+
+    call clear_message_rows
+    ld h, 1
+    ld l, 7
+    call rom_set_cursor
+
+    ld hl, hit_roll_str
+    call print_string
+
+    ld hl, (character_in_turn)
+    call roll_hit_dice
+    ld d, 0
+    ld e, a
+    ld de, hl
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld a, (last_inspected_index)
+
+
     ret

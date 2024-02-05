@@ -64,6 +64,12 @@ roll_&ABILITY_check::
 
 .endlocal
 
+hit_dice_array:
+hit_dice_fighter: .db 10
+hit_dice_wizard: .db 6
+hit_dice_cleric: .db 8
+hit_dice_barbarian: .db 12
+
 .local
 class_functions:
 .dw get_fighter_ac
@@ -116,12 +122,6 @@ get_barbarian_ac:
     add a, 11 ; Leather Armor
     ret
 
-hit_dice_array:
-hit_dice_fighter: .db 10
-hit_dice_wizard: .db 6
-hit_dice_cleric: .db 8
-hit_dice_barbarian: .db 12
-
 ; TODO: This can overflow at the moment on high enough levels! Needs 16-bit math!!!
 resolving_contitution: .db 0
 get_hit_points::
@@ -172,5 +172,30 @@ higher_level_hit_points:
     ld a, (resolving_contitution)
     add a, b
 
+    ret
+.endlocal
+
+.local
+; loads A with the hit die, and B with the number of die to roll
+get_hit_dice::
+    ld de, hl
+    LOAD_BASE_ATTR_FROM_HL pl_offs_level
+    ld b, a
+
+    ld hl, de
+    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    ld hl, hit_dice_array
+    ld d, 0
+    ld e, a
+    add hl, de
+    ld a, (hl)
+
+    ret
+.endlocal
+
+.local
+roll_hit_dice::
+    call get_hit_dice
+    call roll_b_a
     ret
 .endlocal
