@@ -17,9 +17,10 @@ character_in_turn: .dw 0
 ; shows menus needed for the player to take actions on their turn, and returns when their turn is over
 execute_player_turn:
 
-    ; enable move since this is the start of the turn
+    ; enable all options since this is the start of the turn
     ld a, default_options_flags
     ld (bm_root_move_flags), a
+    ld (bm_root_attack_flags), a
 
     ld a, 0
     ld (should_end_turn), a
@@ -142,6 +143,9 @@ hit_result: .db 0
 damage_result: .db 0
 handle_attack:
     ; TODO: Forbid attack if both players are in the back, and apply disadvantage if one is in the back.
+    ld a, 0
+    ld (bm_root_attack_flags), a
+
     ld a, (party_size) ; start at first enemy
     ld (last_inspected_index), a
     call inspect_ui
