@@ -214,4 +214,67 @@ hit:
     ld hl, bc
     call print_string
 
+    call deal_damage
+
+    ret
+
+deal_damage:
+    ld hl, (selected_combatant_location)
+    LOAD_BASE_ATTR_FROM_HL cbt_offst_hit_points
+    ld b, a
+    ld a, (damage_result)
+    ld d, a
+    ld a, b ; a now has HP
+    ld b, d ; b now has damage
+
+    cp a, b
+    jp m, set_hp_0
+
+    sub a, b
+    jp write_a_to_health
+
+set_hp_0:
+    ld a, 0
+
+write_a_to_health:
+    ld hl, (selected_combatant_location)
+    ld bc, cbt_offst_hit_points
+    add hl, bc
+    ld (hl), a
+
+    cp a, 0
+    jp z, attack_killed_attackee
+    ret
+
+attack_killed_attackee:
+    ; player characters have a chance at a saving throw on their turn, so only set the death flag right away if it's not
+    ; part of the player party
+
+    ld hl, (selected_combatant_location)
+    LOAD_BASE_ATTR_FROM_HL cbt_offs_flags
+    ld b, cbt_flag_faction
+    and a, b
+    cp a, 0
+    jp nz, non_player_killed
+    ret
+
+non_player_killed:
+    ld hl, (selected_combatant_location)
+    LOAD_BASE_ATTR_FROM_HL cbt_offs_flags
+    ld b, $fd
+    and a, b
+
+    ld hl, (selected_combatant_location)
+    ld bc, cbt_offs_flags
+    add hl, bc
+    ld (hl), a
+
+    call is_enemy_party_dead
+    cp a, 0
+    jp z, battle_done
+    ret
+
+battle_done:
+    ld a, 1
+    ld (should_end_turn), a
     ret
