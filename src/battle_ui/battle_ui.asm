@@ -5,6 +5,8 @@
 #include "./inspect_ui.asm"
 #include "./action_window.asm"
 
+victory_text: .asciz "Victory!"
+
 ; Displays the combat screen until the encounter is resolved
 ; HL should contain a pointer to an array of player data for the controlled party, and A the size of the party
 ; BC should contain a pointer to an array of player data for the enemy party, and D the number of enemies
@@ -61,12 +63,31 @@ battle_loop_continue:
     jp battle_loop
 
 on_player_party_dead:
+    ret
+
 on_enemy_party_dead:
+    call rom_clear_screen
+
+    ld h, 16
+    ld l, 4
+    call rom_set_cursor
+
+    ld hl, victory_text
+    call print_string
+
+    call await_any_key
+
     ret
 
 init_screen_graphics:
     call rom_clear_screen
     call draw_combatants
+    ret
+
+await_any_key:
+await_any_key_loop:
+    call rom_kyread
+    jp z, await_any_key_loop
     ret
 
 .endlocal
