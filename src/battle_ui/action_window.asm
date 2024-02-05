@@ -4,7 +4,10 @@
 blank_window_string: .asciz "                               "
 blank_message_row_string: .asciz "                                       "
 turn_header: .asciz "'s turn"
-hit_roll_str: .asciz "Hit Roll: "
+hit_roll_str: .asciz "Attack Roll: "
+critical_str: .asciz "Critical"
+hit_str: .asciz " Hit"
+miss_str: .asciz " Miss"
 
 should_end_turn: .db 0
 current_menu_address: .dw 0
@@ -134,7 +137,9 @@ handle_inspect:
     call inspect_ui
     ret
 
+hit_result: .db 0
 handle_attack:
+    ; TODO: Forbid attack if both players are in the back, and apply disadvantage if one is in the back.
     ld a, (party_size) ; start at first enemy
     ld (last_inspected_index), a
     call inspect_ui
@@ -149,14 +154,45 @@ handle_attack:
 
     ld hl, (character_in_turn)
     call roll_hit_dice
+    ld (hit_result), a
+
+    cp a, 1
+    jp z, critical_miss
+
+    cp a, 20
+    jp z, critical_hit
+
+    ; TODO: Apply attack bonuses here.
+    ; The raw roll needs to be separate as critical hit/miss is only dice-based.
+
+    ld a, (hit_result)
     ld d, 0
     ld e, a
-    ld de, hl
     call de_to_decimal_string
     ld hl, bc
     call print_string
 
-    ld a, (last_inspected_index)
+    ld hl, (selected_combatant_location)
+    LOAD_BASE_ATTR_FROM_HL cbt_offs_armor_class
+    ld b, a
+    ld a, (hit_result)
+    cp a, b
+    jp z, hit
+    jp m, miss
+    jp hit
 
+critical_hit:
+    ld hl, critical_str
+    call print_string
+hit:
+    ld hl, hit_str
+    call print_string
+    ret
 
+critical_miss:
+    ld hl, critical_str
+    call print_string
+miss:
+    ld hl, miss_str
+    call print_string
     ret

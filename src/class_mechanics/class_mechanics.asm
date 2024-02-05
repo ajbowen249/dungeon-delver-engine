@@ -219,26 +219,28 @@ monster_hp:
 .local
 ; loads A with the hit die, and B with the number of die to roll
 get_hit_dice::
-    ld de, hl
+    ld (resolving_character), hl
     LOAD_BASE_ATTR_FROM_HL pl_offs_level
-    ld b, a
+    ld d, a
 
-    ld hl, de
+    ld hl, (resolving_character)
     LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    ld e, a
     ld c, class_cutoff
     and a, c
     cp a, 0
-    jp nz, get_monster_die
+    jp nz, monster_dice
 
+    ld b, d
     ld hl, hit_die_array
     ld d, 0
-    ld e, a
     add hl, de
     ld a, (hl)
     ret
 
-get_monster_die:
+monster_dice:
     call get_monster_hit_die
+    ld b, d
     ret
 .endlocal
 
