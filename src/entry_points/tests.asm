@@ -185,6 +185,9 @@ array_tests:
 
 test_class_mechanics:
     ld hl, test_character1
+    call get_character_armor_class
+.expect a = 19
+    ld hl, test_character1
     call get_hit_points
 .expect a = 17
     ld a, 2
@@ -222,6 +225,17 @@ test_class_mechanics:
     ld hl, test_character1
     call get_hit_points
 .expect a = 59
+    ld hl, monster_badger
+    call get_hit_points
+.expect a = 4
+    ld hl, monster_badger
+    call get_character_armor_class
+.expect a = 4
+    ld a, 2
+    ld (monster_badger + pl_offs_level), a
+    ld hl, monster_badger
+    call get_hit_points
+.expect a = 7
     ret
 
 test_start:

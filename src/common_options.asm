@@ -4,6 +4,7 @@ opt_class_fighter_label: .asciz "Fighter"
 opt_class_wizard_label: .asciz "Wizard"
 opt_class_cleric_label: .asciz "Cleric"
 opt_class_barbarian_label: .asciz "Barbarian"
+opt_class_m_badger_label: .asciz "Badger"
 
 opt_class:
 .db class_fighter
@@ -21,6 +22,10 @@ opt_class:
 .db class_barbarian
 .db default_options_flags
 .dw opt_class_barbarian_label
+
+.db class_m_badger
+.db default_options_flags
+.dw opt_class_m_badger_label
 
 opt_race_human_label: .asciz "Human"
 opt_race_elf_label: .asciz "Elf"

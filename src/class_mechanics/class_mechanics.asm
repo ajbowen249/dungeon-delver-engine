@@ -1,14 +1,10 @@
+#include "./class_mechanics_common.asm"
+#include "./monsters.asm"
+
 ; each get_character_x function takes a pointer to a player data structure in HL and returns in A the total value for that
 ; item, including any and all bonuses atop the core stat. All destroy HL
 
 .local
-.macro LOAD_BASE_ATTR_FROM_HL &OFFSET
-    ld b, 0
-    ld c, &OFFSET
-    add hl, bc
-    ld a, (hl)
-.endm
-
 ; but just return their base attrs, for now. This will be filled in later with leveling mechanics.
 get_character_strength::
     LOAD_BASE_ATTR_FROM_HL pl_offs_str
@@ -64,11 +60,24 @@ roll_&ABILITY_check::
 
 .endlocal
 
-hit_dice_array:
-hit_dice_fighter: .db 10
-hit_dice_wizard: .db 6
-hit_dice_cleric: .db 8
-hit_dice_barbarian: .db 12
+hit_die_array:
+hit_die_fighter: .db 10
+hit_die_wizard: .db 6
+hit_die_cleric: .db 8
+hit_die_barbarian: .db 12
+hit_die_placeholder: ; 8 bytes to fill out SRD classes, plus 4 for campaign-defined
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+campaign_class_0_hit_die. db 0
+campaign_class_1_hit_die. db 0
+campaign_class_2_hit_die. db 0
+campaign_class_3_hit_die. db 0
 
 .local
 class_functions:
@@ -76,12 +85,30 @@ class_functions:
 .dw get_wizard_ac
 .dw get_cleric_ac
 .dw get_barbarian_ac
+class_functions_placeholder: ; 8 + 4 like before, but each are dw
+.dw 0
+.dw 0
+.dw 0
+.dw 0
+.dw 0
+.dw 0
+.dw 0
+.dw 0
+campaign_class_0_ac. dw 0
+campaign_class_1_ac. dw 0
+campaign_class_2_ac. dw 0
+campaign_class_3_ac. dw 0
 
-resolving_character: .dw 0
 get_character_armor_class::
     ld (resolving_character), hl
     LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    ld b, a
+    ld c, class_cutoff
+    and a, c
+    cp a, 0
+    jp nz, monster_ac
 
+    ld a, b
     ld b, 2
     ld hl, class_functions
     call get_array_item
@@ -89,7 +116,10 @@ get_character_armor_class::
     ld hl, bc
 
     call call_hl
+    ret
 
+monster_ac:
+    call get_monster_ac
     ret
 
 get_fighter_ac:
@@ -127,9 +157,15 @@ resolving_contitution: .db 0
 get_hit_points::
     ld (resolving_character), hl
     LOAD_BASE_ATTR_FROM_HL pl_offs_class
-    ld hl, hit_dice_array
+    ld b, a ; b has original class
+    ld c, class_cutoff
+    and a, c
+    cp a, 0
+    jp nz, monster_hp
+
+    ld hl, hit_die_array
+    ld c, b
     ld b, 0
-    ld c, a
     add hl, bc
     ld a, (hl)
     ld d, a ; d has hit dice
@@ -173,6 +209,11 @@ higher_level_hit_points:
     add a, b
 
     ret
+
+monster_hp:
+    ld hl, (resolving_character)
+    call get_monster_hp
+    ret
 .endlocal
 
 .local
@@ -184,12 +225,20 @@ get_hit_dice::
 
     ld hl, de
     LOAD_BASE_ATTR_FROM_HL pl_offs_class
-    ld hl, hit_dice_array
+    ld c, class_cutoff
+    and a, c
+    cp a, 0
+    jp nz, get_monster_die
+
+    ld hl, hit_die_array
     ld d, 0
     ld e, a
     add hl, de
     ld a, (hl)
+    ret
 
+get_monster_die:
+    call get_monster_hit_die
     ret
 .endlocal
 

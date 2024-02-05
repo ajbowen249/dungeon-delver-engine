@@ -66,7 +66,7 @@ screen_loop:
 test_npc_battle:
     ld hl, player_party
     ld a, (party_size)
-    ld bc, test_npc_1
+    ld bc, monster_badger
     ld d, 1
     call battle_ui
     jp screen_loop
