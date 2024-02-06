@@ -79,14 +79,14 @@ get_monster_hp::
     ld d, a
 
     ld hl, (resolving_character)
-    LOAD_BASE_ATTR_FROM_HL pl_offs_level
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
     ld b, d
     call mul_a_b
     ld d, a
 
     ; plus constitution modifier (not overall value)
     ld hl, (resolving_character)
-    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, class_cutoff
     sub a, b
     ld b, 6 ;bytes per set of modifiers

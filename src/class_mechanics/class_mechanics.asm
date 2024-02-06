@@ -7,27 +7,27 @@
 .local
 ; but just return their base attrs, for now. This will be filled in later with leveling mechanics.
 get_character_strength::
-    LOAD_BASE_ATTR_FROM_HL pl_offs_str
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_str
     ret
 
 get_character_dexterity::
-    LOAD_BASE_ATTR_FROM_HL pl_offs_dex
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
     ret
 
 get_character_constitution::
-    LOAD_BASE_ATTR_FROM_HL pl_offs_con
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_con
     ret
 
 get_character_intelligence::
-    LOAD_BASE_ATTR_FROM_HL pl_offs_int
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_int
     ret
 
 get_character_wisdom::
-    LOAD_BASE_ATTR_FROM_HL pl_offs_wis
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_wis
     ret
 
 get_character_charisma::
-    LOAD_BASE_ATTR_FROM_HL pl_offs_chr
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_chr
     ret
 .endlocal
 
@@ -101,7 +101,7 @@ campaign_class_3_ac. dw 0
 
 get_character_armor_class::
     ld (resolving_character), hl
-    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, a
     ld c, class_cutoff
     and a, c
@@ -158,7 +158,7 @@ get_barbarian_ac:
 resolving_contitution: .db 0
 get_hit_points::
     ld (resolving_character), hl
-    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, a ; b has original class
     ld c, class_cutoff
     and a, c
@@ -173,11 +173,11 @@ get_hit_points::
     ld d, a ; d has hit dice
 
     ld hl, (resolving_character)
-    LOAD_BASE_ATTR_FROM_HL pl_offs_con
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_con
     ld (resolving_contitution), a
 
     ld hl, (resolving_character)
-    LOAD_BASE_ATTR_FROM_HL pl_offs_level
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
     ld e, a ; e has level
     cp a, 1
     jp nz, higher_level_hit_points
@@ -222,11 +222,11 @@ monster_hp:
 ; loads A with the hit die, and B with the number of die to roll
 get_hit_dice::
     ld (resolving_character), hl
-    LOAD_BASE_ATTR_FROM_HL pl_offs_level
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
     ld d, a
 
     ld hl, (resolving_character)
-    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld e, a
     ld c, class_cutoff
     and a, c
@@ -276,7 +276,7 @@ damage_table:
 ; returns pre-rolled or looked-up damage value in A
 get_damage_value::
     ld (resolving_character), hl
-    LOAD_BASE_ATTR_FROM_HL pl_offs_class
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, 2
     ld hl, damage_table
     call get_array_item

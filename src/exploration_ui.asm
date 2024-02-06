@@ -70,19 +70,11 @@ exit_exploration:
 
 init_screen:
     ld hl, (screen_data)
-    ld b, 0
-    ld c, sc_offs_start_x
-    add hl, bc
-
-    ld a, (hl)
+    LOAD_A_WITH_ATTR_THROUGH_HL sc_offs_start_x
     ld (avatar_x), a
 
     ld hl, (screen_data)
-    ld b, 0
-    ld c, sc_offs_start_y
-    add hl, bc
-
-    ld a, (hl)
+    LOAD_A_WITH_ATTR_THROUGH_HL sc_offs_start_x
     ld (avatar_y), a
 
     call rom_clear_screen

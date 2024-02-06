@@ -169,7 +169,7 @@ is_enemy_party_dead:
 enemy_scan_loop:
     ld a, (scan_parties_index)
     call get_combatant_at_index_a
-    LOAD_BASE_ATTR_FROM_HL cbt_offs_flags
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
 
     ; if even one is alive, just bail
     ld b, cbt_flag_alive

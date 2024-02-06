@@ -23,10 +23,7 @@ draw_combatants_loop:
     ; read flags
     ld a, (combat_draw_player_index)
     call get_combatant_at_index_a
-    ld b, 0
-    ld c, cbt_offs_flags
-    add hl, bc
-    ld a, (hl)
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
     ld c, a
 
     ld b, cbt_flag_line

@@ -20,11 +20,8 @@ initialize_combatants_foreach_callback:
     ld (initiative_result), a
 
     ld hl, (foreach_combat_address)
-    ld b, 0
-    ld c, cbt_offs_initiative
-    add hl, bc
     ld a, (initiative_result)
-    ld (hl), a
+    WRITE_A_TO_ATTR_THROUGH_HL cbt_offs_initiative
 
     ; save initiative for future sort
     ld a, (for_each_combatant_index)
@@ -43,19 +40,14 @@ initialize_combatants_foreach_callback:
     ld d, a
 
     ld hl, (foreach_combat_address)
-    ld b, 0
-    ld c, cbt_offs_armor_class
-    add hl, bc
-    ld a, d
-    ld (hl), a
+    WRITE_A_TO_ATTR_THROUGH_HL cbt_offs_armor_class
 
     ld hl, (foreach_player_address)
     call get_hit_points
     ld d, a
 
     ld hl, (foreach_combat_address)
-    ld b, 0
-    ld c, cbt_offst_hit_points
+    ld bc, cbt_offst_hit_points
     add hl, bc
     ld b, 0
     ld c, d
@@ -69,20 +61,14 @@ initialize_combatants_foreach_callback:
     jp m, init_enemy_combatant
 
     ld hl, (foreach_combat_address)
-    ld b, 0
-    ld c, cbt_offs_flags
-    add hl, bc
     ld a, cbt_initial_party_flags
-    ld (hl), a
+    WRITE_A_TO_ATTR_THROUGH_HL cbt_offs_flags
     jp initialize_combatants_foreach_callback_done
 
 init_enemy_combatant:
     ld hl, (foreach_combat_address)
-    ld b, 0
-    ld c, cbt_offs_flags
-    add hl, bc
     ld a, cbt_initial_enemy_flags
-    ld (hl), a
+    WRITE_A_TO_ATTR_THROUGH_HL cbt_offs_flags
 
 initialize_combatants_foreach_callback_done:
     ret
@@ -133,9 +119,7 @@ display_initiative_order_loop:
     ld a, (hl)
 
     call get_character_at_index_a
-    ld b, 0
-    ld c, pl_offs_name
-    add hl, bc
+    POINT_HL_TO_ATTR pl_offs_name
     call print_string
 
     ld a, (initiative_counter)

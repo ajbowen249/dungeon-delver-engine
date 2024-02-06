@@ -124,10 +124,7 @@ on_confirm:
     call get_array_item
     ld de, hl
 
-    ld b, 0
-    ld c, mi_offs_flags
-    add hl, bc
-    ld a, (hl)
+    LOAD_A_WITH_ATTR_THROUGH_HL mi_offs_flags
     ld b, $01
     and a, b
     jp z, on_confirm_exit

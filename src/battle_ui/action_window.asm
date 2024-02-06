@@ -62,10 +62,7 @@ show_selected_menu:
     call rom_set_cursor
 
     call get_character_in_turn
-
-    ld b, 0
-    ld c, pl_offs_name
-    add hl, bc
+    POINT_HL_TO_ATTR pl_offs_name
     call print_string
 
     ld hl, turn_header
@@ -116,10 +113,7 @@ handle_move:
 
     ; toggle the line flag
     call get_combatant_in_turn
-    ld b, 0
-    ld c, cbt_offs_flags
-    add hl, bc
-    ld a, (hl)
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
     ld b, $04
     and a, b
     jp z, set_flag
@@ -187,7 +181,7 @@ handle_attack:
     call print_string
 
     ld hl, (selected_combatant_location)
-    LOAD_BASE_ATTR_FROM_HL cbt_offs_armor_class
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_armor_class
     ld b, a
     ld a, (hit_result)
     cp a, b
@@ -232,7 +226,7 @@ hit:
 
 deal_damage:
     ld hl, (selected_combatant_location)
-    LOAD_BASE_ATTR_FROM_HL cbt_offst_hit_points
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offst_hit_points
     ld b, a
     ld a, (damage_result)
     ld d, a
@@ -263,7 +257,7 @@ attack_killed_attackee:
     ; part of the player party
 
     ld hl, (selected_combatant_location)
-    LOAD_BASE_ATTR_FROM_HL cbt_offs_flags
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
     ld b, cbt_flag_faction
     and a, b
     cp a, 0
@@ -272,7 +266,7 @@ attack_killed_attackee:
 
 non_player_killed:
     ld hl, (selected_combatant_location)
-    LOAD_BASE_ATTR_FROM_HL cbt_offs_flags
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
     ld b, $fd
     and a, b
 
