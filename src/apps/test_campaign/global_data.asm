@@ -5,7 +5,7 @@ player_party:
 .db 0
 .db 0
 .db 0
-    DEFINE_PLAYER test_character2, 8, 10, 8, 6, 8, 7, race_elf, class_cleric, 1, "Elfy"
+    DEFINE_PLAYER test_character2, 8, 10, 8, 6, 8, 7, race_elf, class_cleric, 1, "Elfo"
 .db 0
 .db 0
 .db 0
@@ -16,7 +16,7 @@ player_party:
 .db 0
 .db 0
 .db 0
-    DEFINE_PLAYER test_character4, 4, 5, 6, 11, 12, 6, race_half_elf, class_wizard, 1, "Sparkle"
+    DEFINE_PLAYER test_character4, 4, 5, 6, 11, 12, 6, race_half_elf, class_wizard, 1, "McZappy"
 .db 0
 .db 0
 .db 0

@@ -7,11 +7,11 @@
     call main
     ret
 
-#include "../dde.asm"
-#include "./test_campaign/constants.asm"
-#include "./test_campaign/global_data.asm"
-#include "./test_campaign/screen_1.asm"
-#include "./test_campaign/screen_2.asm"
+#include "../../engine/dde.asm"
+#include "./constants.asm"
+#include "./global_data.asm"
+#include "./screen_1.asm"
+#include "./screen_2.asm"
 
 main:
     call seed_random

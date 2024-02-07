@@ -2,7 +2,7 @@
 
 .org $C000
 
-#include "../dde.asm"
+#include "../../engine/dde.asm"
 
 test_associative_array:
 test_assoc_0:

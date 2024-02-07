@@ -1,33 +1,22 @@
 ZASM := "zasm"
 
 SRC_DIR := ./src
+APP_SRC_DIR := $(SRC_DIR)/apps
 BUILD_DIR := ./build
 
-ASM_FILES := $(SRC_DIR)/**/*.asm $(SRC_DIR)/*.asm $(SRC_DIR)/**/**/*.asm
+APPS := $(wildcard $(SRC_DIR)/apps/*)
+APP_NAMES := $(foreach app,$(APPS),$(subst $(APP_SRC_DIR)/,, $(app)))
+APP_OUTPUT_FILES := $(foreach app, $(APP_NAMES), $(BUILD_DIR)/$(app).hex)
 
-# campaign for testing, not to be confused with the test binary
-TEST_CAMPAIGN_ROOT_FILE := $(SRC_DIR)/entry_points/test_campaign.asm
-TEST_CAMPAIGN_OUTPUT := $(BUILD_DIR)/test_campaign.hex
+.PRECIOUS: $(BUILD_DIR)/%.hex
 
-# unit tests
-TESTS_ROOT_FILE := $(SRC_DIR)/entry_points/tests.asm
-TESTS_OUTPUT := $(BUILD_DIR)/tests.hex
+all: $(APP_OUTPUT_FILES)
 
-.PHONY: all
-.SUFFIXES:
-.PRECIOUS: $(BUILD_DIR)/%.hex $(BUILD_DIR)/%.lst $(BUILD_DIR)/%.rom
+test: build/tests.hex
 
-all: $(TEST_CAMPAIGN_OUTPUT) $(TESTS_OUTPUT)
-
-test_campaign: $(TEST_CAMPAIGN_OUTPUT)
-test: $(TESTS_OUTPUT)
-
-STR_BUILD:=build
-STR_CAMPAIGNS:=$(SRC_DIR)/entry_points
-
-$(BUILD_DIR)/%.hex: $(ASM_FILES)
+$(BUILD_DIR)/%.hex: $(SRC_DIR)/**/*.asm $(SRC_DIR)/**/**/*.asm
 	@mkdir -p $(BUILD_DIR)
-	$(ZASM) --8080 -x $(subst .hex,.asm, $(subst $(STR_BUILD),$(STR_CAMPAIGNS),$@)) -o $(BUILD_DIR)
+	$(ZASM) --8080 -x $(patsubst %.hex,%/main.asm,$(subst build,src/apps,$@)) -o $@
 
 clean:
 	@rm -rfv $(BUILD_DIR)

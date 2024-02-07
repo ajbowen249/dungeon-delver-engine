@@ -9,7 +9,7 @@ This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizar
 
 ## Building
 
-This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html) and [make](https://www.gnu.org/software/make/manual/make.html). To build all campaigns and run the unit tests, just run `make` from the project root. This should create one or more `.hex` files under `build`. The engine currently powers one "test" campaign, though more may come eventually. If you only care to build a specific campaign, use `make <campaign name>`.
+This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html) and [make](https://www.gnu.org/software/make/manual/make.html). To build the unit tests and the test campaign, run `make` from the project root. To only build and run the tests, use `make test`.
 
 ## System Requirements
 
@@ -17,7 +17,9 @@ DDE is designed for systems with at least 24k of RAM (i.e, `21446` Bytes Free up
 
 ## Running
 
-Select a campaign, and find its hex file. For now, only the raw binary is created. A build step that adds a `CO` file header is coming _Eventually™_. All campaigns are meant to be loaded at `$C000` (`49152`). This process will eventually be less painful.
+Built into this project is a test campaign that flexes features of the engine. Other projects that wish to use this engine should be able to simply use `zasm` with the `--8080` argument and include `src/engine/dde.asm`.
+
+Only the raw binary is created for the test campaign, at `build/test_campaign.hex`. A build step that adds a `CO` file header is coming _Eventually™_. It is meant to be loaded at `$C000` (`49152`). This process will eventually be less painful.
 
 Before either method, get into the BASIC prompt and run `clear 256, 49152`.
 
@@ -33,7 +35,7 @@ Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, firs
 
 #### Once Loaded
 
-Once the binary is loaded into memory through any method, you can also save it with `savem "<name>", 49152,<end address>,49152`. `<end address>` will vary by build, and is `49152` + file size (of the binary, not the hex file). `<name>` is capped at 6 chars on the Model 100, so pick anything you'll remember for the given campaign name.
+Once the binary is loaded into memory through any method, you can run it with `call 49152`. Note that the binary size is currently unoptimized, and the test campaign appears to already exceed the size that a 24k machine can save for later via the `savem` command.
 
 ## Gameplay
 
@@ -53,7 +55,9 @@ DDE follows a typical RPG setup with screens for exploration, combat, and dialog
 
 ## Architecture
 
-The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). The top-level entry points are under `src/entry_points`, and they include `src/dde.asm`. This means everything within `DDE` itself could end up located anywhere once assembled, depending on the campaign. `src/entry_points` also contains the unit tests entry point.
+The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). This project's top-level entry points are under `src/apps`, and they include `src/engine/dde.asm`. This means everything within `DDE` itself could end up located anywhere once assembled, depending on the campaign. Currently, the two apps are the unit tests and a test campaign. This may expand to include a faster version of the hex loader in assembly, or a more-substantial example campaign.
+
+As mentioned, other projects that wish to use this engine should be able to simply include this project (submodule, etc.), then `#include "(dde root)/src/engine/dde.asm"` in their source, and compile their root file with `zasm` and the `--8080` flag.
 
 ### Syntax
 
@@ -74,4 +78,4 @@ All three levels are implemented as subroutines with the same calling convention
 Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call. Also of note is that _all screens are currently static_, rather than using stack space for their local data. This may change eventually, but, for now, as a general rule, UI pages _should not nest calls to one another_. It should technically be fine for unrelated screens to nest calls, but a screen can't, for example, use a `menu` and nest a call to another screen that uses a `menu`, since the second would overwrite the first's workspace.
 
 ### Unit Tests
-Tests are located in `entry_points/tests.asm`, and are compiled and run automatically by `zasm`. They can be run individually with `make test`.
+Tests are located in `src/apps/tests/main.asm`, and are compiled and run automatically by `zasm`. They can be run individually with `make test`.
