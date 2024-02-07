@@ -74,10 +74,10 @@ hit_die_placeholder: ; 8 bytes to fill out SRD classes, plus 4 for campaign-defi
 .db 0
 .db 0
 .db 0
-campaign_class_0_hit_die. db 0
-campaign_class_1_hit_die. db 0
-campaign_class_2_hit_die. db 0
-campaign_class_3_hit_die. db 0
+campaign_class_0_hit_die:: .db 0
+campaign_class_1_hit_die:: .db 0
+campaign_class_2_hit_die:: .db 0
+campaign_class_3_hit_die:: .db 0
 
 .local
 ac_table:
@@ -94,16 +94,16 @@ class_functions_placeholder: ; 8 + 4 like before, but each are dw
 .dw 0
 .dw 0
 .dw 0
-campaign_class_0_ac. dw 0
-campaign_class_1_ac. dw 0
-campaign_class_2_ac. dw 0
-campaign_class_3_ac. dw 0
+campaign_class_0_ac_subroutine_pointer:: .dw 0
+campaign_class_1_ac_subroutine_pointer:: .dw 0
+campaign_class_2_ac_subroutine_pointer:: .dw 0
+campaign_class_3_ac_subroutine_pointer:: .dw 0
 
 get_character_armor_class::
     ld (resolving_character), hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, a
-    ld c, class_cutoff
+    ld c, monster_mask
     and a, c
     cp a, 0
     jp nz, monster_ac
@@ -119,6 +119,8 @@ get_character_armor_class::
     ret
 
 monster_ac:
+    ld hl, (resolving_character)
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     call get_monster_ac
     ret
 
@@ -160,7 +162,7 @@ get_hit_points::
     ld (resolving_character), hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, a ; b has original class
-    ld c, class_cutoff
+    ld c, monster_mask
     and a, c
     cp a, 0
     jp nz, monster_hp
@@ -228,7 +230,7 @@ get_hit_dice::
     ld hl, (resolving_character)
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld e, a
-    ld c, class_cutoff
+    ld c, monster_mask
     and a, c
     cp a, 0
     jp nz, monster_dice
@@ -272,6 +274,9 @@ damage_table:
 .dw get_placeholder_damage
 .dw get_placeholder_damage
 .dw get_m_badger_damage
+.block 2 * 15 ; leave space for another 15 (16 total) built-in creatures, and another 16 campaign monsters
+campaign_monster_damage_table::
+.block 2 * 16
 
 ; returns pre-rolled or looked-up damage value in A
 get_damage_value::
@@ -281,8 +286,12 @@ get_damage_value::
     ld hl, damage_table
     call get_array_item
     ld bc, (hl)
-    ld hl, bc
+    ld de, bc
 
+    ld (resolving_character), hl
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
+
+    ld hl, de
     call call_hl
     ret
 

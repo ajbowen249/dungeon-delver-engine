@@ -55,6 +55,21 @@ copy_test_dst:
 .db 0
 .db 0
 
+#define class_mc_test_monster 32
+    DEFINE_PLAYER test_campaign_monster_class, 10, 9, 8, 7, 6, 5, race_human, class_mc_test_monster, 1, "TEST"
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+.db 0
+
+    CAMPAIGN_MONSTER_DESCRIPTOR test_campaign_monster_descriptor, class_mc_test_monster, monster_size_large, 5, 1, 2, 3, 4, 5, 6, test_damage_s
+
+test_damage_s:
+    ld a, 12
+    ret
+
 rom_file_end:
 
 #target ram
@@ -236,6 +251,24 @@ test_class_mechanics:
     ld hl, monster_badger
     call get_hit_points
 .expect a = 7
+    ld hl, test_campaign_monster_descriptor
+    call register_campaign_monster
+
+    ld hl, test_campaign_monster_class
+    call get_hit_points
+.expect a = 9
+    ld hl, test_campaign_monster_class
+    call get_damage_value
+.expect a = 12
+    ld a, monster_size_gargantuan
+    ld (cmd_test_campaign_monster_descriptor_size), a
+
+    ld hl, test_campaign_monster_descriptor
+    call register_campaign_monster
+
+    ld hl, test_campaign_monster_class
+    call get_hit_points
+.expect a = 14
     ret
 
 test_start:
