@@ -36,6 +36,23 @@
 #charset map "┘" = $F7
 #charset map "│" = $F5
 #charset map "─" = $F1
+#charset map "┬" = $F3
+#charset map "├" = $F4
+#charset map "┴" = $F8
+#charset map "┤" = $F9
+#charset map "┼" = $FA
+
+#charset map "╔" = $EB
+#charset map "╗" = $EC
+#charset map "╚" = $ED
+#charset map "╝" = $EE
+#charset map "▌" = $E9
+#charset map "▐" = $EA
+#charset map "▀" = $E7
+#charset map "▄" = $E8
+#charset map "█" = $EF
+
+#charset map "▓" = $FF
 
 ; replacement mappings (character in source doesn't resemble character in game)
 #charset map "∩" = ch_chest
