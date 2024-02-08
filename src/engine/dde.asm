@@ -1,6 +1,11 @@
 ; Dungeon Delver Engine
 ; This is a CRPG engine that implements a subset of OGL SRD 5.1
 
+dde_version:
+dde_version_major: .db 0
+dde_version_minor: .db 0
+dde_version_build: .db 1
+
 #include "math.asm"
 #include "util.asm"
 #include "array_util.asm"
