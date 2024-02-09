@@ -74,7 +74,7 @@ init_screen:
     ld (avatar_x), a
 
     ld hl, (screen_data)
-    LOAD_A_WITH_ATTR_THROUGH_HL sc_offs_start_x
+    LOAD_A_WITH_ATTR_THROUGH_HL sc_offs_start_y
     ld (avatar_y), a
 
     call rom_clear_screen
