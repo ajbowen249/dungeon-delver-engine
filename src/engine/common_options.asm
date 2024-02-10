@@ -27,10 +27,12 @@ opt_class:
 .db default_options_flags
 .dw opt_class_m_badger_label
 
+opt_race_monster_label: .asciz "Monster"
 opt_race_human_label: .asciz "Human"
 opt_race_elf_label: .asciz "Elf"
 opt_race_dwarf_label: .asciz "Dwarf"
 opt_race_half_elf_label: .asciz "Half-Elf"
+opt_race_tiefling_label: .asciz "Tiefling"
 
 opt_race:
 .db race_human
@@ -48,6 +50,18 @@ opt_race:
 .db race_half_elf
 .db default_options_flags
 .dw opt_race_half_elf_label
+
+.db race_tiefling
+.db default_options_flags
+.dw opt_race_tiefling_label
+
+.db race_monster
+.db 0
+.dw opt_race_monster_label
+
+; Leave space for 5 campaign-defined monsters
+opt_campaign_race::
+.block mi_data_size * 5
 
 opt_count_selection_label_1: .asciz "1"
 opt_count_selection_label_2: .asciz "2"
