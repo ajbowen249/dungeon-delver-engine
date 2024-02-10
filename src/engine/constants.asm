@@ -56,6 +56,7 @@
 
 ; replacement mappings (character in source doesn't resemble character in game)
 #charset map "∩" = ch_chest
+#charset map "€" = ch_mushroom
 #charset map "α" = ch_stick_person_2
 
 ; SRD 5.1 stuff
