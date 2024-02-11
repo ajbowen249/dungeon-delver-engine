@@ -1,3 +1,5 @@
+#define screen_id_screen_1 1
+
 .local
 screen_1_data:
 screen_1_background:
@@ -84,21 +86,11 @@ chest_interact:
     ret
 
 door_interact:
-    ld a, ec_door
-    ld (last_screen_exit_code), a
-    ld a, 0
-    ld (last_screen_exit_argument), a
-
-    ld a, 1
+    EXIT_EXPLORATION ec_door, screen_id_screen_2
     ret
 
 test_npc_interact:
-    ld a, ec_npc
-    ld (last_screen_exit_code), a
-    ld a, 0
-    ld (last_screen_exit_argument), a
-
-    ld a, 1
+    EXIT_EXPLORATION ec_encounter, encounter_id_badger
     ret
 
 .endlocal

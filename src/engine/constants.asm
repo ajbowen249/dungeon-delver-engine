@@ -202,3 +202,7 @@
 #define mi_offs_flags mi_offs_value + 1
 #define mi_offs_label mi_offs_flags + 1 ; 2 bytes
 #define mi_data_size mi_offs_label + 2
+
+#define ec_none 0
+#define ec_door 1
+#define ec_encounter 2

@@ -8,10 +8,9 @@
     ret
 
 #include "../../engine/dde.asm"
-#include "./constants.asm"
 #include "./global_data.asm"
-#include "./screen_1.asm"
-#include "./screen_2.asm"
+#include "./screens/screen_table.asm"
+#include "./encounters/encounter_table.asm"
 
 main:
     call seed_random
@@ -50,24 +49,15 @@ show_sheets:
     call character_sheet_ui
 
 sheets_done:
-
-screen_loop:
-    call screen_1
-
-    ld a, (last_screen_exit_code)
-
-    cp a, ec_npc
-    jp z, test_npc_battle
-
-    call screen_2
-    ; screen 2 only has a door at the moment
-    jp screen_loop
-
-test_npc_battle:
-    ld hl, player_party
+    ld hl, screen_table
+    ld bc, encounter_table
+    ld de, player_party
     ld a, (party_size)
-    ld bc, monster_badger
-    ld d, 1
-    call battle_ui
-    jp screen_loop
+    call configure_screen_controller
+
+    ld a, ec_door
+    ld b, screen_id_screen_1
+    call set_screen_exit_conditions
+
+    call run_screen_controller
     ret

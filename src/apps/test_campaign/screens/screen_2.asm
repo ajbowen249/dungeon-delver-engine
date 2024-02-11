@@ -1,3 +1,5 @@
+#define screen_id_screen_2 2
+
 .local
 screen_2_data:
 screen_2_background:
@@ -50,12 +52,7 @@ get_interaction_prompt:
     ret
 
 on_interact:
-    ld a, ec_door
-    ld (last_screen_exit_code), a
-    ld a, 0
-    ld (last_screen_exit_argument), a
-
-    ld a, 1
+    EXIT_EXPLORATION ec_door, screen_id_screen_1
     ret
 
 .endlocal

@@ -25,3 +25,4 @@ dde_version_build: .db 1
 #include "character_sheet_ui.asm"
 #include "exploration_ui.asm"
 #include "battle_ui/battle_ui.asm"
+#include "screen_controller.asm"

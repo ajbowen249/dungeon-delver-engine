@@ -77,5 +77,8 @@ All three levels are implemented as subroutines with the same calling convention
 
 Since each screen does so much, you may generally expect all registers to be destroyed or set to an exit condition with each call. Also of note is that _all screens are currently static_, rather than using stack space for their local data. This may change eventually, but, for now, as a general rule, UI pages _should not nest calls to one another_. It should technically be fine for unrelated screens to nest calls, but a screen can't, for example, use a `menu` and nest a call to another screen that uses a `menu`, since the second would overwrite the first's workspace.
 
+### Screen Controller
+The subroutines in `screen_controller` allow for simple setup of the exploration/combat loop. By registering "room" and "encounter" tables and the player party, one can create subroutines that wrap the `exploration_ui` and `combat_ui`. The combat UI will always exit to the last room, and the exploration UI can exit to either another exploration wrapper or combat wrapper by setting `last_screen_exit_code` and `last_screen_exit_argument` before exiting. See `apps/test_campaign/screens` for examples.
+
 ### Unit Tests
 Tests are located in `src/apps/tests/main.asm`, and are compiled and run automatically by `zasm`. They can be run individually with `make test`.
