@@ -24,7 +24,7 @@ inspect_ui::
 
     call on_selection_changed
 
-    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0
 
 read_loop:
     call iterate_input_table

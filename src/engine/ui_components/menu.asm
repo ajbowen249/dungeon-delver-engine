@@ -77,7 +77,7 @@ list_loop_continue:
     ld (should_exit), a
     ld (selected_value), a
 
-    REGISTER_INPUTS on_up_arrow, on_down_arrow, 0, 0, on_confirm
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, 0, 0, on_confirm, 0, 0
 
     call draw_arrow
 read_loop:

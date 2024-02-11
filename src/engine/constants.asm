@@ -6,12 +6,16 @@
 #define ch_R $52
 #define ch_S $53
 #define ch_W $57
+#define ch_R $52
+#define ch_C $43
 
 #define ch_a $61
 #define ch_d $64
 #define ch_r $72
 #define ch_s $73
 #define ch_w $77
+#define ch_r $72
+#define ch_c $63
 
 #define ch_enter $0D
 #define ch_left_arrow $1D

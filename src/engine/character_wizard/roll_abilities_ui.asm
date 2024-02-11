@@ -40,7 +40,7 @@ roll_abilities_ui::
     ld (ability_index), a
     ld (should_exit), a
 
-    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, on_btn_1, 0
 
 screen_loop:
     call draw_arrows
@@ -132,6 +132,11 @@ on_right_arrow_end:
 on_confirm:
     ld a, 1
     ld (should_exit), a
+    ret
+
+on_btn_1:
+    call init_screen
+    call update_points
     ret
 
 draw_arrows:

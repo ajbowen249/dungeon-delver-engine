@@ -1,5 +1,8 @@
 ; The input table disconnects the idea of a specific keyboard button from a conceptual control.
 ; For example, registering for arrow inputs includes both arrow keys and WASD.
+; Confirm is mapped to enter
+; Btn 1 is mapped to R
+; Btn 2 is mapped to C
 ; To use it, call the REGISTER_INPUTS macro, which takes a subroutine address for each input. Pass 0 to disable that
 ; input.
 
@@ -9,6 +12,8 @@ input_table_arrow_down: .dw 0
 input_table_arrow_left: .dw 0
 input_table_arrow_right: .dw 0
 input_table_confirm: .dw 0
+input_table_btn_1: .dw 0
+input_table_btn_2: .dw 0
 
 .macro REGISTER_INPUT &OFFSET, &TABLE_ADDRESS
     ld hl, &OFFSET
@@ -16,12 +21,14 @@ input_table_confirm: .dw 0
 .endm
 
 ; uses HL
-.macro REGISTER_INPUTS &UP, &DOWN, &LEFT, &RIGHT, &CONFIRM
+.macro REGISTER_INPUTS &UP, &DOWN, &LEFT, &RIGHT, &CONFIRM, &BTN_1, &BTN_2
    REGISTER_INPUT &UP, input_table_arrow_up
    REGISTER_INPUT &DOWN, input_table_arrow_down
    REGISTER_INPUT &LEFT, input_table_arrow_left
    REGISTER_INPUT &RIGHT, input_table_arrow_right
    REGISTER_INPUT &CONFIRM, input_table_confirm
+   REGISTER_INPUT &BTN_1, input_table_btn_1
+   REGISTER_INPUT &BTN_2, input_table_btn_2
 .endm
 
 
@@ -50,6 +57,12 @@ iterate_input_table::
 
     ON_KEY_JUMP ch_enter, on_confirm
 
+    ON_KEY_JUMP ch_r, on_btn_1
+    ON_KEY_JUMP ch_R, on_btn_1
+
+    ON_KEY_JUMP ch_c, on_btn_2
+    ON_KEY_JUMP ch_C, on_btn_2
+
     jp exit_input_table
 
 .macro ON_INPUT &NAME
@@ -63,6 +76,8 @@ on_&NAME:
     ON_INPUT arrow_left
     ON_INPUT arrow_right
     ON_INPUT confirm
+    ON_INPUT btn_1
+    ON_INPUT btn_2
 
 check_callback:
     ld a, h
