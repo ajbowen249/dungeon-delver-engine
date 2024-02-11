@@ -29,6 +29,11 @@
 #define ch_stick_person_2 $94
 #define ch_diamond $9D
 
+#define ch_corner_upper_left $FB
+#define ch_corner_upper_right $FD
+#define ch_corner_lower_left $FE
+#define ch_corner_lower_right $FC
+
 ; analogous mappings
 #charset map "┌" = $F0
 #charset map "┐" = $F2
@@ -53,6 +58,11 @@
 #charset map "█" = $EF
 
 #charset map "▓" = $FF
+
+#charset map "◤" = ch_corner_upper_left
+#charset map "◥" = ch_corner_upper_right
+#charset map "◣" = ch_corner_lower_left
+#charset map "◢" = ch_corner_lower_right
 
 ; replacement mappings (character in source doesn't resemble character in game)
 #charset map "∩" = ch_chest
