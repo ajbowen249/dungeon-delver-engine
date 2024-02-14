@@ -1,6 +1,7 @@
 .local
 
-blank_20_char_string: .asciz "                   "
+blank_19_char_string: .asciz "                   "
+blank_20_char_string: .asciz "                    "
 
 screen_data: .dw 0
 
@@ -42,7 +43,7 @@ exploration_ui::
     ld (should_exit), a
 
     call init_screen
-    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0
+    call configure_inputs
 
 read_loop:
     ld a, 0
@@ -53,6 +54,8 @@ read_loop:
     cp a, 0
     jp nz, exit_exploration
 
+    ; IMPROVE: stack-based input table instead of static
+    call configure_inputs
     call iterate_input_table
 
     ld a, (position_changed)
@@ -340,7 +343,7 @@ find_interactable_around_avatar_found:
     ret
 
 on_position_changed:
-    call clear_message_area
+    call clear_exploration_message_area
     ; first check to see if we've stepped on something
     EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
     ld b, $01
@@ -398,13 +401,17 @@ on_interact:
 
     ret
 
-clear_message_area:
+clear_exploration_message_area::
     PRINT_AT_LOCATION 2, 21, blank_20_char_string
     PRINT_AT_LOCATION 3, 21, blank_20_char_string
     PRINT_AT_LOCATION 4, 21, blank_20_char_string
     PRINT_AT_LOCATION 5, 21, blank_20_char_string
     PRINT_AT_LOCATION 6, 21, blank_20_char_string
     PRINT_AT_LOCATION 7, 21, blank_20_char_string
-    PRINT_AT_LOCATION 8, 21, blank_20_char_string
+    PRINT_AT_LOCATION 8, 21, blank_19_char_string
+    ret
+
+configure_inputs:
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0
     ret
 .endlocal

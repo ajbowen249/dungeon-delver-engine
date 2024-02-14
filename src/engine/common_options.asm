@@ -96,3 +96,11 @@ opt_yes_no:
 .db 1
 .db default_options_flags
 .dw opt_yes_no_label_no
+
+opt_stub_label: .asciz "..."
+#define opt_stub_value 1
+
+opt_stub:
+.db opt_stub_value
+.db default_options_flags
+.dw opt_stub_label

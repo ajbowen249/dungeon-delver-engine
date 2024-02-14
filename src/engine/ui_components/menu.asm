@@ -21,7 +21,6 @@ menu_row: .db 0
 ; The menu is rendered starting at column, row BC. The column is the column where the arrow is drawn, and the text is
 ; one column to the right of that.
 ; Menu options are defined as a single byte value followed by the two-byte address of a string.
-; This is the same format as enums in "enums.asm"
 ; Destroys all registers
 menu_ui::
     ld (menu_address), hl
