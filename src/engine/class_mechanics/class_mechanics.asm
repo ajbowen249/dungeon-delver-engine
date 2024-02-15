@@ -58,6 +58,53 @@ roll_&ABILITY_check::
     ABILITY_CHECK_SUBROUTINE wisdom
     ABILITY_CHECK_SUBROUTINE charisma
 
+; Performs a check against skill A with player HL
+roll_ability_check::
+    ; IMPROVE: Table-based approach would burn HL
+    cp a, skill_index_str
+    jp z, check_str
+
+    cp a, skill_index_dex
+    jp z, check_dex
+
+    cp a, skill_index_con
+    jp z, check_con
+
+    cp a, skill_index_int
+    jp z, check_int
+
+    cp a, skill_index_wis
+    jp z, check_wis
+
+    cp a, skill_index_chr
+    jp z, check_chr
+
+    ret
+
+check_str:
+    call roll_strength_check
+    ret
+
+check_dex:
+    call roll_dexterity_check
+    ret
+
+check_con:
+    call roll_constitution_check
+    ret
+
+check_int:
+    call roll_intelligence_check
+    ret
+
+check_wis:
+    call roll_wisdom_check
+    ret
+
+check_chr:
+    call roll_charisma_check
+    ret
+
 .endlocal
 
 hit_die_array:

@@ -221,3 +221,6 @@ chr_label: .asciz "CHR"
 #define skill_index_int 3
 #define skill_index_wis 4
 #define skill_index_chr 5
+
+str_success: .asciz "Success"
+str_fail: .asciz "Fail"

@@ -3,12 +3,15 @@
 ; A should be 0-5, in typical STR, DEX... order
 ; The menu will be displayed at column, row offset DE.
 ; Like menu, this does not clear its own area.
+; A will be non-zero if the check passes, and zero if it fails.
 skill_check_player: .dw 0
 skill_check_skill: .db 0
 skill_check_required: .db 0
 skill_check_loc: .dw 0
+skill_check_result: .db 0
 
 check_str: .asciz " check: "
+roll_str: .asciz "Roll: "
 
 skill_check_ui::
     ld (skill_check_skill), a
@@ -36,5 +39,41 @@ skill_check_ui::
     ld hl, bc
     call print_string
 
+    ld hl, (skill_check_loc)
+    inc l
+    call rom_set_cursor
+    ld hl, roll_str
+    call print_string
+
+    ld a, (skill_check_skill)
+    ld hl, (skill_check_player)
+    call roll_ability_check
+    ld (skill_check_result), a
+    ld e, a
+    ld d, 0
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld hl, (skill_check_loc)
+    inc l
+    inc l
+    call rom_set_cursor
+
+    ld a, (skill_check_required)
+    ld b, a
+    ld a, (skill_check_result)
+    cp a, b
+    jp m, fail
+
+    ld hl, str_success
+    call print_string
+    ld a, 1
+    ret
+
+fail:
+    ld hl, str_fail
+    call print_string
+    ld a, 0
     ret
 .endlocal

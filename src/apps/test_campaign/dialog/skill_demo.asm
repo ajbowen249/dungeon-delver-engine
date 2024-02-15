@@ -50,7 +50,7 @@ dialog_skill_demo::
 
 pick_lock:
     ld a, skill_index_dex
-    ld b, 11
+    ld b, 18
     ld hl, test_character1
     ld d, 21
     ld e, 2
@@ -59,7 +59,7 @@ pick_lock:
 
 smash_chest:
     ld a, skill_index_str
-    ld b, 5
+    ld b, 12
     ld hl, test_character1
     ld d, 21
     ld e, 2
