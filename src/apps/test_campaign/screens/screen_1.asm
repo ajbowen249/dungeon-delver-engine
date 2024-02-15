@@ -41,7 +41,6 @@ screen_1_interact_callback: .dw on_interact
 
 empty_prompt: .db 0
 chest_prompt: .asciz "Open Chest"
-chest_response: .asciz "It's locked"
 
 test_npc_prompt .asciz "Test Fight"
 
@@ -81,7 +80,7 @@ on_interact:
     jp z, test_npc_interact
 
 chest_interact:
-    PRINT_AT_LOCATION 4, 21, chest_response
+    call dialog_skill_demo
     ld a, 0
     ret
 

@@ -206,3 +206,18 @@
 #define ec_none 0
 #define ec_door 1
 #define ec_encounter 2
+
+skill_labels:
+str_label: .asciz "STR"
+dex_label: .asciz "DEX"
+con_label: .asciz "CON"
+int_label: .asciz "INT"
+wis_label: .asciz "WIS"
+chr_label: .asciz "CHR"
+
+#define skill_index_str 0
+#define skill_index_dex 1
+#define skill_index_con 2
+#define skill_index_int 3
+#define skill_index_wis 4
+#define skill_index_chr 5

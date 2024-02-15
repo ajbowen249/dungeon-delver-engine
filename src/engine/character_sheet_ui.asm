@@ -1,13 +1,6 @@
 .local
 header: .asciz "Character Sheet: "
 
-str_label: .asciz "STR"
-dex_label: .asciz "DEX"
-con_label: .asciz "CON"
-int_label: .asciz "INT"
-wis_label: .asciz "WIS"
-chr_label: .asciz "CHR"
-
 character_loc: .dw 0
 counter: .db 0
 
