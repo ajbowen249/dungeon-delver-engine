@@ -387,6 +387,24 @@ on_position_changed_no_interactable:
     ret
 
 on_interact:
+    ; make sure it's still active (last interaction could have disabled it)
+    ld hl, (screen_data)
+    ld bc, sc_offs_interactables_start
+    add hl, bc
+    ld a, (near_interactable)
+    ld b, in_data_length
+    call get_array_item
+    ld b, 0
+    ld c, in_row_offset
+    add hl, bc
+    ld a, (hl)
+    cp a, 0
+    jp z, interact_bail
+    inc hl
+    ld a, (hl)
+    cp a, 0
+    jp z, interact_bail
+
     ld hl, (screen_data)
     ld bc, sc_offs_interact_callback
     add hl, bc
@@ -399,6 +417,7 @@ on_interact:
     ; a has our exit flag now
     ld (should_exit), a
 
+interact_bail:
     ret
 
 clear_exploration_message_area::
