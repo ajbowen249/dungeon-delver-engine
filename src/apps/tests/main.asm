@@ -80,6 +80,7 @@ rom_file_end:
 
 math_tests:
     call test_multiplication
+    call test_parse_hex
     ret
 
 test_multiplication:
@@ -107,6 +108,21 @@ test_multiplication:
     ld b, 24
     call mul_a_b
 .expect a = 24
+    ret
+
+test_parse_hex:
+    ld a, "0"
+    call parse_a_as_hex_digit
+.expect a = 0
+    ld a, "9"
+    call parse_a_as_hex_digit
+.expect a = 9
+    ld a, "A"
+    call parse_a_as_hex_digit
+.expect a = 10
+    ld a, "F"
+    call parse_a_as_hex_digit
+.expect a = 15
     ret
 
 .macro DECIMAL_TEST &D, &E, &D1, &D2, &D3

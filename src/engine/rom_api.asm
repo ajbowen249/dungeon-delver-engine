@@ -15,6 +15,10 @@
 #define rom_inlin $4644
 #define rom_enter_reverse_video $4269
 #define rom_exit_reverse_video $426E
+#define rom_setser $17E6
+#define rom_clscom $6ECB
+#define rom_rcvx $6D6D
+#define rom_rv232c $6D7E
 
 ; memory locations
 #define seconds_10s $F934

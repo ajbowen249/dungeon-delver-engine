@@ -150,3 +150,19 @@ decimal_count_loop_end:
     ret
 
 .endlocal
+
+.local
+; parses A into its numeric value
+parse_a_as_hex_digit::
+    ; ascii 0-9 is 48-57. A-F is 65-70
+    cp a, 58
+    jp m, val_0_9
+
+    ; it's A-F. Only subtract 55 (not 65) since A is 10
+    sub a, 55
+    ret
+
+val_0_9:
+    sub a, 48
+    ret
+.endlocal

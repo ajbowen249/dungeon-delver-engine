@@ -2,7 +2,7 @@
 20 'com stats
 21 cs$ = "COM:88N1E"
 22 'start address
-23 sa% = -16384
+23 sa% = -20480
 
 50 ad% = sa%
 60 open cs$ for input as 1
