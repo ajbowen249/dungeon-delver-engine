@@ -20,15 +20,15 @@ DDE is designed for systems with at least 24k of RAM (i.e, `21446` Bytes Free up
 
 Built into this project is a test campaign that flexes features of the engine. Other projects that wish to use this engine should be able to simply use `zasm` with the `--8080` argument and include `src/engine/dde.asm`.
 
-Only the raw binary is created for the test campaign, at `build/test_campaign.hex`. A build step that adds a `CO` file header is coming _Eventually™_. It is meant to be loaded at `$C000` (`49152`). This process will eventually be less painful.
+Only the raw binary is created for the test campaign, at `build/test_campaign.hex`. It is meant to be loaded at `$C000` (`49152`).
 
 Before either method, get into the BASIC prompt and run `clear 256, 49152`.
 
 ### Physical Model 100
 
-If you have a serial connection established with a PC running an application that can send ascii files, you can use the `loadhx.ba` BASIC program under `utils`. It will wait for an intel hex format file to be sent over `COM:88N1E` and `POKE` each byte into memory beginning at `$C000`. You'll want to run the `clear` command above before loading `loadhx` into BASIC. It will immediately start waiting for the first byte of the hex file when run, so start it before triggering file send.
+If you have a serial connection established with a PC running an application that can send ascii files, this repository includes a two-step process to transfer the campaign binary to it. For the first step, run `clear 256, 45056`, as we'll be using some higher memory than the campaign itself. Transfer the `loadhx.ba` BASIC program under `utils` to your machine and start it up. It will await an intel hex format file and begin poking it into `$B000` (`45056`). Send over `build/ldhx.hex`. Note that this first loader script is slow, and has only been proven to work consistently through [`Tera Term`](https://tera-term.en.softonic.com/) with a 50ms delay between characters. It will only be used to load the faster loader. When it is complete, an assembly-language version of essentially this same application will be loaded, and you can save it for easier re-use now with `savem "ldhx",45056,45560,45056`. Once this is complete, you'll want to delete the original `loadhx.do` file to make some room.
 
-> **Note:** This has only been tested with [`Tera Term`](https://tera-term.en.softonic.com/) and a 50ms delay between characters.
+Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$C000` (`49152`). This loader is much faster, and has proven stable with only a 5ms delay between characters.
 
 ### Virtual-T
 
