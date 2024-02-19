@@ -38,6 +38,9 @@
 #define ch_corner_lower_left $FE
 #define ch_corner_lower_right $FC
 
+#define ch_line_feed $0A
+#define ch_carriage_return $0D
+
 ; analogous mappings
 #charset map "┌" = $F0
 #charset map "┐" = $F2

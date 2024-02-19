@@ -6,11 +6,16 @@
     call main
 
 #define start_address $C000
+#include "../../engine/constants.asm"
 #include "../../engine/rom_api.asm"
 #include "../../engine/string.asm"
 
 loading_message: .asciz "Loading"
 done_message: .asciz "Done"
+newline:
+.db ch_line_feed
+.db ch_carriage_return
+.db 0
 
 expected_line_length: .db 0
 current_byte_index: .db 0
@@ -30,13 +35,22 @@ main:
     ld hl, loading_message
     call print_string
 
-    ld h, 1
-    ld l, 2
-    call rom_set_cursor
-
     call initialize_rs232
 
 main_read_loop:
+    ld h, 1
+    ld l, 1
+    call rom_set_cursor
+
+    ld hl, newline
+    call print_string
+    ld hl, (writing_address)
+    ld de, hl
+    ld bc, glob_de_to_hex_str_buffer
+    call de_to_hex_str
+    ld hl, bc
+    call print_string
+
     call read_line_header
     ld a, (expected_line_length)
     ld (current_sum), a ; sum actually includes line length
@@ -91,10 +105,11 @@ line_read_loop:
     cpl
     inc a
     ld (current_sum), a
-    ld b, a
 
     ; read the checksum
     call read_hex_pair
+    ld b, a
+    ld (current_sum), a
     cp a, b
     call nz, checksum_warning
 
@@ -126,11 +141,6 @@ colon_loop:
 
     call read_hex_pair
     ld (expected_line_length), a
-    ld d, 0
-    ld e, a
-    call de_to_decimal_string
-    ld hl, bc
-    call print_string
     ret
 
 read_hex_pair:
