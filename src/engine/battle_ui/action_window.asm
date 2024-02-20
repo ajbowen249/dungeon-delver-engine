@@ -12,21 +12,23 @@ miss_str: .asciz " Miss"
 
 should_end_turn: .db 0
 current_menu_address: .dw 0
+current_menu_option_count: .db 0
 character_in_turn: .dw 0
+menu_proc_func: .dw 0
 
 ; shows menus needed for the player to take actions on their turn, and returns when their turn is over
 execute_player_turn:
 
     ; enable all options since this is the start of the turn
     ld a, default_options_flags
-    ld (bm_root_move_flags), a
     ld (bm_root_attack_flags), a
+    ld (bm_root_cast_flags), a
+    ld (bm_root_move_flags), a
 
     ld a, 0
     ld (should_end_turn), a
 
-    ld hl, opt_bm_root
-    ld (current_menu_address), hl
+    call set_up_root_menu
 
     call get_character_in_turn
     ld (character_in_turn), hl
@@ -34,7 +36,8 @@ execute_player_turn:
 menu_loop:
     call clear_action_window
     call show_selected_menu
-    call process_option
+    ld hl, (menu_proc_func)
+    call call_hl
 
     ld a, (should_end_turn)
     cp a, 0
@@ -71,8 +74,8 @@ show_selected_menu:
     ld b, action_menu_column
     ld c, 2
 
-    ld a, opt_bm_root_option_count
-    ld hl, opt_bm_root
+    ld a, (current_menu_option_count)
+    ld hl, (current_menu_address)
     ld bc, consolidated_battle_menu
 
     call consolidate_menu_hl_bc
@@ -83,22 +86,21 @@ show_selected_menu:
 
     ret
 
-process_option:
-    ld b, bm_option_end_turn_value
-    cp a, b
+process_root_option:
+    cp a, bm_option_end_turn_value
     jp z, handle_end_turn
 
-    ld b, bm_option_move_value
-    cp a, b
+    cp a, bm_option_move_value
     jp z, handle_move
 
-    ld b, bm_option_inspect_value
-    cp a, b
+    cp a, bm_option_inspect_value
     jp z, handle_inspect
 
-    ld b, bm_option_attack_value
-    cp a, b
+    cp a, bm_option_attack_value
     jp z, handle_attack
+
+    cp a, bm_option_cast_value
+    jp z, handle_cast
 
     ret
 
@@ -283,4 +285,59 @@ non_player_killed:
 battle_done:
     ld a, 1
     ld (should_end_turn), a
+    ret
+
+handle_cast:
+    ld a, spell_menu_total_options
+    ld (current_menu_option_count), a
+
+    ld hl, spell_menu_root
+    ld (current_menu_address), hl
+
+    ld hl, process_cast_option
+    ld (menu_proc_func), hl
+    ret
+
+process_cast_option:
+    call select_and_try_hit
+    call select_root
+    ret
+
+set_up_root_menu:
+    call get_character_in_turn
+    call configure_spell_menu
+    cp a, 0
+    jp z, disable_cast
+
+    ld a, default_options_flags
+    jp select_root
+
+disable_cast:
+    ld a, 0
+
+select_root:
+    ld (bm_root_cast_flags), a
+    ld hl, opt_bm_root
+    ld (current_menu_address), hl
+
+    ld a, opt_bm_root_option_count
+    ld (current_menu_option_count), a
+
+    ld hl, process_root_option
+    ld (menu_proc_func), hl
+    ret
+
+select_and_try_hit:
+    ld a, (party_size) ; start at first enemy
+    ld (last_inspected_index), a
+    call inspect_ui
+
+    call clear_message_rows
+    ld h, 1
+    ld l, 7
+    call rom_set_cursor
+
+    ld hl, hit_roll_str
+    call print_string
+
     ret

@@ -1,5 +1,6 @@
 #include "./class_mechanics_common.asm"
 #include "./monsters.asm"
+#include "./spells.asm"
 
 ; each get_character_x function takes a pointer to a player data structure in HL and returns in A the total value for that
 ; item, including any and all bonuses atop the core stat. All destroy HL
