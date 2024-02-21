@@ -164,19 +164,11 @@ handle_attack:
     ld l, 8
     call rom_set_cursor
 
-    ld hl, damage_roll_str
-    call print_string
-
     ld hl, (character_in_turn)
     call get_damage_value
     ld (damage_result), a
-    ld d, 0
-    ld e, a
-    call de_to_decimal_string
-    ld hl, bc
-    call print_string
 
-    call deal_damage
+    call handle_damage_result
 
 attack_no_hit:
     ret
@@ -309,7 +301,11 @@ process_cast_option:
 
     ld hl, hit_str
     call print_string
-    jp process_cast_done
+
+    ld h, 23
+    ld l, 7
+    call rom_set_cursor
+    jp process_cast_deal_damage
 
 enemy_saved:
     ld hl, saved_str
@@ -320,7 +316,20 @@ cast_ranged_spell:
     ld hl, get_ranged_spell_attack_bonus
     ld (hit_bonus_func), hl
     call try_hit_selected_enemy
-    ; TODO: apply damage
+
+process_cast_deal_damage:
+    ld h, 1
+    ld l, 8
+    call rom_set_cursor
+
+    ld hl, (character_in_turn)
+    ld b, 1
+    ld a, (selected_spell)
+    call get_spell_damage_dice
+    call roll_b_a
+    ld (damage_result), a
+
+    call handle_damage_result
 
 process_cast_done:
     call select_root
@@ -420,4 +429,18 @@ select_enemy:
 
 no_bonus:
     ld a, 0
+    ret
+
+handle_damage_result:
+    ld hl, damage_roll_str
+    call print_string
+
+    ld a, (damage_result)
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    call deal_damage
     ret

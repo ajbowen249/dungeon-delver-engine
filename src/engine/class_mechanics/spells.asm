@@ -93,6 +93,33 @@ get_spell_check_type::
 .endlocal
 
 .local
+spell_damage_dice_table:
+.db 0
+.db 0
+firebolt_damage_dice: .db 1
+firebolt_damage_die: .db 10
+acid_splash_damage_dice: .db 1
+acid_splash_damage_die: .db 6
+ray_of_frost_damage_dice: .db 1
+ray_of_frost_damage_die: .db 8
+sacred_flame_damage_dice: .db 1
+sacred_flame_damage_die: .db 8
+
+; gets the damage dice for spell A, level B, player HL
+; returns count in B and die in A (for roll_b_a)
+; Note: currently only returns base-level info, just reserving A, B and HL for the future
+get_spell_damage_dice::
+    ld b, 2
+    ld hl, spell_damage_dice_table
+    call get_array_item
+    ld a, (hl)
+    ld b, a
+    inc hl
+    ld a, (hl)
+    ret
+.endlocal
+
+.local
 ; for the player in BC, returns their spell attack bonus
 get_ranged_spell_attack_bonus::
     ld hl, bc
