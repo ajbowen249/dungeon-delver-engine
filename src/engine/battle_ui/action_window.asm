@@ -143,7 +143,7 @@ handle_inspect:
     call inspect_ui
     ret
 
-hit_result: .db 0
+attack_result: .db 0
 damage_result: .db 0
 handle_attack:
     ; TODO: Forbid attack if both players are in the back, and apply disadvantage if one is in the back.
@@ -163,8 +163,8 @@ handle_attack:
     call print_string
 
     ld hl, (character_in_turn)
-    call roll_hit_dice
-    ld (hit_result), a
+    call roll_d20
+    ld (attack_result), a
 
     cp a, 1
     jp z, critical_miss
@@ -175,7 +175,7 @@ handle_attack:
     ; TODO: Apply attack bonuses here.
     ; The raw roll needs to be separate as critical hit/miss is only dice-based.
 
-    ld a, (hit_result)
+    ld a, (attack_result)
     ld d, 0
     ld e, a
     call de_to_decimal_string
@@ -185,7 +185,7 @@ handle_attack:
     ld hl, (selected_combatant_location)
     LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_armor_class
     ld b, a
-    ld a, (hit_result)
+    ld a, (attack_result)
     cp a, b
     jp z, hit
     jp m, miss

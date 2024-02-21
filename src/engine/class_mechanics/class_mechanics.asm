@@ -297,13 +297,6 @@ monster_dice:
 .endlocal
 
 .local
-roll_hit_dice::
-    call get_hit_dice
-    call roll_b_a
-    ret
-.endlocal
-
-.local
 damage_table:
 .dw get_fighter_damage
 .dw get_wizard_damage
