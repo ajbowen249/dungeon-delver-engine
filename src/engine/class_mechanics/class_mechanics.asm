@@ -1,5 +1,6 @@
 #include "./class_mechanics_common.asm"
 #include "./monsters.asm"
+#include "./spells.asm"
 
 ; each get_character_x function takes a pointer to a player data structure in HL and returns in A the total value for that
 ; item, including any and all bonuses atop the core stat. All destroy HL
@@ -43,11 +44,7 @@ roll_&ABILITY_check::
     call roll_d20
 
     ld a, (bonus_backup)
-    ld b, 0
-    ld c, a
-    add hl, bc
-
-    ld a, l
+    add a, l
     ret
 .endm
 
@@ -292,13 +289,6 @@ get_hit_dice::
 monster_dice:
     call get_monster_hit_die
     ld b, d
-    ret
-.endlocal
-
-.local
-roll_hit_dice::
-    call get_hit_dice
-    call roll_b_a
     ret
 .endlocal
 
