@@ -4,11 +4,14 @@
 blank_window_string: .asciz "                               "
 blank_message_row_string: .asciz "                                       "
 turn_header: .asciz "'s turn"
-hit_roll_str: .asciz "Attack Roll: "
+attack_roll_str: .asciz "Attack Roll: "
 damage_roll_str: .asciz "Damage Roll: "
+saving_throw_str: .asciz "Saving Throw: "
+spell_save_str: .asciz "Spell Save Bonus: "
 critical_str: .asciz "Critical"
 hit_str: .asciz " Hit"
 miss_str: .asciz " Miss"
+saved_str: .asciz " Saved"
 
 should_end_turn: .db 0
 current_menu_address: .dw 0
@@ -150,61 +153,12 @@ handle_attack:
     ld a, 0
     ld (bm_root_attack_flags), a
 
-    ld a, (party_size) ; start at first enemy
-    ld (last_inspected_index), a
-    call inspect_ui
-
-    call clear_message_rows
-    ld h, 1
-    ld l, 7
-    call rom_set_cursor
-
-    ld hl, hit_roll_str
-    call print_string
-
-    ld hl, (character_in_turn)
-    call roll_d20
-    ld (attack_result), a
-
-    cp a, 1
-    jp z, critical_miss
-
-    cp a, 20
-    jp z, critical_hit
-
-    ; TODO: Apply attack bonuses here.
-    ; The raw roll needs to be separate as critical hit/miss is only dice-based.
-
-    ld a, (attack_result)
-    ld d, 0
-    ld e, a
-    call de_to_decimal_string
-    ld hl, bc
-    call print_string
-
-    ld hl, (selected_combatant_location)
-    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_armor_class
-    ld b, a
-    ld a, (attack_result)
-    cp a, b
-    jp z, hit
-    jp m, miss
-    jp hit
-
-critical_miss:
-    ld hl, critical_str
-    call print_string
-miss:
-    ld hl, miss_str
-    call print_string
-    ret
-
-critical_hit:
-    ld hl, critical_str
-    call print_string
-hit:
-    ld hl, hit_str
-    call print_string
+    call select_enemy
+    ld hl, no_bonus ; TODO: attack roll bonuses
+    ld (hit_bonus_func), hl
+    call try_hit_selected_enemy
+    cp a, 0
+    jp z, attack_no_hit
 
     ld h, 1
     ld l, 8
@@ -224,6 +178,7 @@ hit:
 
     call deal_damage
 
+attack_no_hit:
     ret
 
 deal_damage:
@@ -298,8 +253,76 @@ handle_cast:
     ld (menu_proc_func), hl
     ret
 
+selected_spell: .db 0
+saving_throw: .db 0
 process_cast_option:
-    call select_and_try_hit
+    ld (selected_spell), a
+    call select_enemy
+
+    ld a, (selected_spell)
+    call get_spell_check_type
+    cp a, spell_type_ranged
+    jp z, cast_ranged_spell
+
+    ; enemy needs to make an A saving throw
+    ld hl, (selected_character_location)
+    call roll_ability_check
+    ld (saving_throw), a
+
+    call clear_message_rows
+    ld h, 1
+    ld l, 7
+    call rom_set_cursor
+
+    ld hl, spell_save_str
+    call print_string
+
+    ld hl, (character_in_turn)
+    call get_spell_save_bonus
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld h, 1
+    ld l, 8
+    call rom_set_cursor
+
+    ld hl, saving_throw_str
+    call print_string
+
+    ld a, (saving_throw)
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld hl, (character_in_turn)
+    call get_spell_save_bonus
+    ld b, a
+    ld a, (saving_throw)
+    cp a, b
+    jp p, enemy_saved
+    jp z, enemy_saved
+
+    ld hl, hit_str
+    call print_string
+    jp process_cast_done
+
+enemy_saved:
+    ld hl, saved_str
+    call print_string
+    jp process_cast_done
+
+cast_ranged_spell:
+    ld hl, get_ranged_spell_attack_bonus
+    ld (hit_bonus_func), hl
+    call try_hit_selected_enemy
+    ; TODO: apply damage
+
+process_cast_done:
     call select_root
     ret
 
@@ -327,17 +350,74 @@ select_root:
     ld (menu_proc_func), hl
     ret
 
-select_and_try_hit:
-    ld a, (party_size) ; start at first enemy
-    ld (last_inspected_index), a
-    call inspect_ui
+hit_bonus_func: .dw 0
 
+try_hit_selected_enemy:
     call clear_message_rows
     ld h, 1
     ld l, 7
     call rom_set_cursor
 
-    ld hl, hit_roll_str
+    ld hl, attack_roll_str
     call print_string
 
+    call roll_d20
+    ld (attack_result), a
+
+    cp a, 1
+    jp z, critical_miss
+
+    cp a, 20
+    jp z, critical_hit
+
+    ld hl, (character_in_turn)
+    ld bc, hl
+    ld hl, (hit_bonus_func)
+    call call_hl
+
+    ld b, a
+    ld a, (attack_result)
+    add a, b
+    ld (attack_result), a
+
+    ld a, (attack_result)
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld hl, (selected_combatant_location)
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_armor_class
+    ld b, a
+    ld a, (attack_result)
+    cp a, b
+    jp z, hit
+    jp m, miss
+    jp hit
+
+critical_miss:
+    ld hl, critical_str
+    call print_string
+miss:
+    ld hl, miss_str
+    call print_string
+    ld a, 0
+    ret
+
+critical_hit:
+    ld hl, critical_str
+    call print_string
+hit:
+    ld a, 1
+    ret
+
+select_enemy:
+    ld a, (party_size) ; start at first enemy
+    ld (last_inspected_index), a
+    call inspect_ui
+    ret
+
+no_bonus:
+    ld a, 0
     ret

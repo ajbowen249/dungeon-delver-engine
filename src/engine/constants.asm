@@ -77,6 +77,12 @@
 #charset map "α" = ch_stick_person_2
 
 ; SRD 5.1 stuff
+#define ability_str 0
+#define ability_dex 1
+#define ability_con 2
+#define ability_int 3
+#define ability_wis 4
+#define ability_chr 5
 #define ability_max_value 20
 
 ; none yet implemented

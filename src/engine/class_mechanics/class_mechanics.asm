@@ -44,11 +44,7 @@ roll_&ABILITY_check::
     call roll_d20
 
     ld a, (bonus_backup)
-    ld b, 0
-    ld c, a
-    add hl, bc
-
-    ld a, l
+    add a, l
     ret
 .endm
 
