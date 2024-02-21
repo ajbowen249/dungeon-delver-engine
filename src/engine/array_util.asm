@@ -162,11 +162,11 @@ swap_elements_a_b:
 .endlocal
 
 .local
-copy_counter: .db 0
 ; copies A bytes from HL to BC
-; uses d
+; uses de
 copy_hl_bc::
-    ld (copy_counter), a
+    ld d, a
+    push de
 
 copy_loop:
     ld de, hl
@@ -177,10 +177,13 @@ copy_loop:
     inc hl
     inc bc
 
-    ld a, (copy_counter)
-    dec a
-    ld (copy_counter), a
+    pop de
+    dec d
+    ld a, d
+    push de
     cp a, 0
     jp nz, copy_loop
+
+    pop de
     ret
 .endlocal
