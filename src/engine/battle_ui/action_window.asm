@@ -152,6 +152,7 @@ handle_attack:
     ; TODO: Forbid attack if both players are in the back, and apply disadvantage if one is in the back.
     ld a, 0
     ld (bm_root_attack_flags), a
+    ld (bm_root_cast_flags), a
 
     call select_enemy
     ld hl, no_bonus ; TODO: attack roll bonuses
@@ -271,7 +272,10 @@ process_cast_deal_damage:
     call handle_damage_result
 
 process_cast_done:
-    call select_root
+    call set_up_root_menu
+    ld a, 0
+    ld (bm_root_cast_flags), a
+    ld (bm_root_attack_flags), a
     ret
 
 set_up_root_menu:
