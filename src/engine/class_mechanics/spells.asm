@@ -122,9 +122,10 @@ get_spell_damage_dice::
 .local
 ; for the player in BC, returns their spell attack bonus
 get_ranged_spell_attack_bonus::
+    push bc
     ld hl, bc
-    ld (resolving_character), hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
+    pop hl
 
     cp a, class_wizard
     jp z, wizard_spell_bonus
@@ -137,13 +138,11 @@ get_ranged_spell_attack_bonus::
 
 wizard_spell_bonus:
     ; TODO: proficiency bonus
-    ld hl, (resolving_character)
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_int
     ret
 
 cleric_spell_bonus:
     ; TODO: proficiency bonus
-    ld hl, (resolving_character)
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_wis
     ret
 .endlocal
@@ -151,8 +150,9 @@ cleric_spell_bonus:
 .local
 ; for the player in HL, returns their spell save bonus
 get_spell_save_bonus::
-    ld (resolving_character), hl
+    push hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
+    pop hl
 
     cp a, class_wizard
     jp z, wizard_spell_save
@@ -165,7 +165,6 @@ get_spell_save_bonus::
 
 wizard_spell_save:
     ; TODO: proficiency bonus
-    ld hl, (resolving_character)
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_int
     ld b, a
     ld a, 8
@@ -174,7 +173,6 @@ wizard_spell_save:
 
 cleric_spell_save:
     ; TODO: proficiency bonus
-    ld hl, (resolving_character)
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_wis
     ld b, a
     ld a, 8
