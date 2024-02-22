@@ -294,7 +294,7 @@ campaign_monster_damage_table::
 
 ; returns pre-rolled or looked-up damage value in A
 get_damage_value::
-    ld (resolving_character), hl
+    push hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, 2
     ld hl, damage_table
@@ -302,7 +302,7 @@ get_damage_value::
     ld bc, (hl)
     ld de, bc
 
-    ld (resolving_character), hl
+    pop hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
 
     ld hl, de
