@@ -73,7 +73,7 @@ get_monster_ac::
 .endlocal
 
 .local
-; needs monster in HL and class in a
+; needs class in a
 get_monster_hp::
     ; half hit die value times level plus 1 (aka hit dice count)
     call get_monster_hit_die
@@ -82,14 +82,19 @@ get_monster_hp::
     inc a
     ld d, a
 
-    ld hl, (resolving_character)
+    ; get_hit_points calls this with the character we're resolving on the stack
+    ; shuffle it out, preserving the return address.
+    pop bc
+    pop hl
+    push bc
+    push hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
     ld b, d
     call mul_a_b
     ld d, a
 
     ; plus constitution modifier (not overall value)
-    ld hl, (resolving_character)
+    pop hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, class_cutoff
     sub a, b

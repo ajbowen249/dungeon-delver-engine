@@ -203,7 +203,7 @@ get_barbarian_ac:
 ; TODO: This can overflow at the moment on high enough levels! Needs 16-bit math!!!
 resolving_contitution: .db 0
 get_hit_points::
-    ld (resolving_character), hl
+    push hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     ld b, a ; b has original class
     ld c, monster_mask
@@ -218,16 +218,19 @@ get_hit_points::
     ld a, (hl)
     ld d, a ; d has hit dice
 
-    ld hl, (resolving_character)
+    pop hl
+    push hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_con
     ld (resolving_contitution), a
 
-    ld hl, (resolving_character)
+    pop hl
+    push hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
     ld e, a ; e has level
     cp a, 1
     jp nz, higher_level_hit_points
 
+    pop hl
     ld a, (resolving_contitution)
     add a, d
     ret
@@ -256,11 +259,13 @@ higher_level_hit_points:
     ld a, (resolving_contitution)
     add a, b
 
+    pop hl
     ret
 
 monster_hp:
-    ld hl, (resolving_character)
+    ld a, b
     call get_monster_hp
+    ; get_monster_hp will pop hl out for us, so no need to re-pop
     ret
 .endlocal
 
