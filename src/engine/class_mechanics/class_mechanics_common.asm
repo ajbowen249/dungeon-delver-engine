@@ -1,5 +1,3 @@
-resolving_character: .dw 0
-
 .macro POINT_HL_TO_ATTR &OFFSET
     ld bc, &OFFSET
     add hl, bc

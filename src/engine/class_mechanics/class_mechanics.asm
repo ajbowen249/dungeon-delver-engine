@@ -144,8 +144,9 @@ campaign_class_2_ac_subroutine_pointer:: .dw 0
 campaign_class_3_ac_subroutine_pointer:: .dw 0
 
 get_character_armor_class::
-    ld (resolving_character), hl
+    push hl
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
+    pop de
     ld b, a
     ld c, monster_mask
     and a, c
@@ -163,7 +164,7 @@ get_character_armor_class::
     ret
 
 monster_ac:
-    ld hl, (resolving_character)
+    ld hl, de
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
     call get_monster_ac
     ret
@@ -173,13 +174,13 @@ get_fighter_ac:
     ret
 
 get_wizard_ac:
-    ld hl, (resolving_character)
+    ld hl, de
     call get_character_dexterity
     add a, 10
     ret
 
 get_cleric_ac:
-    ld hl, (resolving_character)
+    ld hl, de
     call get_character_dexterity
     cp a, 2 ; Medium armor, max 2 bonus
     jp z, cleric_apply_medium_armor
@@ -195,7 +196,7 @@ cleric_apply_medium_armor:
     ret
 
 get_barbarian_ac:
-    ld hl, (resolving_character)
+    ld hl, de
     call get_character_dexterity
     add a, 11 ; Leather Armor
     ret
