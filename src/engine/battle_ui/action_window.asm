@@ -31,11 +31,13 @@ execute_player_turn:
     ld a, 0
     ld (should_end_turn), a
 
-    call set_up_root_menu
-
     call get_character_in_turn
     ld (character_in_turn), hl
 
+    call is_party_turn
+    jp nz, enemy_turn
+
+    call set_up_root_menu
 menu_loop:
     call clear_action_window
     call show_selected_menu
@@ -45,6 +47,41 @@ menu_loop:
     ld a, (should_end_turn)
     cp a, 0
     jp z, menu_loop
+    ret
+
+enemy_turn:
+    call clear_action_window
+    call print_turn_header
+
+    call get_combatant_in_turn
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    ld b, $04
+    and a, b
+    cp a, 0
+    jp z, enemy_turn_pick_target ; already up front
+
+    ld hl, (character_in_turn)
+    call should_enemy_move_front
+    cp a, 0
+    jp z, enemy_turn_pick_target ; shouldn't move up
+
+    call handle_move
+
+enemy_turn_pick_target:
+    call get_first_living_player
+    ld b, a
+    push bc
+    call get_combatant_at_index_a
+    ld (selected_combatant_location), hl
+
+    pop bc
+    ld a, b
+    call get_character_at_index_a
+    ld (selected_character_location), hl
+
+    call attack_selected_enemy
+    call await_any_keypress
+    call clear_message_rows
 
     ret
 
@@ -62,7 +99,7 @@ clear_message_rows:
     PRINT_AT_LOCATION 8, 1, blank_message_row_string
     ret
 
-show_selected_menu:
+print_turn_header:
     ld h, action_menu_column
     ld l, 1
     call rom_set_cursor
@@ -73,6 +110,10 @@ show_selected_menu:
 
     ld hl, turn_header
     call print_string
+    ret
+
+show_selected_menu:
+    call print_turn_header
 
     ld b, action_menu_column
     ld c, 2
@@ -155,23 +196,7 @@ handle_attack:
     ld (bm_root_cast_flags), a
 
     call select_enemy
-    ld hl, no_bonus ; TODO: attack roll bonuses
-    ld (hit_bonus_func), hl
-    call try_hit_selected_enemy
-    cp a, 0
-    jp z, attack_no_hit
-
-    ld h, 1
-    ld l, 8
-    call rom_set_cursor
-
-    ld hl, (character_in_turn)
-    call get_damage_value
-    ld (damage_result), a
-
-    call handle_damage_result
-
-attack_no_hit:
+    call attack_selected_enemy
     ret
 
 handle_cast:
@@ -445,4 +470,57 @@ non_player_killed:
 battle_done:
     ld a, 1
     ld (should_end_turn), a
+    ret
+
+get_first_living_player:
+    ld bc, 0
+    push bc
+
+get_first_living_player_loop:
+    pop bc
+    push bc
+    ld a, b
+    call get_combatant_at_index_a
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offst_hit_points
+    cp a, 0
+    jp z, player_dead
+
+    pop bc
+    ld a, b
+    ret
+
+player_dead:
+    pop bc
+    inc b
+    push bc
+
+    ld b, a
+    ld a, (party_size)
+    cp a, b
+    jp z, no_players
+    jp get_first_living_player_loop
+
+no_players:
+    pop bc
+    ld a, 0
+    ret
+
+attack_selected_enemy:
+    ld hl, no_bonus ; TODO: attack roll bonuses
+    ld (hit_bonus_func), hl
+    call try_hit_selected_enemy
+    cp a, 0
+    jp z, attack_no_hit
+
+    ld h, 1
+    ld l, 8
+    call rom_set_cursor
+
+    ld hl, (character_in_turn)
+    call get_damage_value
+    ld (damage_result), a
+
+    call handle_damage_result
+
+attack_no_hit:
     ret

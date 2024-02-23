@@ -44,3 +44,11 @@
 call_hl:
     jp hl
     ret
+
+.local
+await_any_keypress::
+loop:
+    call rom_kyread
+    jp z, loop
+    ret
+.endlocal

@@ -193,3 +193,10 @@ enemy_dead:
 
     ret
 
+; returns 0 if the player in turn is in the player party, and non-zero if it's an enemy
+is_party_turn:
+    call get_combatant_in_turn
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    ld b, $01
+    and a, b
+    ret

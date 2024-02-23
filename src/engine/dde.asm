@@ -16,6 +16,7 @@ dde_version_build: .db 1
 #include "dice.asm"
 #include "string.asm"
 #include "class_mechanics/class_mechanics.asm"
+#include "enemy_logic/enemy_logic.asm"
 
 #include "./ui_components/ui_components.asm"
 
