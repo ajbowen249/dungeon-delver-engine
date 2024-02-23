@@ -63,6 +63,7 @@ battle_loop_continue:
     jp battle_loop
 
 on_player_party_dead:
+    ld a, 0
     ret
 
 on_enemy_party_dead:
@@ -77,6 +78,7 @@ on_enemy_party_dead:
 
     call await_any_key
 
+    ld a, 1
     ret
 
 init_screen_graphics:
