@@ -87,7 +87,7 @@ display_initiative_order_loop:
     ld a, (initiative_counter)
     inc a
 
-    ld h, 24
+    ld h, 25
     ld l, a
     call rom_set_cursor
 

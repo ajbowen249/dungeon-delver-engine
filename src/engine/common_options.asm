@@ -27,6 +27,20 @@ opt_class:
 .db default_options_flags
 .dw opt_class_m_badger_label
 
+.macro CAMPAIGN_CLASS &IDX
+campaign_class_&IDX:
+campaign_class_&IDX_value: .db 0
+campaign_class_&IDX_flags: .db 0
+campaign_class_&IDX_label: .dw 0
+.endm
+
+campaign_classes:
+    CAMPAIGN_CLASS 0
+    CAMPAIGN_CLASS 1
+    CAMPAIGN_CLASS 2
+    CAMPAIGN_CLASS 3
+    CAMPAIGN_CLASS 4
+
 opt_race_monster_label: .asciz "Monster"
 opt_race_human_label: .asciz "Human"
 opt_race_elf_label: .asciz "Elf"

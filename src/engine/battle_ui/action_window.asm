@@ -256,12 +256,14 @@ cast_ranged_spell:
     ld hl, get_ranged_spell_attack_bonus
     ld (hit_bonus_func), hl
     call try_hit_selected_enemy
+    cp a, 0
+    jp z, process_cast_done
 
-process_cast_deal_damage:
     ld h, 1
     ld l, 8
     call rom_set_cursor
 
+process_cast_deal_damage:
     ld hl, (character_in_turn)
     ld b, 1
     ld a, (selected_spell)
