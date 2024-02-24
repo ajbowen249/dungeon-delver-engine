@@ -54,16 +54,23 @@
 #charset map "┤" = $F9
 #charset map "┼" = $FA
 
-#charset map "╔" = $EB
-#charset map "╗" = $EC
-#charset map "╚" = $ED
-#charset map "╝" = $EE
+#charset map "▛" = $EB
+#charset map "▜" = $EC
+#charset map "▙" = $ED
+#charset map "▟" = $EE
 #charset map "▌" = $E9
 #charset map "▐" = $EA
 #charset map "▀" = $E7
 #charset map "▄" = $E8
 #charset map "█" = $EF
-
+#charset map "▘" = $E1
+#charset map "▝" = $E2
+#charset map "▗" = $E4
+#charset map "▖" = $E3
+#charset map "▚" = $E5
+#charset map "▞" = $E6
+#charset map "▔" = $E7
+#charset map "▂" = $E8
 #charset map "▓" = $FF
 
 #charset map "◤" = ch_corner_upper_left
