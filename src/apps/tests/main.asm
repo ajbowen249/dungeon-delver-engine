@@ -293,6 +293,14 @@ test_class_mechanics:
     ld hl, monster_hobgoblin
     call get_hit_points
 .expect a = 26
+    ld hl, monster_goblin
+    call get_hit_points
+.expect a = 4
+    ld a, 3
+    ld (monster_goblin_level), a
+    ld hl, monster_goblin
+    call get_hit_points
+.expect a = 12
     ret
 
 test_start:

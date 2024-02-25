@@ -313,7 +313,8 @@ damage_table:
 .dw get_placeholder_damage
 .dw get_m_badger_damage
 .dw get_m_hobgoblin_damage
-.block 2 * 14 ; leave space for another 14 (16 total) built-in creatures, and another 16 campaign monsters
+.dw get_m_goblin_damage
+.block 2 * 13 ; leave space for another 13 (16 total) built-in creatures, and another 16 campaign monsters
 campaign_monster_damage_table::
 .block 2 * 16
 
@@ -373,6 +374,13 @@ get_m_badger_damage:
 get_m_hobgoblin_damage:
     ; longsword
     call roll_d8
+    inc a
+    ret
+
+get_m_goblin_damage:
+    ; scimitar
+    call roll_d6
+    inc a
     inc a
     ret
 .endlocal

@@ -123,6 +123,7 @@
 #define class_cutoff 16
 #define class_m_badger 16
 #define class_m_hobgoblin 17
+#define class_m_goblin 18
 #define campaign_monster_cutoff 32
 #define monster_mask $F0
 

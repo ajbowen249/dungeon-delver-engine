@@ -11,14 +11,16 @@ hit_die_gargantuan: .db 20
 monster_size_table:
 monster_size_badger: .db monster_size_tiny
 monster_size_hobgoblin: .db monster_size_medium
-.block 14 ; leave space for another 14 (16 total) built-in creatures, and another 16 campaign monsters
+monster_size_goblin: .db monster_size_small
+.block 13 ; leave space for another 13 (16 total) built-in creatures, and another 16 campaign monsters
 campaign_monster_size_table::
 .block 16
 
 monster_ac_table:
 monster_ac_badger: .db 4
 monster_ac_hobgoblin: .db 18
-.block 14 ; leave space for another 14 (16 total) built-in creatures, and another 16 campaign monsters
+monster_ac_goblin: .db 15
+.block 13 ; leave space for another 14 (16 total) built-in creatures, and another 16 campaign monsters
 campaign_monster_ac_table::
 .block 16
 
@@ -35,7 +37,8 @@ modifier_&NAME_cha: .db &CHA
 monster_modifiers_table:
     MONSTER_MODIFIERS badger, -3, 0, 1, -4, 1, -3
     MONSTER_MODIFIERS hobgoblin, 1, 1, 1, 0, 0, -1
-.block 14 * modifier_block_size ; leave space for another 14 (16 total) built-in creatures, and 16 campaign monsters
+    MONSTER_MODIFIERS goblin, -1, 2, 0, 0, -1, -1
+.block 13 * modifier_block_size ; leave space for another 13 (16 total) built-in creatures, and 16 campaign monsters
 campaign_monster_modifiers_table::
 .block 16 * modifier_block_size
 
@@ -46,6 +49,12 @@ campaign_monster_modifiers_table::
 .db 0
 
     DEFINE_PLAYER monster_hobgoblin, 13, 12, 12, 10, 10, 9, race_monster, class_m_hobgoblin, 1, "Hobgoblin"
+.db 0
+
+    DEFINE_PLAYER monster_goblin, 8, 14, 10, 10, 8, 8, race_monster, class_m_goblin, 1, "Goblin"
+.db 0
+.db 0
+.db 0
 .db 0
 
 .local
