@@ -24,3 +24,32 @@
 #define seconds_10s $F934
 #define seconds_1s $F933
 #define inlin_result $F685
+
+.macro PRINT_AT_LOCATION &ROW, &COL, &STRING_ADDR
+    ld h, &COL
+    ld l, &ROW
+    call rom_set_cursor
+
+    ld hl, &STRING_ADDR
+    call print_string
+.endm
+
+; Prints the string starting at HL
+; Destroys HL, a
+.local
+print_string::
+loop:
+    ld a, (hl) ; read character
+    cp a, 0    ; if it's zero...
+    jp z, return ; ...we're done
+    call rom_print_a
+    inc hl
+    jp loop
+return:
+    ret
+.endlocal
+
+newline_string:
+.db ch_line_feed
+.db ch_carriage_return
+.db 0

@@ -14,7 +14,9 @@ dde_version_build: .db 1
 #include "rom_api.asm"
 #include "random.asm"
 #include "dice.asm"
-#include "string.asm"
+#include "decimal_string.asm"
+#include "hex_string.asm"
+#include "strings.asm"
 #include "class_mechanics/class_mechanics.asm"
 #include "enemy_logic/enemy_logic.asm"
 

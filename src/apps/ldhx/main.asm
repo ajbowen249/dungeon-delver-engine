@@ -8,20 +8,14 @@
 #define start_address $C000
 #include "../../engine/constants.asm"
 #include "../../engine/rom_api.asm"
-#include "../../engine/string.asm"
+#include "../../engine/hex_string.asm"
 
 loading_message: .asciz "Loading"
 done_message: .asciz "Done"
-newline:
-.db ch_line_feed
-.db ch_carriage_return
-.db 0
 
 expected_line_length: .db 0
 current_byte_index: .db 0
-.asciz "SUMHERE:"
 current_sum: .db 0
-.asciz ":SUMTHERE"
 writing_address: .dw 0
 
 main:
@@ -42,7 +36,7 @@ main_read_loop:
     ld l, 1
     call rom_set_cursor
 
-    ld hl, newline
+    ld hl, newline_string
     call print_string
     ld hl, (writing_address)
     ld de, hl
