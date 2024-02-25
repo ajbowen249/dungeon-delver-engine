@@ -5,6 +5,7 @@ opt_class_wizard_label: .asciz "Wizard"
 opt_class_cleric_label: .asciz "Cleric"
 opt_class_barbarian_label: .asciz "Barbarian"
 opt_class_m_badger_label: .asciz "Badger"
+opt_class_m_hobgoblin_label: .asciz "Hobgoblin"
 
 opt_class:
 .db class_fighter
@@ -26,6 +27,10 @@ opt_class:
 .db class_m_badger
 .db default_options_flags
 .dw opt_class_m_badger_label
+
+.db class_m_hobgoblin
+.db default_options_flags
+.dw opt_class_m_hobgoblin_label
 
 .macro CAMPAIGN_CLASS &IDX
 campaign_class_&IDX:

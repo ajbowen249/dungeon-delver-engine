@@ -242,17 +242,17 @@ test_class_mechanics:
     call get_hit_points
 .expect a = 65
     ld a, class_wizard
-    ld (test_character1 + pl_offs_class), a
+    ld (test_character1_class), a
     ld hl, test_character1
     call get_hit_points
 .expect a = 47
     ld a, class_cleric
-    ld (test_character1 + pl_offs_class), a
+    ld (test_character1_class), a
     ld hl, test_character1
     call get_hit_points
 .expect a = 53
     ld a, class_fighter
-    ld (test_character1 + pl_offs_class), a
+    ld (test_character1_class), a
     ld hl, test_character1
     call get_hit_points
 .expect a = 59
@@ -263,7 +263,7 @@ test_class_mechanics:
     call get_character_armor_class
 .expect a = 4
     ld a, 2
-    ld (monster_badger + pl_offs_level), a
+    ld (monster_badger_level), a
     ld hl, monster_badger
     call get_hit_points
 .expect a = 7
@@ -285,6 +285,14 @@ test_class_mechanics:
     ld hl, test_campaign_monster_class
     call get_hit_points
 .expect a = 14
+    ld hl, monster_hobgoblin
+    call get_hit_points
+.expect a = 6
+    ld a, 5
+    ld (monster_hobgoblin_level), a
+    ld hl, monster_hobgoblin
+    call get_hit_points
+.expect a = 26
     ret
 
 test_start:

@@ -122,6 +122,7 @@
 ; Don't want to blow 512 bytes on every table, so setting the class limit to 16
 #define class_cutoff 16
 #define class_m_badger 16
+#define class_m_hobgoblin 17
 #define campaign_monster_cutoff 32
 #define monster_mask $F0
 

@@ -10,13 +10,15 @@ hit_die_gargantuan: .db 20
 
 monster_size_table:
 monster_size_badger: .db monster_size_tiny
-.block 15 ; leave space for another 15 (16 total) built-in creatures, and another 16 campaign monsters
+monster_size_hobgoblin: .db monster_size_medium
+.block 14 ; leave space for another 14 (16 total) built-in creatures, and another 16 campaign monsters
 campaign_monster_size_table::
 .block 16
 
 monster_ac_table:
 monster_ac_badger: .db 4
-.block 15 ; leave space for another 15 (16 total) built-in creatures, and another 16 campaign monsters
+monster_ac_hobgoblin: .db 18
+.block 14 ; leave space for another 14 (16 total) built-in creatures, and another 16 campaign monsters
 campaign_monster_ac_table::
 .block 16
 
@@ -32,7 +34,8 @@ modifier_&NAME_cha: .db &CHA
 
 monster_modifiers_table:
     MONSTER_MODIFIERS badger, -3, 0, 1, -4, 1, -3
-.block 15 * modifier_block_size ; leave space for another 15 (16 total) built-in creatures, and 16 campaign monsters
+    MONSTER_MODIFIERS hobgoblin, 1, 1, 1, 0, 0, -1
+.block 14 * modifier_block_size ; leave space for another 14 (16 total) built-in creatures, and 16 campaign monsters
 campaign_monster_modifiers_table::
 .block 16 * modifier_block_size
 
@@ -40,6 +43,9 @@ campaign_monster_modifiers_table::
 .db 0
 .db 0
 .db 0
+.db 0
+
+    DEFINE_PLAYER monster_hobgoblin, 13, 12, 12, 10, 10, 9, race_monster, class_m_hobgoblin, 1, "Hobgoblin"
 .db 0
 
 .local
@@ -52,6 +58,7 @@ get_monster_hit_die::
     ld c, a
     add hl, bc
     ld a, (hl)
+    ld b, 0
     ld c, a
     ld hl, size_hit_die_table
     add hl, bc
@@ -75,7 +82,7 @@ get_monster_ac::
 .local
 ; needs monster in HL and class in a
 get_monster_hp::
-    ; half hit die value times level plus 1 (aka hit dice count)
+    ; half hit die value plus 1 times level (aka hit dice count)
     call get_monster_hit_die
     rra
     and a, $7F

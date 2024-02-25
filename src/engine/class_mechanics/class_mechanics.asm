@@ -209,6 +209,7 @@ get_hit_points::
     ld c, monster_mask
     and a, c
     cp a, 0
+    ld a, b
     jp nz, monster_hp
 
     ld hl, hit_die_array
@@ -311,7 +312,8 @@ damage_table:
 .dw get_placeholder_damage
 .dw get_placeholder_damage
 .dw get_m_badger_damage
-.block 2 * 15 ; leave space for another 15 (16 total) built-in creatures, and another 16 campaign monsters
+.dw get_m_hobgoblin_damage
+.block 2 * 14 ; leave space for another 14 (16 total) built-in creatures, and another 16 campaign monsters
 campaign_monster_damage_table::
 .block 2 * 16
 
@@ -366,5 +368,11 @@ get_placeholder_damage:
 
 get_m_badger_damage:
     ld a, 1
+    ret
+
+get_m_hobgoblin_damage:
+    ; longsword
+    call roll_d8
+    inc a
     ret
 .endlocal
