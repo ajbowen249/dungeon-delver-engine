@@ -21,23 +21,23 @@ DDE is designed for systems with at least 24k of RAM (i.e, `21446` Bytes Free up
 
 Built into this project is a test campaign that flexes features of the engine. Other projects that wish to use this engine should be able to simply use `zasm` with the `--8080` argument and include `src/engine/dde.asm`.
 
-Only the raw binary is created for the test campaign, at `build/test_campaign.hex`. It is meant to be loaded at `$C000` (`49152`).
+Only the raw binary is created for the test campaign, at `build/test_campaign.hex`. It is meant to be loaded at `$B200` (`45568`).
 
-Before either method, get into the BASIC prompt and run `clear 256, 49152`.
+Before either method, get into the BASIC prompt and run `clear 256, 45568`.
 
 ### Physical Model 100
 
 If you have a serial connection established with a PC running an application that can send ascii files, this repository includes a two-step process to transfer the campaign binary to it. For the first step, run `clear 256, 45056`, as we'll be using some higher memory than the campaign itself. Transfer the `loadhx.ba` BASIC program under `utils` to your machine and start it up. It will await an intel hex format file and begin poking it into `$B000` (`45056`). Send over `build/ldhx.hex`. Note that this first loader script is slow, and has only been proven to work consistently through [`Tera Term`](https://tera-term.en.softonic.com/) with a 50ms delay between characters. It will only be used to load the faster loader. When it is complete, an assembly-language version of essentially this same application will be loaded, and you can save it for easier re-use now with `savem "ldhx",45056,45560,45056`. Once this is complete, you'll want to delete the original `loadhx.do` file to make some room.
 
-Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$C000` (`49152`). This loader is much faster, and has proven stable with only a 5ms delay between characters.
+Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$B200` (`45568`). This loader is much faster, and has proven stable with only a 5ms delay between characters.
 
 ### Virtual-T
 
-Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear` command above. Then, using the `Memory Editor` tool, load the output hex file starting at address `$C000`.
+Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear` command above. Then, using the `Memory Editor` tool, load the output hex file starting at address `$B200`.
 
 #### Once Loaded
 
-Once the binary is loaded into memory through any method, you can run it with `call 49152`. Note that the binary size is currently unoptimized, and the test campaign appears to already exceed the size that a 24k machine can save for later via the `savem` command.
+Once the binary is loaded into memory through any method, you can run it with `call 45568`. Note that the binary size is currently unoptimized, and the test campaign appears to already exceed the size that a 24k machine can save for later via the `savem` command.
 
 ## Gameplay
 

@@ -1,6 +1,6 @@
 ; Unit tests
 
-.org $C000
+.org $B200
 
 #include "../../engine/dde.asm"
 

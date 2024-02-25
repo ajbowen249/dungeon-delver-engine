@@ -5,7 +5,7 @@
 .org $B000
     call main
 
-#define start_address $C000
+#define start_address $B200
 #include "../../engine/constants.asm"
 #include "../../engine/rom_api.asm"
 #include "../../engine/hex_string.asm"
@@ -19,7 +19,7 @@ current_sum: .db 0
 writing_address: .dw 0
 
 main:
-    ld hl, $C000
+    ld hl, start_address
     ld (writing_address), hl
     call rom_clear_screen
     ld h, 1
