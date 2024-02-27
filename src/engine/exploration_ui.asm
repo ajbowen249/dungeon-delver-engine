@@ -481,6 +481,7 @@ clear_interactable_if_flag::
 flag_not_set:
     pop hl
     ret
+.endlocal
 
 .macro CLEAR_INTERACTABLE_IF_FLAG &FLAG_LABEL, &INTERACTABLE_LABEL, &BACKGROUND_GRAPHIC_LABEL
     ld bc, &FLAG_LABEL
@@ -489,4 +490,43 @@ flag_not_set:
     call clear_interactable_if_flag
 .endm
 
+.local
+; if the flag in BC is set, clear the graphic at column H, row L, starting from DE
+; uses A
+clear_graphic_if_flag::
+    push hl
+
+    ld hl, bc
+    ld a, (hl)
+    cp a, 0
+    jp z, flag_not_set
+
+    pop hl
+    dec h
+    dec l
+    ld a, l
+    ld b, 21
+    call mul_a_b
+
+    add a, h
+    ld c, a
+    ld b, 0
+    ld hl, bc
+    add hl, de
+    ld a, " "
+    ld (hl), a
+
+    ret
+
+flag_not_set:
+    pop hl
+    ret
 .endlocal
+
+.macro CLEAR_GRAPHIC_IF_FLAG &FLAG_LABEL, &ROW, &COL, &BACKGROUND_GRAPHIC_LABEL
+    ld bc, &FLAG_LABEL
+    ld h, &COL
+    ld l, &ROW
+    ld de, &BACKGROUND_GRAPHIC_LABEL
+    call clear_graphic_if_flag
+.endm

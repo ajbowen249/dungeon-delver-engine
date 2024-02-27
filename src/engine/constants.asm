@@ -40,6 +40,7 @@
 
 #define ch_line_feed $0A
 #define ch_carriage_return $0D
+#define ch_house $86
 
 ; analogous mappings
 #charset map "┌" = $F0
@@ -77,6 +78,8 @@
 #charset map "◥" = ch_corner_upper_right
 #charset map "◣" = ch_corner_lower_left
 #charset map "◢" = ch_corner_lower_right
+
+#charset map "⌂" = ch_house
 
 ; replacement mappings (character in source doesn't resemble character in game)
 #charset map "∩" = ch_chest
