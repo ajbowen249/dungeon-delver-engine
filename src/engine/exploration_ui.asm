@@ -434,3 +434,59 @@ configure_inputs:
     REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0
     ret
 .endlocal
+
+.local
+
+; if the flag at BC is set, clear the interactable at HL. Needs screen graphic data at DE
+; Uses A
+clear_interactable_if_flag::
+    push hl
+
+    ld hl, bc
+    ld a, (hl)
+    cp a, 0
+    jp z, flag_not_set
+
+    pop hl
+    push hl
+    LOAD_A_WITH_ATTR_THROUGH_HL in_row_offset
+    dec a ; 1-based
+    ld b, 21
+    call mul_a_b
+    ld b, a
+
+    pop hl
+    push hl
+    push bc
+    LOAD_A_WITH_ATTR_THROUGH_HL in_col_offset
+    dec a ; 1-based
+    pop bc
+    add a, b
+
+    ld c, a
+    ld b, 0
+    ld hl, de
+    add hl, bc
+    ld a, " "
+    ld (hl), a
+
+    pop hl
+    POINT_HL_TO_ATTR in_row_offset
+    ld a, 0
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    ret
+
+flag_not_set:
+    pop hl
+    ret
+
+.macro CLEAR_INTERACTABLE_IF_FLAG &FLAG_LABEL, &INTERACTABLE_LABEL, &BACKGROUND_GRAPHIC_LABEL
+    ld bc, &FLAG_LABEL
+    ld hl, &INTERACTABLE_LABEL
+    ld de, &BACKGROUND_GRAPHIC_LABEL
+    call clear_interactable_if_flag
+.endm
+
+.endlocal
