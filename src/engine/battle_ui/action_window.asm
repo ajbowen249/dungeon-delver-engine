@@ -40,6 +40,7 @@ execute_player_turn:
     call set_up_root_menu
 menu_loop:
     call clear_action_window
+    call draw_combatants
     call show_selected_menu
     ld hl, (menu_proc_func)
     call call_hl
@@ -177,7 +178,6 @@ set_flag:
 
 handle_move_done:
     ld (hl), a
-    call draw_combatants
 
     ret
 
@@ -449,6 +449,17 @@ attack_killed_attackee:
     and a, b
     cp a, 0
     jp nz, non_player_killed
+
+    ; TODO: saving throw isn't implemented yet. Just kill them, too, for now.
+    ld hl, (selected_combatant_location)
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    ld b, $fd
+    and a, b
+
+    ld hl, (selected_combatant_location)
+    ld bc, cbt_offs_flags
+    add hl, bc
+    ld (hl), a
     ret
 
 non_player_killed:

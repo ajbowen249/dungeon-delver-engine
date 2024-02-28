@@ -9,6 +9,7 @@ combat_string_buffer: .asciz "   "
 #define party_front_index 0
 
 combat_draw_player_index: .db 0
+combat_draw_player_sprite: .db 0
 draw_combatants:
     ld a, 0
     ld (combat_draw_player_index), a
@@ -26,11 +27,26 @@ draw_combatants_loop:
     LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
     ld c, a
 
+    ld b, cbt_flag_alive
+    and a, b
+    jp z, draw_dead
+
+    ld a, ch_stick_person_1
+    ld (combat_draw_player_sprite), a
+    jp check_line
+
+draw_dead:
+    ld a, ch_cross
+    ld (combat_draw_player_sprite), a
+    jp check_line
+
+check_line:
+    ld a, c
     ld b, cbt_flag_line
     and a, b
     jp z, draw_combatant_front
     ; back is same index on either side
-    ld a, ch_stick_person_1
+    ld a, (combat_draw_player_sprite)
     ld (combat_string_buffer + back_index), a
     jp draw_combatants_loop_continue
 
@@ -39,12 +55,12 @@ draw_combatant_front:
     ld b, cbt_flag_faction
     and a, b
     jp nz, draw_combatant_front_enemy
-    ld a, ch_stick_person_1
+    ld a, (combat_draw_player_sprite)
     ld (combat_string_buffer + party_front_index), a
     jp draw_combatants_loop_continue
 
 draw_combatant_front_enemy:
-    ld a, ch_stick_person_1
+    ld a, (combat_draw_player_sprite)
     ld (combat_string_buffer + enemy_front_index), a
 
 draw_combatants_loop_continue:

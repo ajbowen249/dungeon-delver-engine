@@ -41,6 +41,7 @@
 #define ch_line_feed $0A
 #define ch_carriage_return $0D
 #define ch_house $86
+#define ch_cross $A8
 
 ; analogous mappings
 #charset map "┌" = $F0
