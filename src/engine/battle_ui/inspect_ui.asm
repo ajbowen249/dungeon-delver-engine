@@ -99,6 +99,7 @@ position_inspect_cursor_location:
     ld a, (last_inspected_index)
     cp a, b
     jp z, position_cursor_enemy
+    jp p, position_cursor_enemy
 
     inc a
     ld l, a
