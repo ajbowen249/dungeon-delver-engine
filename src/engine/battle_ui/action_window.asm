@@ -21,7 +21,15 @@ menu_proc_func: .dw 0
 
 ; shows menus needed for the player to take actions on their turn, and returns when their turn is over
 execute_player_turn:
+    call get_combatant_in_turn
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    ld b, cbt_flag_alive
+    and a, b
+    jp nz, continue_turn
 
+    ret
+
+continue_turn:
     ; enable all options since this is the start of the turn
     ld a, default_options_flags
     ld (bm_root_attack_flags), a
