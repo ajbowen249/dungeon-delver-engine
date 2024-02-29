@@ -23,7 +23,6 @@ dde_version_build: .db 1
 #include "./ui_components/ui_components.asm"
 
 #include "character_wizard/character_wizard.asm"
-#include "party_wizard/party_wizard.asm"
 
 #include "character_sheet_ui.asm"
 #include "exploration_ui.asm"

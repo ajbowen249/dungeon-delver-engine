@@ -12,6 +12,7 @@
 #include "./dialog/dialog.asm"
 #include "./screens/screen_table.asm"
 #include "./encounters/encounter_table.asm"
+#include "party_wizard/party_wizard.asm"
 
 main:
     call seed_random
