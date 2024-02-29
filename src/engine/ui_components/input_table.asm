@@ -12,6 +12,7 @@ input_table_arrow_down: .dw 0
 input_table_arrow_left: .dw 0
 input_table_arrow_right: .dw 0
 input_table_confirm: .dw 0
+input_table_escape: .dw 0
 input_table_btn_1: .dw 0
 input_table_btn_2: .dw 0
 
@@ -21,12 +22,13 @@ input_table_btn_2: .dw 0
 .endm
 
 ; uses HL
-.macro REGISTER_INPUTS &UP, &DOWN, &LEFT, &RIGHT, &CONFIRM, &BTN_1, &BTN_2
+.macro REGISTER_INPUTS &UP, &DOWN, &LEFT, &RIGHT, &CONFIRM, &ESC, &BTN_1, &BTN_2
    REGISTER_INPUT &UP, input_table_arrow_up
    REGISTER_INPUT &DOWN, input_table_arrow_down
    REGISTER_INPUT &LEFT, input_table_arrow_left
    REGISTER_INPUT &RIGHT, input_table_arrow_right
    REGISTER_INPUT &CONFIRM, input_table_confirm
+   REGISTER_INPUT &ESC, input_table_escape
    REGISTER_INPUT &BTN_1, input_table_btn_1
    REGISTER_INPUT &BTN_2, input_table_btn_2
 .endm
@@ -57,6 +59,8 @@ iterate_input_table::
 
     ON_KEY_JUMP ch_enter, on_confirm
 
+    ON_KEY_JUMP ch_escape, on_escape
+
     ON_KEY_JUMP ch_r, on_btn_1
     ON_KEY_JUMP ch_R, on_btn_1
 
@@ -76,6 +80,7 @@ on_&NAME:
     ON_INPUT arrow_left
     ON_INPUT arrow_right
     ON_INPUT confirm
+    ON_INPUT escape
     ON_INPUT btn_1
     ON_INPUT btn_2
 

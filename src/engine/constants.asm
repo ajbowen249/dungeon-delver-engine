@@ -18,6 +18,7 @@
 #define ch_c $63
 
 #define ch_enter $0D
+#define ch_escape $1B
 #define ch_left_arrow $1D
 #define ch_right_arrow $1C
 #define ch_up_arrow $1E

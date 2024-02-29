@@ -431,7 +431,7 @@ clear_exploration_message_area::
     ret
 
 configure_inputs:
-    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0, 0
     ret
 .endlocal
 
