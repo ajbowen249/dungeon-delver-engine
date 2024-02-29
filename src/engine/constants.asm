@@ -190,6 +190,8 @@
 #define sc_offs_get_interaction_prompt sc_offs_interactables_start + sc_interactable_array_length
 ; interact callback takes index in A and sets A non-zero if the area should be exited
 #define sc_offs_interact_callback sc_offs_get_interaction_prompt + 2
+; menu callback is fired when the escape key is pressed, and control will return to exploration_ui when it returns
+#define sc_offs_menu_callback sc_offs_interact_callback + 2
 
 ; interactable types
 #define in_none 0

@@ -36,6 +36,7 @@ screen_2_interactables:
     DEFINE_INTERACTABLE blank_0, 0, 0, 0, 0
 screen_2_get_interaction_prompt: .dw get_interaction_prompt
 screen_2_interact_callback: .dw on_interact
+screen_2_menu_callback: .dw main_menu
 
 empty_prompt: .db 0
 

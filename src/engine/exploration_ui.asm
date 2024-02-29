@@ -146,6 +146,21 @@ on_confirm:
     call nz, on_interact
     ret
 
+on_escape:
+    ld hl, (screen_data)
+    ld bc, sc_offs_menu_callback
+    add hl, bc
+    ld bc, (hl)
+    ld hl, bc
+    call call_hl
+
+    call rom_clear_screen
+    call draw_background
+    call draw_avatar
+    call draw_status_window_base
+
+    ret
+
 draw_background:
     ld hl, (screen_data)
     ld (background_index), hl
@@ -431,7 +446,7 @@ clear_exploration_message_area::
     ret
 
 configure_inputs:
-    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0, 0
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, on_escape, 0, 0
     ret
 .endlocal
 

@@ -38,6 +38,7 @@ screen_1_interactables:
     DEFINE_INTERACTABLE blank_0, 0, 0, 0, 0
 screen_1_get_interaction_prompt: .dw get_interaction_prompt
 screen_1_interact_callback: .dw on_interact
+screen_1_menu_callback: .dw main_menu
 
 empty_prompt: .db 0
 chest_prompt: .asciz "Open Chest"
