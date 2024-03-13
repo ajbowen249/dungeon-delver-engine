@@ -46,6 +46,10 @@ exploration_ui::
     call configure_inputs
 
 read_loop:
+    ld a, (dde_should_exit)
+    cp a, 0
+    jp nz, exit_exploration
+
     ld a, 0
     ld (position_changed), a
     ld (auto_interact), a
@@ -154,11 +158,16 @@ on_escape:
     ld hl, bc
     call call_hl
 
+    ld a, (dde_should_exit)
+    cp a, 0
+    jp nz, on_escape_done
+
     call rom_clear_screen
     call draw_background
     call draw_avatar
     call draw_status_window_base
 
+on_escape_done:
     ret
 
 draw_background:

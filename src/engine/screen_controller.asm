@@ -31,6 +31,10 @@ configure_screen_controller::
 .local
 run_screen_controller::
 screen_loop:
+    ld a, (dde_should_exit)
+    cp a, 0
+    jp nz, exit_screen_loop
+
     ld a, (last_screen_exit_code)
 
     cp a, ec_door
@@ -40,6 +44,7 @@ screen_loop:
     jp z, run_encounter
 
     ; exit if we don't know this exit code
+exit_screen_loop:
     ret
 
 run_room:
