@@ -101,5 +101,16 @@ stats_loop:
     ld hl, bc
     call print_string
 
+    ld hl, str_lvl
+    call print_string
+
+    ld hl, (character_loc)
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
     ret
 .endlocal

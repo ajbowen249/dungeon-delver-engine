@@ -10,7 +10,6 @@ selected_combatant_location: .dw 0
 #define enemy_inspect_column 1
 
 .local
-lvl_string: .asciz " lvl "
 hp_string: .asciz "HP: "
 ac_string: .asciz "AC: "
 
@@ -140,7 +139,7 @@ on_selection_changed:
     add hl, bc
     call print_string
 
-    ld hl, lvl_string
+    ld hl, str_lvl
     call print_string
 
     ld hl, (selected_character_location)
