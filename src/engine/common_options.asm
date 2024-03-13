@@ -133,3 +133,11 @@ opt_stub:
 .db opt_stub_value
 .db default_options_flags
 .dw opt_stub_label
+
+stub_menu:
+    ld a, 1
+    ld hl, opt_stub
+    ld b, 21
+    ld c, 8
+    call menu_ui
+    ret
