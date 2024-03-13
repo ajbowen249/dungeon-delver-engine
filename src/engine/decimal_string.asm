@@ -66,6 +66,21 @@ decimal_count_loop_end:
     add a, $30
     ld (decimal_char_2), a
 
+    ld a, (decimal_char_2)
+    cp a, "0"
+    jp nz, string_ready
+
+    ld a, " "
+    ld (decimal_char_2), a
+
+    ld a, (decimal_char_1)
+    cp a, "0"
+    jp nz, string_ready
+
+    ld a, " "
+    ld (decimal_char_1), a
+
+string_ready:
     ld bc, decimal_buffer
     ret
 

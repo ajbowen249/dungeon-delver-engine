@@ -146,7 +146,9 @@ test_parse_hex:
 
 test_decimal:
     DECIMAL_TEST 0, 123, "1", "2", "3"
-    DECIMAL_TEST 0, 0, "0", "0", "0"
+    DECIMAL_TEST 0, 23, " ", "2", "3"
+    DECIMAL_TEST 0, 3, " ", " ", "3"
+    DECIMAL_TEST 0, 0, " ", " ", "0"
     DECIMAL_TEST $03, $E7, "9", "9", "9"
     ret
 
