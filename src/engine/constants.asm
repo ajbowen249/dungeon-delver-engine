@@ -43,6 +43,7 @@
 #define ch_carriage_return $0D
 #define ch_house $86
 #define ch_cross $A8
+#define ch_quad_thing $84
 
 ; analogous mappings
 #charset map "┌" = $F0
@@ -89,6 +90,7 @@
 ; replacement mappings (character in source doesn't resemble character in game)
 #charset map "∩" = ch_chest
 #charset map "€" = ch_mushroom
+#charset map "ㅑ" = ch_quad_thing
 
 ; SRD 5.1 stuff
 #define ability_str 0
