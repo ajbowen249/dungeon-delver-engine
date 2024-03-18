@@ -6,10 +6,10 @@ screen_2_background:
 .asciz "┌──────────────────┐"
 .asciz "                   │"
 .asciz "│                  │"
-.asciz "│            α     │"
+.asciz "│            옷     │"
 .asciz "│                  │"
 .asciz "│               ∩∩ │"
-.asciz "│     α            │"
+.asciz "│     옷            │"
 .asciz "└──────────────────┘"
 screen_2_title: .asciz "Test Room 2"
 .db 0

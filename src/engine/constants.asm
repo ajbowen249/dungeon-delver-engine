@@ -83,10 +83,12 @@
 
 #charset map "⌂" = ch_house
 
+#charset map "옷" = ch_stick_person_1
+#charset map "왓" = ch_stick_person_2
+
 ; replacement mappings (character in source doesn't resemble character in game)
 #charset map "∩" = ch_chest
 #charset map "€" = ch_mushroom
-#charset map "α" = ch_stick_person_2
 
 ; SRD 5.1 stuff
 #define ability_str 0

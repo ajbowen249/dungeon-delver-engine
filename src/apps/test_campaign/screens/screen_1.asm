@@ -4,12 +4,12 @@
 screen_1_data:
 screen_1_background:
 .asciz "┌──────────────────┐"
-.asciz "│    α              "
+.asciz "│    왓              "
 .asciz "│           ∩      │"
 .asciz "│                  │"
 .asciz "│                  │"
 .asciz "│                  │"
-.asciz "│∩∩          α     │"
+.asciz "│∩∩          왓     │"
 .asciz "└──────────────────┘"
 screen_1_title: .asciz "Test Room"
 .db 0
