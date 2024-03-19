@@ -20,17 +20,20 @@ return:
 
 .local
 current_string: .dw 0
-remaining_strings: .db 0
 screen_coords: .dw 0
 
 ; Given a sequence of strings starting at HL of length A, print them in a block starting at column B row C
 block_print::
     ld (current_string), hl
-    ld (remaining_strings), a
     ld hl, bc
     ld (screen_coords), hl
 
-loop:
+    ld hl, block_print_callback
+    call iterate_a
+
+    ret
+
+block_print_callback:
     ld hl, (screen_coords)
     call rom_set_cursor
     inc l
@@ -40,12 +43,6 @@ loop:
     call print_string
     inc hl ; careful... assumes print_string left HL at the last string's terminator
     ld (current_string), hl
-
-    ld a, (remaining_strings)
-    dec a
-    ld (remaining_strings), a
-    cp a, 0
-    jp nz, loop
 
     ret
 .endlocal
