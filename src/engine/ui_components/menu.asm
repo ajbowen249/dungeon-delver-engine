@@ -13,7 +13,6 @@ selected_index: .db 0
 should_exit: .db 0
 selected_value: .db 0
 
-menu_address_counter: .dw 0
 menu_column: .db 0
 menu_row: .db 0
 
@@ -24,52 +23,15 @@ menu_row: .db 0
 ; Destroys all registers
 menu_ui::
     ld (menu_address), hl
-    ld (menu_address_counter), hl
     ld (option_count), a
     ld a, b
     ld (menu_column), a
     ld a, c
     ld (menu_row), a
 
-    ld b, 0
-
-list_loop:
-    ld a, (menu_column)
-    ld h, a
-    inc h ; one column to the right of the arrow
-    ld a, (menu_row)
-    add a, b
-    ld l, a
-    call rom_set_cursor
-
-    ld hl, (menu_address_counter)
-    inc hl ; skip value
-
-    ; IMPROVE: For now, just skip printing if it's disabled and disallow selection
-    ld a, (hl)
-    ld c, $01
-    and a, c
-    cp a, 0
-    jp z, list_loop_continue
-
-    inc hl ; pass flags
-    ld de, (hl)
-    ld hl, de
-    call print_string
-
-list_loop_continue:
-    ; move up to next option
-    ld hl, (menu_address_counter)
-    inc hl
-    inc hl
-    inc hl
-    inc hl
-    ld (menu_address_counter), hl
-
-    inc b
     ld a, (option_count)
-    cp b
-    jp nz, list_loop
+    ld hl, menu_draw_callback
+    call iterate_a
 
     ld a, 0
     ld (selected_index), a
@@ -89,6 +51,37 @@ read_loop:
     ld a, (selected_value)
     ret
 
+menu_draw_callback:
+    ld d, a
+    ld a, (menu_column)
+    ld h, a
+    inc h ; one column to the right of the arrow
+    ld a, (menu_row)
+    add a, d
+    ld l, a
+    call rom_set_cursor
+
+    ld b, d
+    ld a, mi_data_size
+    ld hl, (menu_address)
+    call get_array_item
+    ld de, hl
+
+    ; Skip drawing if disabled. Note that this will leave a blank space
+    ; Use consolidate_menu_hl_bc to shift the disabled items into place
+    LOAD_A_WITH_ATTR_THROUGH_HL mi_offs_flags
+    ld c, $01
+    and a, c
+    jp z, menu_draw_callback_done
+
+    ld hl, de
+    POINT_HL_TO_ATTR mi_offs_label
+    ld bc, (hl)
+    ld hl, bc
+    call print_string
+
+menu_draw_callback_done:
+    ret
 
 .macro ENUM_MENU_ARROW_UP_DOWN &LIMIT, &INC_OR_DEC
     cp a, &LIMIT
