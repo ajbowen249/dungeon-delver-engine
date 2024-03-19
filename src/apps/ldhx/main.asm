@@ -8,6 +8,7 @@
 #define start_address $B200
 #include "../../engine/constants.asm"
 #include "../../engine/rom_api.asm"
+#include "../../engine/util.asm"
 #include "../../engine/string.asm"
 #include "../../engine/hex_string.asm"
 
