@@ -73,27 +73,32 @@ init_enemy_combatant:
 initialize_combatants_foreach_callback_done:
     ret
 
-
-initiative_counter: .db 0
 display_initiative_order:
     call rom_clear_screen
 
     PRINT_AT_LOCATION 1, 1, initiative_header
 
-    ld a, 0
-    ld (initiative_counter), a
+    ld a, (total_number_of_combatants)
+    ld hl, display_initiative_order_callback
+    call iterate_a
 
-display_initiative_order_loop:
-    ld a, (initiative_counter)
-    inc a
+    call await_any_keypress
+    ret
+
+display_initiative_order_callback:
+    ld b, a
+    push bc
 
     ld h, 25
     ld l, a
+    inc l
     call rom_set_cursor
 
-    ld hl, initiative_order
-    ld a, (initiative_counter)
+    pop bc
+    push bc
+    ld a, b
     ld b, 2
+    ld hl, initiative_order
     call get_array_item
     ld a, (hl)
 
@@ -104,16 +109,17 @@ display_initiative_order_loop:
     ld hl, bc
     call print_string
 
-    ld a, (initiative_counter)
-    inc a
-
+    pop bc
+    push bc
+    ld l, b
+    inc l
     ld h, 14
-    ld l, a
     call rom_set_cursor
 
-    ld hl, initiative_order
-    ld a, (initiative_counter)
+    pop bc
+    ld a, b
     ld b, 2
+    ld hl, initiative_order
     call get_array_item
     inc hl
     ld a, (hl)
@@ -121,17 +127,5 @@ display_initiative_order_loop:
     call get_character_at_index_a
     POINT_HL_TO_ATTR pl_offs_name
     call print_string
-
-    ld a, (initiative_counter)
-    inc a
-    ld (initiative_counter), a
-    ld b, a
-    ld a, (total_number_of_combatants)
-    cp a, b
-    jp nz, display_initiative_order_loop
-
-initiative_order_wait_loop:
-    call rom_kyread
-    jp z, initiative_order_wait_loop
 
     ret

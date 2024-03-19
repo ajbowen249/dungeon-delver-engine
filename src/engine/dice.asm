@@ -131,37 +131,29 @@ roll_a::
 .endlocal
 
 .local
-; rolls an A die B times, and returns the total in A
 roll_total: .db 0
-roll_counter: .db 0
-roll_target: .db 0
 roll_die: .db 0
+
+; rolls an A die B times, and returns the total in A
 roll_b_a::
     ld (roll_die), a
-    ld a, b
-    ld (roll_target), a
-
     ld a, 0
     ld (roll_total), a
-    ld (roll_counter), a
 
-roll_loop:
+    ld a, b
+    ld hl, roll_b_a_callback
+    call iterate_a
+
+    ld a, (roll_total)
+    ret
+
+roll_b_a_callback:
     ld a, (roll_die)
     call roll_a
     ld b, a
     ld a, (roll_total)
     add a, b
     ld (roll_total), a
-
-    ld a, (roll_counter)
-    inc a
-    ld (roll_counter), a
-    ld b, a
-    ld a, (roll_target)
-    cp a, b
-    jp nz, roll_loop
-
-    ld a, (roll_total)
 
     ret
 .endlocal

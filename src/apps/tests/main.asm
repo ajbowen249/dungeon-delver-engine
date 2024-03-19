@@ -313,11 +313,66 @@ test_class_mechanics:
 .expect a = 30
     ret
 
+iterate_a_total: .db 0
+iterate_a_test_body_1:
+    ld b, a
+    ld a, (iterate_a_total)
+    add a, b
+    ld (iterate_a_total), a
+    ret
+
+iterate_a_inner_total: .db 0
+iterate_a_nested_body_inner:
+    ld b, a
+    ld a, (iterate_a_inner_total)
+    add a, b
+    ld (iterate_a_inner_total), a
+    ret
+
+iterate_a_outer_total: .db 0
+iterate_a_nested_body_outer:
+    ld b, a
+    ld a, (iterate_a_outer_total)
+    add a, b
+    ld (iterate_a_outer_total), a
+
+    ld a, 6
+    ld hl, iterate_a_nested_body_inner
+    call iterate_a
+    ret
+
+iterate_a_tests:
+    ld a, 0
+    ld (iterate_a_total), a
+
+    ld a, 10
+    ld hl, iterate_a_test_body_1
+    call iterate_a
+
+    ld a, (iterate_a_total)
+.expect a = 45
+
+    ld a, 0
+    ld (iterate_a_inner_total), a
+    ld (iterate_a_outer_total), a
+
+    ld a, 5
+    ld hl, iterate_a_nested_body_outer
+    call iterate_a
+
+    ld a, (iterate_a_outer_total)
+.expect a = 10
+    ld a, (iterate_a_inner_total)
+.expect a = 75
+
+    ret
+
 test_start:
     call math_tests
     call test_decimal
     call array_tests
     call test_class_mechanics
+    call iterate_a_tests
     ret
 
 test_entry:

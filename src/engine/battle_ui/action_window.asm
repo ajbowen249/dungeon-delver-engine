@@ -95,17 +95,25 @@ enemy_turn_pick_target:
     ret
 
 clear_action_window:
-    PRINT_AT_LOCATION 1, action_menu_column, blank_window_string
-    PRINT_AT_LOCATION 2, action_menu_column, blank_window_string
-    PRINT_AT_LOCATION 3, action_menu_column, blank_window_string
-    PRINT_AT_LOCATION 4, action_menu_column, blank_window_string
-    PRINT_AT_LOCATION 5, action_menu_column, blank_window_string
-    PRINT_AT_LOCATION 6, action_menu_column, blank_window_string
+    ld a, 6
+    ld hl, clear_action_window_callback
+    call iterate_a
+    ret
+
+clear_action_window_callback:
+    inc a
+    PRINT_AT_LOCATION a, action_menu_column, blank_window_string
     ret
 
 clear_message_rows:
-    PRINT_AT_LOCATION 7, 1, blank_message_row_string
-    PRINT_AT_LOCATION 8, 1, blank_message_row_string
+    ld a, 2
+    ld hl, clear_message_rows_callback
+    call iterate_a
+    ret
+
+clear_message_rows_callback:
+    add a, 7
+    PRINT_AT_LOCATION a, 1, blank_message_row_string
     ret
 
 print_turn_header:

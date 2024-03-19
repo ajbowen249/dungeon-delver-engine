@@ -76,7 +76,7 @@ on_enemy_party_dead:
     ld hl, victory_text
     call print_string
 
-    call await_any_key
+    call await_any_keypress
 
     ld a, 1
     ret
@@ -84,12 +84,6 @@ on_enemy_party_dead:
 init_screen_graphics:
     call rom_clear_screen
     call draw_combatants
-    ret
-
-await_any_key:
-await_any_key_loop:
-    call rom_kyread
-    jp z, await_any_key_loop
     ret
 
 .endlocal

@@ -52,3 +52,47 @@ loop:
     jp z, loop
     ret
 .endlocal
+
+.local
+; given a count in A and a callback in HL, call the callback A times.
+; A will be set to the current index before HL is called
+; for (i = 0; i < A; i++) { HL(i (passed through A) ); }
+iterate_a::
+    push hl
+    ld b, a
+    ld c, 0
+    push bc
+
+iterate_a_loop:
+    ld hl, 0
+    add hl, sp
+    ld a, (hl)
+    ld b, a
+    inc hl
+    ld a, (hl)
+    cp a, b
+    jp z, iterate_a_done
+
+    ld hl, 2
+    add hl, sp
+    ld a, (hl)
+    ld c, a
+    inc hl
+    ld a, (hl)
+    ld b, a
+    ld hl, 0
+    add hl, sp
+    ld a, (hl)
+    ld hl, bc
+    call call_hl
+
+    pop bc
+    inc c
+    push bc
+    jp iterate_a_loop
+
+iterate_a_done:
+    pop hl
+    pop hl
+    ret
+.endlocal

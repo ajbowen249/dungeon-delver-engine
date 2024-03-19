@@ -445,13 +445,16 @@ interact_bail:
     ret
 
 clear_exploration_message_area::
-    PRINT_AT_LOCATION 2, 21, blank_20_char_string
-    PRINT_AT_LOCATION 3, 21, blank_20_char_string
-    PRINT_AT_LOCATION 4, 21, blank_20_char_string
-    PRINT_AT_LOCATION 5, 21, blank_20_char_string
-    PRINT_AT_LOCATION 6, 21, blank_20_char_string
-    PRINT_AT_LOCATION 7, 21, blank_20_char_string
+    ld a, 6
+    ld hl, clear_exploration_message_area_callback
+    call iterate_a
+
     PRINT_AT_LOCATION 8, 21, blank_19_char_string
+    ret
+
+clear_exploration_message_area_callback:
+    add a, 2
+    PRINT_AT_LOCATION a, 21, blank_20_char_string
     ret
 
 configure_inputs:

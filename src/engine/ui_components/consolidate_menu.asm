@@ -5,7 +5,6 @@ src_menu: .dw 0
 dst_menu: .dw 0
 full_item_count: .db 0
 final_item_count: .db 0
-scan_index: .db 0
 
 consolidate_menu_hl_bc::
     ld (src_menu), hl
@@ -15,20 +14,29 @@ consolidate_menu_hl_bc::
     ld (full_item_count), a
     ld a, 0
     ld (final_item_count), a
-    ld (scan_index), a
 
-consolidate_loop:
+    ld a, (full_item_count)
+    ld hl, consolidate_callback
+    call iterate_a
+
+    ld a, (final_item_count)
+    ret
+
+consolidate_callback:
+    ld b, a
+    ld a, mi_data_size
     ld hl, (src_menu)
-    ld bc, mi_offs_flags
-    add hl, bc
-    ld a, (hl)
-    ld b, $01
-    and a, b
-    jp z, consolidate_loop_continue
+    call get_array_item
+    ld de, hl
+
+    LOAD_A_WITH_ATTR_THROUGH_HL mi_offs_flags
+    ld c, $01
+    and a, c
+    jp z, consolidate_callback_done
 
     ld hl, (dst_menu)
     ld bc, hl
-    ld hl, (src_menu)
+    ld hl, de
     ld a, mi_data_size
     call copy_hl_bc
 
@@ -41,20 +49,6 @@ consolidate_loop:
     inc a
     ld (final_item_count), a
 
-consolidate_loop_continue:
-    ld hl, (src_menu)
-    ld bc, mi_data_size
-    add hl, bc
-    ld (src_menu), hl
-
-    ld a, (scan_index)
-    inc a
-    ld (scan_index), a
-    ld b, a
-    ld a, (full_item_count)
-    cp a, b
-    jp nz, consolidate_loop
-
-    ld a, (final_item_count)
+consolidate_callback_done:
     ret
 .endlocal

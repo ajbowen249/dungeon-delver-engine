@@ -205,16 +205,9 @@ init_screen:
 roll_loop:
     ld (ability_index), a
     ; You're supposed to roll 4 and add the highest 3. Just gonna roll 3 for simplicity for now.
-    call roll_d6
-    ld a, l
-    ld (ability_roll_total), a
-    call roll_d6
-    ld a, (ability_roll_total)
-    add l
-    ld (ability_roll_total), a
-    call roll_d6
-    ld a, (ability_roll_total)
-    add l
+    ld a, 6
+    ld b, 3
+    call roll_b_a
 
     ld d, a
 
