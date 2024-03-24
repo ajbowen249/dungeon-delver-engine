@@ -77,6 +77,13 @@ def build_sequence_table(all_strings, target_length):
 
     return sequence_dict
 
+class Sequence:
+    string = ''
+    count = 0
+    size = 0
+    saved_bytes = 0
+    score = 0
+
 class LineTable:
     """Tracks the state text that needs to be put into the table."""
 
@@ -93,11 +100,8 @@ class LineTable:
 
     def get_sequence_tables(self):
             """
-            Gets a list of all sequences of at least size 1, sorted by 'score'. 'Score' here is:
-                (l * c) - (2 * c) - l - 1,
-            where l is the length of the string and c is the number of instances of that substring. This is the number
-            of bytes saved by extracting one instance of that string to a table and replacing all instances of it with a
-            two-byte reference ID. -1 more for the additional null terminator.
+            Gets a list of all sequences of at least size 1, sorted by best choice. 'Best choice' is currently the
+            most bytes saved.
             """
             sequence_tables = {}
             all_sequences = []
@@ -109,14 +113,18 @@ class LineTable:
                 sequence_tables[i] = table
 
                 for sequence_str in table:
-                    sequence = {}
-                    sequence['string'] = sequence_str
-                    sequence['count'] = table[sequence_str]
-                    sequence['size'] = i
-                    sequence['score'] = (i * table[sequence_str]) - (table[sequence_str] * 2) - i - 1
+                    sequence = Sequence()
+                    sequence.string = sequence_str
+                    sequence.count = table[sequence_str]
+                    sequence.size = i
+                    # This is the number of bytes saved by extracting one instance of that string to a table and
+                    # replacing all instances of it with a two-byte reference ID. -1 more for the additional null
+                    # terminator.
+                    sequence.saved_bytes = (i * table[sequence_str]) - (table[sequence_str] * 2) - i - 1
+                    sequence.score = (i * table[sequence_str]) - (table[sequence_str] * 2) - i - 1
                     all_sequences.append(sequence)
 
-            all_sequences = sorted(all_sequences, key=lambda sequence: sequence['score'])
+            all_sequences = sorted(all_sequences, key=lambda sequence: sequence.score)
             all_sequences.reverse()
 
             return all_sequences

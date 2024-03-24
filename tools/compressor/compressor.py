@@ -16,14 +16,14 @@ class Compressor:
         while len(self.line_table.remaining_strings()) != 0:
             all_sequences = self.line_table.get_sequence_tables()
             top_sequence = all_sequences[0]
-            if top_sequence['score'] < 0:
+            if top_sequence.saved_bytes < 0:
                 break
 
-            remove_string = top_sequence['string']
+            remove_string = top_sequence.string
             final_sequence_table[remove_string] = sequence_id
-            print('Removing', '"' + remove_string + '"', top_sequence['score'])
+            print('Removing', '"' + remove_string + '"', top_sequence.saved_bytes)
 
-            saved += top_sequence['score']
+            saved += top_sequence.saved_bytes
 
             self.line_table.replace_string(remove_string, sequence_id)
 
