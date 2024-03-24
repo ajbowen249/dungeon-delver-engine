@@ -29,7 +29,7 @@ class Compressor:
 
             sequence_id += 1
 
-        print('saved', saved, 'bytes')
+        print('saved approximately', saved, 'bytes of text')
         return final_sequence_table
 
     def create_assembly_file(self, sequence_table):

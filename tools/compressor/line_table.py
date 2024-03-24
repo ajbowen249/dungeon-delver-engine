@@ -93,10 +93,11 @@ class LineTable:
 
     def get_sequence_tables(self):
             """
-            Gets a list of all sequences of at least size 1, sorted by 'score'. 'Score' here is (l * c) - (2 * c) - l,
+            Gets a list of all sequences of at least size 1, sorted by 'score'. 'Score' here is:
+                (l * c) - (2 * c) - l - 1,
             where l is the length of the string and c is the number of instances of that substring. This is the number
             of bytes saved by extracting one instance of that string to a table and replacing all instances of it with a
-            two-byte reference ID.
+            two-byte reference ID. -1 more for the additional null terminator.
             """
             sequence_tables = {}
             all_sequences = []
@@ -112,7 +113,7 @@ class LineTable:
                     sequence['string'] = sequence_str
                     sequence['count'] = table[sequence_str]
                     sequence['size'] = i
-                    sequence['score'] = (i * table[sequence_str]) - (table[sequence_str] * 2) - i
+                    sequence['score'] = (i * table[sequence_str]) - (table[sequence_str] * 2) - i - 1
                     all_sequences.append(sequence)
 
             all_sequences = sorted(all_sequences, key=lambda sequence: sequence['score'])
