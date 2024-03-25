@@ -80,7 +80,7 @@ stats_loop:
     ld hl, bc
     ld bc, (hl)
     ld hl, bc
-    call print_string
+    call print_compressed_string
 
     ; print class
     ld h, 10
@@ -98,7 +98,7 @@ stats_loop:
     ld hl, bc
     ld bc, (hl)
     ld hl, bc
-    call print_string
+    call print_compressed_string
 
     ld hl, str_lvl
     call print_compressed_string

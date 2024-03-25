@@ -78,7 +78,7 @@ menu_draw_callback:
     POINT_HL_TO_ATTR mi_offs_label
     ld bc, (hl)
     ld hl, bc
-    call print_string
+    call print_compressed_string
 
 menu_draw_callback_done:
     ret

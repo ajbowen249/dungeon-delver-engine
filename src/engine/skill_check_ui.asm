@@ -24,7 +24,7 @@ skill_check_ui::
     ld a, (skill_check_skill)
     ld b, 4
     call get_array_item
-    call print_string
+    call print_compressed_string
 
     ld hl, check_str
     call print_compressed_string

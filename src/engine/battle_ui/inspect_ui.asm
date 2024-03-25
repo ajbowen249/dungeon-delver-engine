@@ -163,7 +163,7 @@ on_selection_changed:
     ld hl, bc
     ld bc, (hl)
     ld hl, bc
-    call print_string
+    call print_compressed_string
 
     ld l, 3
     ld h, action_menu_column
