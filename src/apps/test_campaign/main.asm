@@ -7,6 +7,7 @@
     call main
     ret
 
+#include "../../../build/generated/compressed_text.asm"
 #include "../../engine/dde.asm"
 #include "./global_data.asm"
 #include "./main_menu.asm"
