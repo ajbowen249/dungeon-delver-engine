@@ -1,6 +1,4 @@
 .local
-header: .asciz "Enter Your Name"
-
 destination_og: .dw 0
 destination: .dw 0
 
@@ -50,7 +48,7 @@ copy_done:
 
 init_screen:
     call rom_clear_screen
-    PRINT_AT_LOCATION 1, 1, header
+    PRINT_COMPRESSED_AT_LOCATION 1, 1, enter_name_header
 
     ret
 .endlocal

@@ -1,17 +1,4 @@
 .local
-header: .asciz "Roll Abilities"
-total_label:     .asciz "    Total: "
-remaining_label: .asciz "Remaining: "
-re_roll_label:   .asciz "    R: Re-Roll"
-continue_label:  .asciz "Enter: Continue"
-
-str_label: .asciz "    Strength"
-dex_label: .asciz "   Dexterity"
-con_label: .asciz "Constitution"
-int_label: .asciz "Intelligence"
-wis_label: .asciz "      Wisdom"
-chr_label: .asciz "    Charisma"
-
 #define abilities_first_row 2
 #define abilities_column 16
 
@@ -185,19 +172,19 @@ init_screen:
     call rom_clear_screen
 
     ; draw static labels
-    PRINT_AT_LOCATION 1, 1, header
-    PRINT_AT_LOCATION abilities_first_row, abilities_column + 6, total_label
-    PRINT_AT_LOCATION abilities_first_row + 1, abilities_column + 6, remaining_label
+    PRINT_COMPRESSED_AT_LOCATION 1, 1, roll_abilities_header
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row, abilities_column + 6, padded_total_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 1, abilities_column + 6, remaining_label
 
-    PRINT_AT_LOCATION abilities_first_row + 3, abilities_column + 6, re_roll_label
-    PRINT_AT_LOCATION abilities_first_row + 4, abilities_column + 6, continue_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 3, abilities_column + 6, padded_re_roll_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 4, abilities_column + 6, enter_to_continue_label
 
-    PRINT_AT_LOCATION abilities_first_row + 0, 2, str_label
-    PRINT_AT_LOCATION abilities_first_row + 1, 2, dex_label
-    PRINT_AT_LOCATION abilities_first_row + 2, 2, con_label
-    PRINT_AT_LOCATION abilities_first_row + 3, 2, int_label
-    PRINT_AT_LOCATION abilities_first_row + 4, 2, wis_label
-    PRINT_AT_LOCATION abilities_first_row + 5, 2, chr_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 0, 2, padded_str_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 1, 2, padded_dex_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 2, 2, padded_con_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 3, 2, padded_int_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 4, 2, padded_wis_label
+    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 5, 2, padded_chr_label
 
     ; Initialize ability scores
     ld a, 0

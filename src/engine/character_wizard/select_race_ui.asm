@@ -1,6 +1,4 @@
 .local
-header: .asciz "Select Your Race"
-
 ; Presents the race selection screen.
 ; A is set to the selected race_x enum value on exit
 select_race_ui::
@@ -14,6 +12,6 @@ select_race_ui::
 
 init_screen:
     call rom_clear_screen
-    PRINT_AT_LOCATION 1, 1, header
+    PRINT_COMPRESSED_AT_LOCATION 1, 1, select_race_header
     ret
 .endlocal

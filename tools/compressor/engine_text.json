@@ -29,4 +29,23 @@
     "hp_string": "HP: ",
     "ac_string": "AC: ",
 
+    "character_sheet_header": "Character Sheet: ",
+
+    "initiative_header": "Initiative:",
+
+    "enter_name_header": "Enter Your Name",
+    "select_class_header": "Select Your Class",
+    "select_race_header": "Select Your Race",
+
+    "roll_abilities_header": "Roll Abilities",
+    "padded_total_label": "    Total: ",
+    "remaining_label": "Remaining: ",
+    "padded_re_roll_label": "    R: Re-Roll",
+    "enter_to_continue_label":  "Enter: Continue",
+    "padded_str_label": "    Strength",
+    "padded_dex_label": "   Dexterity",
+    "padded_con_label": "Constitution",
+    "padded_int_label": "Intelligence",
+    "padded_wis_label": "      Wisdom",
+    "padded_chr_label": "    Charisma"
 }

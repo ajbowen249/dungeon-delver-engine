@@ -1,5 +1,4 @@
 .local
-header: .asciz "Character Sheet: "
 
 character_loc: .dw 0
 counter: .db 0
@@ -20,19 +19,19 @@ read_loop:
 
 init_screen:
     call rom_clear_screen
-    PRINT_AT_LOCATION 1, 1, header
+    PRINT_COMPRESSED_AT_LOCATION 1, 1, character_sheet_header
 
     ld hl, (character_loc)
     ld bc, pl_offs_name
     add hl, bc
     call print_string
 
-    PRINT_AT_LOCATION 2, 1, str_label
-    PRINT_AT_LOCATION 3, 1, dex_label
-    PRINT_AT_LOCATION 4, 1, con_label
-    PRINT_AT_LOCATION 5, 1, int_label
-    PRINT_AT_LOCATION 6, 1, wis_label
-    PRINT_AT_LOCATION 7, 1, chr_label
+    PRINT_COMPRESSED_AT_LOCATION 2, 1, str_label
+    PRINT_COMPRESSED_AT_LOCATION 3, 1, dex_label
+    PRINT_COMPRESSED_AT_LOCATION 4, 1, con_label
+    PRINT_COMPRESSED_AT_LOCATION 5, 1, int_label
+    PRINT_COMPRESSED_AT_LOCATION 6, 1, wis_label
+    PRINT_COMPRESSED_AT_LOCATION 7, 1, chr_label
 
     ld a, 0
     ld (counter), a
