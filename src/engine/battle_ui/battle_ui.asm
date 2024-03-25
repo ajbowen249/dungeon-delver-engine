@@ -5,8 +5,6 @@
 #include "./inspect_ui.asm"
 #include "./action_window.asm"
 
-victory_text: .asciz "Victory!"
-
 ; Displays the combat screen until the encounter is resolved
 ; HL should contain a pointer to an array of player data for the controlled party, and A the size of the party
 ; BC should contain a pointer to an array of player data for the enemy party, and D the number of enemies
@@ -74,7 +72,7 @@ on_enemy_party_dead:
     call rom_set_cursor
 
     ld hl, victory_text
-    call print_string
+    call print_compressed_string
 
     call await_any_keypress
 

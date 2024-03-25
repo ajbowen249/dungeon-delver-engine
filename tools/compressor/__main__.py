@@ -1,8 +1,11 @@
 import sys
 import json
 import argparse
+import os
 
 from compressor import Compressor
+
+engine_text_path = './engine_text.json'
 
 def process_args():
     parser = argparse.ArgumentParser(
@@ -20,7 +23,14 @@ def process_args():
 def main():
     args = process_args()
 
-    compressor = Compressor(json.load(args.input))
+    input_json = json.load(args.input)
+    engine_json = json.load(open(os.path.join(os.path.dirname(__file__), engine_text_path)))
+
+    engine_json.update(input_json)
+
+    print(engine_json)
+
+    compressor = Compressor(engine_json)
     sequence_table = compressor.compress()
     output_string = compressor.create_assembly_file(sequence_table)
 

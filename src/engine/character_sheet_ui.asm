@@ -102,7 +102,7 @@ stats_loop:
     call print_string
 
     ld hl, str_lvl
-    call print_string
+    call print_compressed_string
 
     ld hl, (character_loc)
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level

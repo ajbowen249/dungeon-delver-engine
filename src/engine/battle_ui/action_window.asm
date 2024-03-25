@@ -3,15 +3,6 @@
 #define action_menu_column 8
 blank_window_string: .asciz "                               "
 blank_message_row_string: .asciz "                                       "
-turn_header: .asciz "'s turn"
-attack_roll_str: .asciz "Attack Roll: "
-damage_roll_str: .asciz "Damage Roll: "
-saving_throw_str: .asciz "Saving Throw: "
-spell_save_str: .asciz "Spell Save Bonus: "
-critical_str: .asciz "Critical"
-hit_str: .asciz " Hit"
-miss_str: .asciz " Miss"
-saved_str: .asciz " Saved"
 
 should_end_turn: .db 0
 current_menu_address: .dw 0
@@ -126,7 +117,7 @@ print_turn_header:
     call print_string
 
     ld hl, turn_header
-    call print_string
+    call print_compressed_string
     ret
 
 show_selected_menu:
@@ -248,7 +239,7 @@ process_cast_option:
     call rom_set_cursor
 
     ld hl, spell_save_str
-    call print_string
+    call print_compressed_string
 
     ld hl, (character_in_turn)
     call get_spell_save_bonus
@@ -263,7 +254,7 @@ process_cast_option:
     call rom_set_cursor
 
     ld hl, saving_throw_str
-    call print_string
+    call print_compressed_string
 
     ld a, (saving_throw)
     ld d, 0
@@ -281,7 +272,7 @@ process_cast_option:
     jp z, enemy_saved
 
     ld hl, hit_str
-    call print_string
+    call print_compressed_string
 
     ld h, 23
     ld l, 7
@@ -290,7 +281,7 @@ process_cast_option:
 
 enemy_saved:
     ld hl, saved_str
-    call print_string
+    call print_compressed_string
     jp process_cast_done
 
 cast_ranged_spell:
@@ -354,7 +345,7 @@ try_hit_selected_enemy:
     call rom_set_cursor
 
     ld hl, attack_roll_str
-    call print_string
+    call print_compressed_string
 
     call roll_d20
     ld (attack_result), a
@@ -393,16 +384,16 @@ try_hit_selected_enemy:
 
 critical_miss:
     ld hl, critical_str
-    call print_string
+    call print_compressed_string
 miss:
     ld hl, miss_str
-    call print_string
+    call print_compressed_string
     ld a, 0
     ret
 
 critical_hit:
     ld hl, critical_str
-    call print_string
+    call print_compressed_string
 hit:
     ld a, 1
     ret
@@ -419,7 +410,7 @@ no_bonus:
 
 handle_damage_result:
     ld hl, damage_roll_str
-    call print_string
+    call print_compressed_string
 
     ld a, (damage_result)
     ld d, 0
