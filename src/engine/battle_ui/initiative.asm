@@ -124,6 +124,6 @@ display_initiative_order_callback:
 
     call get_character_at_index_a
     POINT_HL_TO_ATTR pl_offs_name
-    call print_string
+    call print_compressed_string
 
     ret

@@ -134,7 +134,7 @@ on_selection_changed:
     ld hl, (selected_character_location)
     ld bc, pl_offs_name
     add hl, bc
-    call print_string
+    call print_compressed_string
 
     ld hl, str_lvl
     call print_compressed_string

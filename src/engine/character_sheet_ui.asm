@@ -24,7 +24,7 @@ init_screen:
     ld hl, (character_loc)
     ld bc, pl_offs_name
     add hl, bc
-    call print_string
+    call print_compressed_string
 
     PRINT_COMPRESSED_AT_LOCATION 2, 1, str_label
     PRINT_COMPRESSED_AT_LOCATION 3, 1, dex_label

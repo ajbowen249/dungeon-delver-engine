@@ -114,7 +114,7 @@ print_turn_header:
 
     call get_character_in_turn
     POINT_HL_TO_ATTR pl_offs_name
-    call print_string
+    call print_compressed_string
 
     ld hl, turn_header
     call print_compressed_string
