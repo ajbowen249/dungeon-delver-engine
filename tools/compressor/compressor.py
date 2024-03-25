@@ -1,5 +1,7 @@
 from line_table import LineTable, Reference
 
+MAX_SEQUENCE_ID = 126 # Saving ID 127 for possible flag to second-byte ID.
+
 def sequence_label(id):
     return 'cs_' + str(id)
 
@@ -19,6 +21,10 @@ class Compressor:
             if top_sequence.saved_bytes < 0:
                 break
 
+            if sequence_id > MAX_SEQUENCE_ID:
+                print('WARNING: Stopped at cap of ' + str(MAX_SEQUENCE_ID) + ' string fragments')
+                break
+
             remove_string = top_sequence.string
             final_sequence_table[remove_string] = sequence_id
             print('Removing', '"' + remove_string + '"', top_sequence.saved_bytes)
@@ -33,9 +39,15 @@ class Compressor:
         return final_sequence_table
 
     def create_assembly_file(self, sequence_table):
-        output_str = 'compressed_sequences:\n'
+        output_str = '; Note: this file is auto-generated. Change the JSON file instead!\n\n'
+        output_str += 'compressed_sequences:\n'
         for sequence in sequence_table:
             output_str += sequence_label(sequence_table[sequence]) + ': .asciz "' + sequence + '"\n'
+
+        output_str += '\ncompressed_string_fragment_table:\n'
+
+        for sequence in sequence_table:
+            output_str += '.dw ' + sequence_label(sequence_table[sequence]) + '\n'
 
         output_str += '\n'
 
@@ -53,11 +65,9 @@ class Compressor:
                     if isinstance(chunk, str):
                         output_str += '.ascii "' + chunk + '"\n'
                     elif isinstance(chunk, Reference):
-                        # need to make this explicitly big-endian so the flag can be in the correct byte in the string
-                        # the first bit is a "flag" because we load at $b200, past $8000, so it'll always be set
-                        # all ascii characters printable in this form are below $80
-                        output_str += '.db hi(' + sequence_label(chunk.id) + ')\n'
-                        output_str += '.db lo(' + sequence_label(chunk.id) + ')\n'
+                        # flag the first bit to show it's a reference
+                        output_str += '.db ' + str(chunk.id) + ' | $80\n'
+                        pass
 
                 output_str += '.db 0\n\n'
 

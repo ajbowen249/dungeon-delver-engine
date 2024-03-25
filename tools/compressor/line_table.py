@@ -121,10 +121,10 @@ class LineTable:
                     sequence.count = table[sequence_str]
                     sequence.size = i
                     # This is the number of bytes saved by extracting one instance of that string to a table and
-                    # replacing all instances of it with a two-byte reference ID. -1 more for the additional null
-                    # terminator.
-                    sequence.saved_bytes = (i * table[sequence_str]) - (table[sequence_str] * 2) - i - 1
-                    sequence.score = (i * table[sequence_str]) - (table[sequence_str] * 2) - i - 1
+                    # replacing all instances of it with a one-byte reference ID. -1 more for the additional null
+                    # terminator, and -2 more for the entry in the lookup table.
+                    sequence.saved_bytes = (i * table[sequence_str]) - table[sequence_str] - i - 1 - 2
+                    sequence.score = sequence.saved_bytes
                     all_sequences.append(sequence)
 
             all_sequences = sorted(all_sequences, key=lambda sequence: sequence.score)

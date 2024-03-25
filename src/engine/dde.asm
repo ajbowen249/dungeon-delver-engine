@@ -15,6 +15,7 @@ dde_should_exit: .db 0
 #include "common_options.asm"
 #include "rom_api.asm"
 #include "string.asm"
+#include "compressed_string.asm"
 #include "random.asm"
 #include "dice.asm"
 #include "decimal_string.asm"
