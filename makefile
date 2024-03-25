@@ -6,6 +6,7 @@ SRC_DIR := ./src
 APP_SRC_DIR := $(SRC_DIR)/apps
 BUILD_DIR := ./build
 
+ENGINE_TEXT_FILE := $(TOOLS_DIR)/compressor/engine_text.json
 GENERATED_FOLDER := $(BUILD_DIR)/generated
 COMPRESSED_ENGINE_TEXT := $(GENERATED_FOLDER)/compressed_text.asm
 
@@ -20,7 +21,7 @@ all: $(COMPRESSED_ENGINE_TEXT) $(APP_OUTPUT_FILES)
 test: build/tests.hex
 compressed_text: $(COMPRESSED_ENGINE_TEXT)
 
-$(COMPRESSED_ENGINE_TEXT):
+$(COMPRESSED_ENGINE_TEXT): $(ENGINE_TEXT_FILE)
 	@mkdir -p $(GENERATED_FOLDER)
 	$(PYTHON) $(TOOLS_DIR)/compressor -o $(COMPRESSED_ENGINE_TEXT)
 
