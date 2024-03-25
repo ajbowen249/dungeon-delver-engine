@@ -11,7 +11,7 @@ This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizar
 
 ## Building
 
-This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html) and [make](https://www.gnu.org/software/make/manual/make.html). To build the unit tests and the test campaign, run `make` from the project root. To only build and run the tests, use `make test`.
+This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html), [make](https://www.gnu.org/software/make/manual/make.html), and [python 3](https://www.python.org/). To build the unit tests and the test campaign, run `make` from the project root. To only build and run the tests, use `make test`.
 
 ## System Requirements
 
@@ -81,6 +81,11 @@ Since each screen does so much, you may generally expect all registers to be des
 
 ### Screen Controller
 The subroutines in `screen_controller` allow for simple setup of the exploration/combat loop. By registering "room" and "encounter" tables and the player party, one can create subroutines that wrap the `exploration_ui` and `combat_ui`. The combat UI will always exit to the last room, and the exploration UI can exit to either another exploration wrapper or combat wrapper by setting `last_screen_exit_code` and `last_screen_exit_argument` before exiting. See `apps/test_campaign/screens` for examples.
+
+### Text Compression
+A simple string compression algorithm allows for apps to store their strings in a JSON file and run it through `tools/compressor` to generate an assembly file where all strings are declared, but up to 126 of the most-common sequences of characters will be extracted to the top, and a single-byte reference to each sequence in the lookup table is used as a byte in each original string with its MSB flagged. To print them, use `print_compressed_string`, `PRINT_COMPRESSED_AT_LOCATION`, or `BLOCK_PRINT`. Note that compressible text may not contain characters above value `126` (`~`), though that range does include most typeable, non-graphical characters. Make sure to include the generated output file somewhere in your source code.
+
+If your app doesn't need to compress its text, it should still run `tools/compressor` without the `-i` argument to get the compressed core engine text and include the generated file.
 
 ### Unit Tests
 Tests are located in `src/apps/tests/main.asm`, and are compiled and run automatically by `zasm`. They can be run individually with `make test`.

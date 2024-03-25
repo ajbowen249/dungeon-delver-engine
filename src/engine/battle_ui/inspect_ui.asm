@@ -10,9 +10,6 @@ selected_combatant_location: .dw 0
 #define enemy_inspect_column 1
 
 .local
-hp_string: .asciz "HP: "
-ac_string: .asciz "AC: "
-
 should_exit_iui: .db 0
 
 inspect_ui::
@@ -137,10 +134,10 @@ on_selection_changed:
     ld hl, (selected_character_location)
     ld bc, pl_offs_name
     add hl, bc
-    call print_string
+    call print_compressed_string
 
     ld hl, str_lvl
-    call print_string
+    call print_compressed_string
 
     ld hl, (selected_character_location)
     ld bc, pl_offs_level
@@ -166,14 +163,14 @@ on_selection_changed:
     ld hl, bc
     ld bc, (hl)
     ld hl, bc
-    call print_string
+    call print_compressed_string
 
     ld l, 3
     ld h, action_menu_column
     call rom_set_cursor
 
     ld hl, hp_string
-    call print_string
+    call print_compressed_string
 
     ld hl, (selected_combatant_location)
     ld bc, cbt_offst_hit_points
@@ -189,7 +186,7 @@ on_selection_changed:
     call rom_set_cursor
 
     ld hl, ac_string
-    call print_string
+    call print_compressed_string
 
     ld hl, (selected_combatant_location)
     ld bc, cbt_offs_armor_class

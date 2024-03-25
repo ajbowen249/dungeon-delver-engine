@@ -2,6 +2,7 @@
 
 .org $B200
 
+#include "../../../build/generated/compressed_text.asm"
 #include "../../engine/dde.asm"
 
 test_associative_array:

@@ -1,5 +1,3 @@
-initiative_header: .asciz "Initiative:"
-
 initialize_combatants:
     ld hl, initialize_combatants_foreach_callback
     call for_each_combatant
@@ -76,7 +74,7 @@ initialize_combatants_foreach_callback_done:
 display_initiative_order:
     call rom_clear_screen
 
-    PRINT_AT_LOCATION 1, 1, initiative_header
+    PRINT_COMPRESSED_AT_LOCATION 1, 1, initiative_header
 
     ld a, (total_number_of_combatants)
     ld hl, display_initiative_order_callback
@@ -126,6 +124,6 @@ display_initiative_order_callback:
 
     call get_character_at_index_a
     POINT_HL_TO_ATTR pl_offs_name
-    call print_string
+    call print_compressed_string
 
     ret

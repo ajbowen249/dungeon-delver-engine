@@ -256,7 +256,7 @@ draw_status_window_base:
     ld hl, (screen_data)
     ld bc, sc_offs_title
     add hl, bc
-    call print_string
+    call print_compressed_string
     ret
 
 

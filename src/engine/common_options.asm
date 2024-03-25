@@ -1,14 +1,5 @@
 #define default_options_flags $01
 
-opt_class_fighter_label: .asciz "Fighter"
-opt_class_wizard_label: .asciz "Wizard"
-opt_class_cleric_label: .asciz "Cleric"
-opt_class_barbarian_label: .asciz "Barbarian"
-opt_class_m_badger_label: .asciz "Badger"
-opt_class_m_hobgoblin_label: .asciz "Hobgoblin"
-opt_class_m_goblin_label: .asciz "Goblin"
-opt_class_m_drow_elf_label: .asciz "Drow Elf"
-
 opt_class:
 .db class_fighter
 .db default_options_flags
@@ -56,13 +47,6 @@ campaign_classes:
     CAMPAIGN_CLASS 3
     CAMPAIGN_CLASS 4
 
-opt_race_monster_label: .asciz "Monster"
-opt_race_human_label: .asciz "Human"
-opt_race_elf_label: .asciz "Elf"
-opt_race_dwarf_label: .asciz "Dwarf"
-opt_race_half_elf_label: .asciz "Half-Elf"
-opt_race_tiefling_label: .asciz "Tiefling"
-
 opt_race:
 .db race_human
 .db default_options_flags
@@ -92,11 +76,6 @@ opt_race:
 opt_campaign_race::
 .block mi_data_size * 5
 
-opt_count_selection_label_1: .asciz "1"
-opt_count_selection_label_2: .asciz "2"
-opt_count_selection_label_3: .asciz "3"
-opt_count_selection_label_4: .asciz "4"
-
 opt_count_selection:
 .db 1
 .db default_options_flags
@@ -114,9 +93,6 @@ opt_count_selection:
 .db default_options_flags
 .dw opt_count_selection_label_4
 
-opt_yes_no_label_yes .asciz "Yes"
-opt_yes_no_label_no .asciz "No"
-
 opt_yes_no:
 .db 0
 .db default_options_flags
@@ -126,7 +102,6 @@ opt_yes_no:
 .db default_options_flags
 .dw opt_yes_no_label_no
 
-opt_stub_label: .asciz "..."
 #define opt_stub_value 1
 
 opt_stub:
