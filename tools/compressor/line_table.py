@@ -45,6 +45,9 @@ class Line:
 class Block:
     def __init__(self, key, lines):
         self.key = key
+        if isinstance(lines, str):
+            lines = [lines]
+
         self.lines = list(map(lambda x: Line(x), lines))
 
     def remaining_strings(self):
