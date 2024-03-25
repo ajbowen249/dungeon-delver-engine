@@ -7,6 +7,43 @@
     "wis_label": "WIS",
     "chr_label": "CHR",
 
+    "opt_class_fighter_label": "Fighter",
+    "opt_class_wizard_label": "Wizard",
+    "opt_class_cleric_label": "Cleric",
+    "opt_class_barbarian_label": "Barbarian",
+    "opt_class_m_badger_label": "Badger",
+    "opt_class_m_hobgoblin_label": "Hobgoblin",
+    "opt_class_m_goblin_label": "Goblin",
+    "opt_class_m_drow_elf_label": "Drow Elf",
+
+    "opt_race_monster_label": "Monster",
+    "opt_race_human_label": "Human",
+    "opt_race_elf_label": "Elf",
+    "opt_race_dwarf_label": "Dwarf",
+    "opt_race_half_elf_label": "Half-Elf",
+    "opt_race_tiefling_label": "Tiefling",
+
+    "opt_count_selection_label_1": "1",
+    "opt_count_selection_label_2": "2",
+    "opt_count_selection_label_3": "3",
+    "opt_count_selection_label_4": "4",
+
+    "opt_yes_no_label_yes": "Yes",
+    "opt_yes_no_label_no": "No",
+
+    "opt_stub_label": "...",
+
+    "opt_bm_option_attack_label": "Attack",
+    "opt_bm_option_cast_label": "Cast",
+    "opt_bm_option_move_label": "Move",
+    "opt_bm_option_inspect_label": "Inspect",
+    "opt_bm_option_end_turn_label": "End Turn",
+
+    "spell_option_firebolt_label": "Fire Bolt",
+    "spell_option_acid_splash_label": "Acid Splash",
+    "spell_option_ray_of_frost_label": "Ray of Frost",
+    "spell_option_sacred_flame_label": "Sacred Flame",
+
     "str_lvl": " lvl ",
     "str_success": "Success",
     "str_fail": "Fail",

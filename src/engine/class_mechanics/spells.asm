@@ -2,16 +2,9 @@
 ; flags here should be configured via configure_spell_menu for the selected class+level before display
 
 #define spell_firebolt $01
-spell_option_firebolt_label: .asciz "Fire Bolt"
-
 #define spell_acid_splash $02
-spell_option_acid_splash_label: .asciz "Acid Splash"
-
 #define spell_ray_of_frost $03
-spell_option_ray_of_frost_label: .asciz "Ray of Frost"
-
 #define spell_sacred_flame $04
-spell_option_sacred_flame_label: .asciz "Sacred Flame"
 
 spell_menu_root:
 .db spell_firebolt

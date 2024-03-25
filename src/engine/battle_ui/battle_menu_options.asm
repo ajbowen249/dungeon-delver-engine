@@ -1,17 +1,8 @@
 #define bm_option_attack_value $01
-opt_bm_option_attack_label: .asciz "Attack"
-
 #define bm_option_cast_value $02
-opt_bm_option_cast_label: .asciz "Cast"
-
 #define bm_option_move_value $03
-opt_bm_option_move_label: .asciz "Move"
-
 #define bm_option_inspect_value $FD
-opt_bm_option_inspect_label: .asciz "Inspect"
-
 #define bm_option_end_turn_value $FE
-opt_bm_option_end_turn_label: .asciz "End Turn"
 
 opt_bm_root:
 .db bm_option_attack_value
