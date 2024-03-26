@@ -12,7 +12,7 @@ def process_args():
         prog='DDE Text Compressor',
         description='Compresses text for the Dungeon Delver Engine')
 
-    parser.add_argument('-i', '--input', dest='input', type=open, help='JSON Input file')
+    parser.add_argument('-i', '--input', dest='input', type=argparse.FileType('r'), help='JSON Input file', nargs='+')
     parser.add_argument('-o', '--output', dest='output', type=argparse.FileType('w'), help='Output assembly file',
                         default=sys.stdout)
 
@@ -26,8 +26,9 @@ def main():
     engine_json = json.load(open(os.path.join(os.path.dirname(__file__), engine_text_path)))
 
     if args.input is not None:
-        input_json = json.load(args.input)
-        engine_json.update(input_json)
+        for input_file in args.input:
+            input_json = json.load(input_file)
+            engine_json.update(input_json)
 
     compressor = Compressor(engine_json)
     sequence_table = compressor.compress()
