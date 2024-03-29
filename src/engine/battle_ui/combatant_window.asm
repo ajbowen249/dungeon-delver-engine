@@ -84,8 +84,9 @@ draw_combatants_continue:
 
 draw_combatant_enemy_column:
     ld h, enemy_screen_column
+    ld a, (party_size)
+    ld b, a
     ld a, l
-    ld b, 4
     sub a, b
     ld l, a
 
