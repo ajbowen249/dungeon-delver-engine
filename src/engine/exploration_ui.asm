@@ -401,7 +401,7 @@ on_position_changed_found_interactable:
 
     ld bc, hl
 
-    PRINT_AT_LOCATION 2, 21, bc
+    PRINT_COMPRESSED_AT_LOCATION 2, 21, bc
 
     ret
 
