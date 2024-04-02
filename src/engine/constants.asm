@@ -44,6 +44,8 @@
 #define ch_house $86
 #define ch_cross $A8
 #define ch_quad_thing $84
+#define ch_pound_sterling $BF
+#define ch_paragraph $AF
 
 ; analogous mappings
 #charset map "┌" = $F0
@@ -83,6 +85,8 @@
 #charset map "◢" = ch_corner_lower_right
 
 #charset map "⌂" = ch_house
+#charset map "£" = ch_pound_sterling
+#charset map "¶" = ch_paragraph
 
 #charset map "옷" = ch_stick_person_1
 #charset map "왓" = ch_stick_person_2
