@@ -462,19 +462,11 @@ configure_inputs:
     ret
 .endlocal
 
+
 .local
-
-; if the flag at BC is set, clear the interactable at HL. Needs screen graphic data at DE
+; Clear the interactable at HL Needs screen graphic data at DE
 ; Uses A
-clear_interactable_if_flag::
-    push hl
-
-    ld hl, bc
-    ld a, (hl)
-    cp a, 0
-    jp z, flag_not_set
-
-    pop hl
+clear_interactable::
     push hl
     LOAD_A_WITH_ATTR_THROUGH_HL in_row_offset
     dec a ; 1-based
@@ -503,6 +495,29 @@ clear_interactable_if_flag::
     ld (hl), a
     inc hl
     ld (hl), a
+    pop hl
+    ret
+.endlocal
+
+.macro CLEAR_INTERACTABLE &INTERACTABLE_LABEL, &BACKGROUND_GRAPHIC_LABEL
+    ld hl, &INTERACTABLE_LABEL
+    ld de, &BACKGROUND_GRAPHIC_LABEL
+    call clear_interactable
+.endm
+
+.local
+; if the flag at BC is set, clear the interactable at HL. Needs screen graphic data at DE
+; Uses A
+clear_interactable_if_flag::
+    push hl
+
+    ld hl, bc
+    ld a, (hl)
+    cp a, 0
+    jp z, flag_not_set
+
+    pop hl
+    call clear_interactable
     ret
 
 flag_not_set:
