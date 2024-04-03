@@ -40,4 +40,4 @@ resolving_character: .dw 0
 #define actual_builtin_classes 4
 #define remaining_campaign_classes max_builtin_classes - actual_builtin_classes
 
-#define max_campaign_monsters 16
+#define max_campaign_monsters 8
