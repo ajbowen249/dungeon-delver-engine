@@ -128,12 +128,12 @@ show_selected_menu:
 
     ld a, (current_menu_option_count)
     ld hl, (current_menu_address)
-    ld bc, consolidated_battle_menu
+    ld bc, common_consolidated_menu
 
     call consolidate_menu_hl_bc
     ld b, action_menu_column
     ld c, 2
-    ld hl, consolidated_battle_menu
+    ld hl, common_consolidated_menu
     call menu_ui
 
     ret

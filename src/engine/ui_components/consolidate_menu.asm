@@ -1,3 +1,6 @@
+common_consolidated_menu: ; Can show up to 7 options at the moment
+.block mi_data_size * 7, 0
+
 .local
 ; Given a set of menu options starting at HL of length A, copy each element into the array starting at BC, skipping
 ; all disabled options and returning the consolidated length in A.

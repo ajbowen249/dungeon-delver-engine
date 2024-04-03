@@ -26,6 +26,3 @@ bm_root_move_flags: .db default_options_flags
 .dw opt_bm_option_end_turn_label
 
 #define opt_bm_root_option_count 5
-
-consolidated_battle_menu: ; Can only show 7 options at the moment
-.block mi_data_size * 7, 0
