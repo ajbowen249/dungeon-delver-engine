@@ -13,18 +13,18 @@ monster_size_badger: .db monster_size_tiny
 monster_size_hobgoblin: .db monster_size_medium
 monster_size_goblin: .db monster_size_small
 monster_size_drow_elf: .db monster_size_medium
-.block 12 ; leave space for another 12 (16 total) built-in creatures, and another 16 campaign monsters
+.block remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_size_table::
-.block 16
+.block max_campaign_monsters
 
 monster_ac_table:
 monster_ac_badger: .db 4
 monster_ac_hobgoblin: .db 18
 monster_ac_goblin: .db 15
 monster_ac_drow_elf: .db 15
-.block 12 ; leave space for another 12 (16 total) built-in creatures, and another 16 campaign monsters
+.block remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_ac_table::
-.block 16
+.block max_campaign_monsters
 
 #define modifier_block_size 6
 .macro MONSTER_MODIFIERS &NAME, &STR, &DEX, &CON, &INT, &WIS, &CHA
@@ -41,9 +41,9 @@ monster_modifiers_table:
     MONSTER_MODIFIERS hobgoblin, 1, 1, 1, 0, 0, -1
     MONSTER_MODIFIERS goblin, -1, 2, 0, 0, -1, -1
     MONSTER_MODIFIERS drow_elf, 0, 2, 0, 0, 0, 1
-.block 12 * modifier_block_size ; leave space for another 12 (16 total) built-in creatures, and 16 campaign monsters
+.block remaining_campaign_classes * modifier_block_size ; leave space for built-in creatures, and then campaign monsters
 campaign_monster_modifiers_table::
-.block 16 * modifier_block_size
+.block max_campaign_monsters * modifier_block_size
 
     DEFINE_PLAYER monster_badger, 4, 11, 12, 2, 12, 5, race_monster, class_m_badger, 1, "Badger"
 .db 0

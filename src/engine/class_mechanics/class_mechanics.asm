@@ -315,9 +315,9 @@ damage_table:
 .dw get_m_hobgoblin_damage
 .dw get_m_goblin_damage
 .dw get_m_drow_elf_damage
-.block 2 * 12 ; leave space for another 12 (16 total) built-in creatures, and another 16 campaign monsters
+.block 2 * remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_damage_table::
-.block 2 * 16
+.block 2 * max_campaign_monsters
 
 ; returns pre-rolled or looked-up damage value in A
 get_damage_value::
