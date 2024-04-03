@@ -56,7 +56,7 @@ copy_test_dst:
 .db 0
 .db 0
 
-#define class_mc_test_monster 32
+#define class_mc_test_monster 16
     DEFINE_PLAYER test_campaign_monster_class, 10, 9, 8, 7, 6, 5, race_human, class_mc_test_monster, 1, "TEST"
 .db 0
 .db 0

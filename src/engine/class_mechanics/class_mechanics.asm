@@ -303,14 +303,6 @@ damage_table:
 .dw get_placeholder_damage
 .dw get_placeholder_damage
 .dw get_placeholder_damage
-.dw get_placeholder_damage
-.dw get_placeholder_damage
-.dw get_placeholder_damage
-.dw get_placeholder_damage
-.dw get_placeholder_damage
-.dw get_placeholder_damage
-.dw get_placeholder_damage
-.dw get_placeholder_damage
 .dw get_m_badger_damage
 .dw get_m_hobgoblin_damage
 .dw get_m_goblin_damage
