@@ -135,14 +135,14 @@
 #define pl_data_size pl_offs_name + pl_name_data_len
 
 ; interactables data
-#define in_type_offset 0
-#define in_flags_offset 1
-#define in_row_offset 2
-#define in_col_offset 3
-#define in_data_length 4 ; type, flags, row, col
+#define in_offs_type 0
+#define in_offs_flags in_offs_type + 1
+#define in_offs_row in_offs_flags + 1
+#define in_offs_col in_offs_row + 1
+#define in_data_size in_offs_col + 1
 
 ; flags fields (msb-lsb):
-; 7: reserved
+; 7: is enabled
 ; 6: reserved
 ; 5: reserved
 ; 4: reserved
@@ -151,12 +151,15 @@
 ; 1: reserved
 ; 0: is trigger (interact on location match)
 
+#define iflags_normal $80
+#define iflags_door $81
+
 ; screen data structure
 #define sc_background_data_len 21 * 8
 #define sc_title_max_len 20
 #define sc_title_data_len sc_title_max_len + 1
 #define sc_interactable_array_elements 10
-#define sc_interactable_array_length in_data_length * sc_interactable_array_elements
+#define sc_interactable_array_length in_data_size * sc_interactable_array_elements
 
 #define sc_offs_background 0
 #define sc_offs_title sc_background_data_len
