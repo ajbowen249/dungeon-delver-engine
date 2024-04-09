@@ -5,8 +5,6 @@ blank_20_char_string: .asciz "                    "
 
 screen_data: .dw 0
 
-background_index: .dw 0
-
 avatar_data:
 avatar_x: .db 0
 avatar_y: .db 0
@@ -19,12 +17,12 @@ near_interactable: .db 0
 auto_interact: .db 0
 should_exit: .db 0
 
-.macro EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+load_avatar_location_into_hl:
     ld a, (avatar_x)
     ld h, a
     ld a, (avatar_y)
     ld l, a
-.endm
+    ret
 
 ; Displays the exploration screen until exited
 ; HL should contain a pointer to the party array, and A should contain party size.
@@ -43,7 +41,6 @@ exploration_ui::
     ld (should_exit), a
 
     call init_screen
-    call configure_inputs
 
 read_loop:
     ld a, (dde_should_exit)
@@ -92,7 +89,7 @@ init_screen:
     ret
 
 draw_avatar:
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+    call load_avatar_location_into_hl
     call rom_set_cursor
 
     ld a, ch_stick_person_1
@@ -100,49 +97,87 @@ draw_avatar:
     ret
 
 clear_avatar:
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+    call load_avatar_location_into_hl
     call rom_set_cursor
 
     ld a, " "
     call rom_print_a
     ret
 
-exploration_ui_movement_count = 0
-.macro EXPLORATION_UI_MOVEMENT &INC_OR_DEC, &CHANGE_REG, &CHANGE_ADDR
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+; helper for exploration_ui_movement
+inc_or_dec_h_or_l:
+    cp a, 0
+    jp nz, inc_or_dec_h_or_l_h
 
-    &INC_OR_DEC &CHANGE_REG
+    ld a, l
+    add a, b
+    ld l, a
+    ret
 
+inc_or_dec_h_or_l_h:
+    ld a, h
+    add a, b
+    ld h, a
+    ret
+
+; handles input for movement.
+; a of 0 is row, a of 1 is col
+; b should be the value added to the row or column (1 for plus or $ff for down)
+exploration_ui_movement:
+    ld c, a
+    push bc
+
+    call load_avatar_location_into_hl
+
+    pop bc
+    ld a, c
+    call inc_or_dec_h_or_l
+    push hl
+
+exploration_ui_movement_continue:
     call can_player_enter_hl
     cp a, 0
-    jp nz, exit_exploration_ui_movement_{exploration_ui_movement_count}
+    jp nz, exploration_ui_movement_exit
 
     ld a, 1
     ld (position_changed), a
 
     call clear_avatar
 
-    ld a, (&CHANGE_ADDR)
-    &INC_OR_DEC a
-    ld (&CHANGE_ADDR), a
+    pop hl
+    ld a, h
+    ld (avatar_x), a
+    ld a, l
+    ld (avatar_y), a
 
     call draw_avatar
-exit_exploration_ui_movement_{exploration_ui_movement_count}:
     ret
-exploration_ui_movement_count = exploration_ui_movement_count + 1
+
+exploration_ui_movement_exit:
+    pop hl
+    ret
+
+.macro EXPLORATION_UI_MOVEMENT &ROW_COL, &VAL
+    ld a, &ROW_COL
+    ld b, &VAL
+    call exploration_ui_movement
 .endm
 
 on_down_arrow:
-    EXPLORATION_UI_MOVEMENT inc, l, avatar_y
+    EXPLORATION_UI_MOVEMENT 0, 1
+    ret
 
 on_up_arrow:
-    EXPLORATION_UI_MOVEMENT dec, l, avatar_y
+    EXPLORATION_UI_MOVEMENT 0, $ff
+    ret
 
 on_left_arrow:
-    EXPLORATION_UI_MOVEMENT dec, h, avatar_x
+    EXPLORATION_UI_MOVEMENT 1, $ff
+    ret
 
 on_right_arrow:
-    EXPLORATION_UI_MOVEMENT inc, h, avatar_x
+    EXPLORATION_UI_MOVEMENT 1, 1
+    ret
 
 on_confirm:
     ld a, (near_interactable)
@@ -152,8 +187,7 @@ on_confirm:
 
 on_escape:
     ld hl, (screen_data)
-    ld bc, sc_offs_menu_callback
-    add hl, bc
+    POINT_HL_TO_ATTR sc_offs_menu_callback
     ld bc, (hl)
     ld hl, bc
     call call_hl
@@ -170,6 +204,7 @@ on_escape:
 on_escape_done:
     ret
 
+background_index: .dw 0
 draw_background:
     ld hl, (screen_data)
     ld (background_index), hl
@@ -254,8 +289,7 @@ draw_status_window_base:
     call rom_set_cursor
 
     ld hl, (screen_data)
-    ld bc, sc_offs_title
-    add hl, bc
+    POINT_HL_TO_ATTR sc_offs_title
     call print_compressed_string
     ret
 
@@ -265,6 +299,7 @@ interactable_search_col: .db 0
 interactable_search_index: .db 0
 interactable_search_flags .db 0
 interactable_search_flags_mask .db 0
+searching_flags: .db 0
 
 ; Sets A to index of the first interactable found at col H row L
 ; B should contain desired flags, and C should contain the mask flag
@@ -289,25 +324,32 @@ search_interactables_at_hl:
 
 search_interactables_at_hl_loop:
     ld hl, (screen_data)
-    ld bc, sc_offs_interactables_start
-    add hl, bc
+    POINT_HL_TO_ATTR sc_offs_interactables_start
 
     ld a, (interactable_search_index)
-    ld b, in_data_length
+    ld b, in_data_size
     call mul_a_b
 
     ld b, 0
     ld c, a
     add hl, bc
 
-    ld bc, in_flags_offset
+    ld bc, in_offs_flags
     add hl, bc
+
+    ld a, (hl)
+    ld (searching_flags), a
+
+    ; check enabled flag first
+    ld c, $80
+    and a, c
+    jp z, search_interactables_at_hl_continue
 
     ld a, (interactable_search_flags)
     ld b, a
     ld a, (interactable_search_flags_mask)
     ld c, a
-    ld a, (hl)
+    ld a, (searching_flags)
     and a, c
     cp a, b
     jp nz, search_interactables_at_hl_continue
@@ -340,26 +382,25 @@ search_interactables_at_hl_continue:
 ; Excludes "trigger" items from the search, since you need to stand on them to activate
 find_interactable_around_avatar:
 .macro EX_UI_FIND_INTERACTABLE_CHECK_LOCATION
-    ld b, 0
-    ld c, $01
+    ld bc, $0001
     call search_interactables_at_hl
     cp a, 255
     jp nz, find_interactable_around_avatar_found
 .endm
 
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+    call load_avatar_location_into_hl
     dec l
     EX_UI_FIND_INTERACTABLE_CHECK_LOCATION
 
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+    call load_avatar_location_into_hl
     inc l
     EX_UI_FIND_INTERACTABLE_CHECK_LOCATION
 
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+    call load_avatar_location_into_hl
     dec h
     EX_UI_FIND_INTERACTABLE_CHECK_LOCATION
 
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+    call load_avatar_location_into_hl
     inc h
     EX_UI_FIND_INTERACTABLE_CHECK_LOCATION
 
@@ -369,7 +410,7 @@ find_interactable_around_avatar_found:
 on_position_changed:
     call clear_exploration_message_area
     ; first check to see if we've stepped on something
-    EX_UI_LOAD_AVATAR_LOCATION_INTO_HL
+    call load_avatar_location_into_hl
     ld b, $01
     ld c, $01
     call search_interactables_at_hl
@@ -393,8 +434,7 @@ on_position_changed_found_interactable:
     ld (near_interactable), a
 
     ld hl, (screen_data)
-    ld bc, sc_offs_get_interaction_prompt
-    add hl, bc
+    POINT_HL_TO_ATTR sc_offs_get_interaction_prompt
     ld bc, (hl)
     ld hl, bc
     call call_hl
@@ -413,13 +453,12 @@ on_position_changed_no_interactable:
 on_interact:
     ; make sure it's still active (last interaction could have disabled it)
     ld hl, (screen_data)
-    ld bc, sc_offs_interactables_start
-    add hl, bc
+    POINT_HL_TO_ATTR sc_offs_interactables_start
     ld a, (near_interactable)
-    ld b, in_data_length
+    ld b, in_data_size
     call get_array_item
     ld b, 0
-    ld c, in_row_offset
+    ld c, in_offs_row
     add hl, bc
     ld a, (hl)
     cp a, 0
@@ -430,8 +469,7 @@ on_interact:
     jp z, interact_bail
 
     ld hl, (screen_data)
-    ld bc, sc_offs_interact_callback
-    add hl, bc
+    POINT_HL_TO_ATTR sc_offs_interact_callback
     ld bc, (hl)
     ld hl, bc
 
@@ -462,66 +500,60 @@ configure_inputs:
     ret
 .endlocal
 
-
 .local
-; Clear the interactable at HL Needs screen graphic data at DE
-; Uses A
+interactable_address: .dw 0
+clearing_screen_data: .dw 0
+
 clear_interactable::
-    push hl
-    LOAD_A_WITH_ATTR_THROUGH_HL in_row_offset
-    dec a ; 1-based
-    ld b, 21
-    call mul_a_b
-    ld b, a
-
-    pop hl
-    push hl
-    push bc
-    LOAD_A_WITH_ATTR_THROUGH_HL in_col_offset
-    dec a ; 1-based
-    pop bc
-    add a, b
-
-    ld c, a
-    ld b, 0
+    ld (interactable_address), hl
     ld hl, de
-    add hl, bc
-    ld a, " "
-    ld (hl), a
-
-    pop hl
-    POINT_HL_TO_ATTR in_row_offset
-    ld a, 0
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    pop hl
+    ld (clearing_screen_data), hl
+    call clear_interactable_inner
     ret
-.endlocal
 
-.macro CLEAR_INTERACTABLE &INTERACTABLE_LABEL, &BACKGROUND_GRAPHIC_LABEL
-    ld hl, &INTERACTABLE_LABEL
-    ld de, &BACKGROUND_GRAPHIC_LABEL
-    call clear_interactable
-.endm
-
-.local
-; if the flag at BC is set, clear the interactable at HL. Needs screen graphic data at DE
-; Uses A
 clear_interactable_if_flag::
-    push hl
+    ld (interactable_address), hl
+    ld hl, de
+    ld (clearing_screen_data), hl
 
     ld hl, bc
     ld a, (hl)
     cp a, 0
     jp z, flag_not_set
 
-    pop hl
-    call clear_interactable
-    ret
+    call clear_interactable_inner
 
 flag_not_set:
-    pop hl
+    ret
+
+clear_interactable_inner:
+    ld hl, (interactable_address)
+    LOAD_A_WITH_ATTR_THROUGH_HL in_offs_row
+    dec a ; 1-based
+    ld b, a
+    ld a, 21
+    call mul_a_b
+    ld d, a
+
+    ld hl, (interactable_address)
+    LOAD_A_WITH_ATTR_THROUGH_HL in_offs_col
+    dec a ; 1-based
+    add a, d
+
+    ld b, 0
+    ld c, a
+    ld hl, (clearing_screen_data)
+    add hl, bc
+    ld a, " "
+    ld (hl), a
+
+    ld hl, (interactable_address)
+    LOAD_A_WITH_ATTR_THROUGH_HL in_offs_flags
+    ld c, $7f
+    and a, c
+    ld hl, (interactable_address)
+    WRITE_A_TO_ATTR_THROUGH_HL in_offs_flags
+
     ret
 .endlocal
 
@@ -530,6 +562,12 @@ flag_not_set:
     ld hl, &INTERACTABLE_LABEL
     ld de, &BACKGROUND_GRAPHIC_LABEL
     call clear_interactable_if_flag
+.endm
+
+.macro CLEAR_INTERACTABLE &INTERACTABLE_LABEL, &BACKGROUND_GRAPHIC_LABEL
+    ld hl, &INTERACTABLE_LABEL
+    ld de, &BACKGROUND_GRAPHIC_LABEL
+    call clear_interactable
 .endm
 
 .local
