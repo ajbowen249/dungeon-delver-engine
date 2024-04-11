@@ -61,7 +61,19 @@ battle_loop_continue:
     jp battle_loop
 
 on_player_party_dead:
-    ld a, 0
+    call rom_clear_screen
+
+    ld h, 15
+    ld l, 4
+    call rom_set_cursor
+
+    ld hl, str_game_over
+    call print_compressed_string
+
+    call await_any_keypress
+
+    ld a, 1
+    ld (dde_should_exit), a
     ret
 
 on_enemy_party_dead:
@@ -71,7 +83,7 @@ on_enemy_party_dead:
     ld l, 4
     call rom_set_cursor
 
-    ld hl, victory_text
+    ld hl, str_victory
     call print_compressed_string
 
     call await_any_keypress
