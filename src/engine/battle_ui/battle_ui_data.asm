@@ -159,7 +159,32 @@ scan_parties_index: .db 0
 
 ; Returns nonzero in A if the player party is alive, Zero if all dead
 is_player_party_dead:
+    ld a, 0
+    ld (scan_parties_index), a
+
+party_scan_loop:
+    ld a, (scan_parties_index)
+    call get_combatant_at_index_a
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    ; if even one is alive, just bail
+    ld b, cbt_flag_alive
+    and a, b
+    cp a, 0
+    jp z, combatant_dead
+
     ld a, 1
+    ret
+
+combatant_dead:
+    ld a, (scan_parties_index)
+    inc a
+    ld (scan_parties_index), a
+    ld b, a
+    ld a, (party_size)
+    cp a, b
+    jp nz, party_scan_loop
+
+    ld a, 0
     ret
 
 ; Returns nonzero in A if the enemy party is alive, Zero if all dead
@@ -190,7 +215,6 @@ enemy_dead:
     jp nz, enemy_scan_loop
 
     ld a, 0
-
     ret
 
 ; returns 0 if the player in turn is in the player party, and non-zero if it's an enemy
