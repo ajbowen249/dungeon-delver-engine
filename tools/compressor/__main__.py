@@ -4,6 +4,7 @@ import argparse
 import os
 
 from compressor import Compressor
+from huffman import huffman_test
 
 engine_text_path = './engine_text.json'
 
@@ -30,11 +31,13 @@ def main():
             input_json = json.load(input_file)
             engine_json.update(input_json)
 
-    compressor = Compressor(engine_json)
-    sequence_table = compressor.compress()
-    output_string = compressor.create_assembly_file(sequence_table)
+    huffman_test(engine_json)
 
-    args.output.write(output_string)
+    # compressor = Compressor(engine_json)
+    # sequence_table = compressor.compress()
+    # output_string = compressor.create_assembly_file(sequence_table)
+
+    # args.output.write(output_string)
 
 if __name__ == '__main__':
     main()
