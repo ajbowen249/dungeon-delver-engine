@@ -8,6 +8,12 @@ initialize_combatants:
     ld hl, initiative_order
     call sort_associative_array
 
+    ld d, 2
+    ld a, (total_number_of_combatants)
+    ld bc, initiative_sort_space
+    ld hl, initiative_order
+    call reverse_array
+
     ret
 
 initiative_result: .db 0
