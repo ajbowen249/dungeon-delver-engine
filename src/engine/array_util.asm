@@ -11,15 +11,48 @@ get_array_item::
 .endlocal
 
 .local
-; Sort the array at HL of length A data size D by its first byte
-; Requires swap space of length D at BC
-; Be careful, it's quadratic because I'm lazy
+; common data for reverse_array and sort_associative_array
 array_start: .dw 0
 swap_space: .dw 0
 array_length: .db 0
 data_size: .db 0
+
+; Reverse the array at HL of length A data size D
+; Requires swap space of length D at BC
+reverse_array::
+    ld (array_start), hl
+    ld hl, bc
+    ld (swap_space), hl
+
+    ld (array_length), a
+    ld a, d
+    ld (data_size), a
+
+    ; Swap from [0, n >> 1).
+    ; If the length is even, it'll swap up to the last index of the first half.
+    ; If the length is odd, it'll skip the central index.
+    ld a, (array_length)
+    rra
+    and a, $7F
+    ld hl, reverse_array_callback
+    call iterate_a
+
+    ret
+
+reverse_array_callback:
+    ld b, a
+    ld a, (array_length)
+    dec a
+    sub a, b
+    call swap_elements_a_b
+
+    ret
+
 sort_index: .db 0
 
+; Sort the array at HL of length A data size D by its first byte
+; Requires swap space of length D at BC
+; Be careful, it's quadratic because I'm lazy
 sort_associative_array::
     ld (array_start), hl
     ld hl, bc

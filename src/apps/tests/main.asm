@@ -31,6 +31,16 @@ test_sort_swap_space:
 .db 55
 .db 55
 
+reverse_test_array:
+.ascii "ab"
+.ascii "cd"
+.ascii "ef"
+.ascii "gh"
+.ascii "ij"
+
+test_reverse_swap_space:
+.ascii "  "
+
 copy_test_src:
 .db "a"
 .db "b"
@@ -212,9 +222,43 @@ test_sort:
 
     ret
 
+test_reverse:
+    ld hl, reverse_test_array
+    ld a, 5
+    ld d, 2
+    ld bc, test_reverse_swap_space
+    call reverse_array
+
+    ld a, (reverse_test_array)
+.expect a = "i"
+    ld a, (reverse_test_array + 1)
+.expect a = "j"
+
+    ld a, (reverse_test_array + 2)
+.expect a = "g"
+    ld a, (reverse_test_array + 3)
+.expect a = "h"
+
+    ld a, (reverse_test_array + 4)
+.expect a = "e"
+    ld a, (reverse_test_array + 5)
+.expect a = "f"
+
+    ld a, (reverse_test_array + 6)
+.expect a = "c"
+    ld a, (reverse_test_array + 7)
+.expect a = "d"
+
+    ld a, (reverse_test_array + 8)
+.expect a = "a"
+    ld a, (reverse_test_array + 9)
+.expect a = "b"
+    ret
+
 array_tests:
     call test_copy
     call test_sort
+    call test_reverse
     ret
 
 test_class_mechanics:
