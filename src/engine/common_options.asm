@@ -72,9 +72,9 @@ opt_race:
 .db 0
 .dw opt_race_monster_label
 
-; Leave space for 5 campaign-defined monsters
+; Leave space for 2 campaign-defined monsters
 opt_campaign_race::
-.block mi_data_size * 5
+.block mi_data_size * 2
 
 opt_count_selection:
 .db 1

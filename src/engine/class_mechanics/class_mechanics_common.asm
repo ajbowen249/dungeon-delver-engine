@@ -1,20 +1,5 @@
 resolving_character: .dw 0
 
-.macro POINT_HL_TO_ATTR &OFFSET
-    ld bc, &OFFSET
-    add hl, bc
-.endm
-
-.macro LOAD_A_WITH_ATTR_THROUGH_HL &OFFSET
-    POINT_HL_TO_ATTR &OFFSET
-    ld a, (hl)
-.endm
-
-.macro WRITE_A_TO_ATTR_THROUGH_HL &OFFSET
-    POINT_HL_TO_ATTR &OFFSET
-    ld (hl), a
-.endm
-
 #define class_fighter   0
 #define class_wizard    1
 #define class_cleric    2
@@ -40,4 +25,4 @@ resolving_character: .dw 0
 #define actual_builtin_classes 4
 #define remaining_campaign_classes max_builtin_classes - actual_builtin_classes
 
-#define max_campaign_monsters 8
+#define max_campaign_monsters 2
