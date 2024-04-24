@@ -266,34 +266,6 @@ monster_hp:
 .endlocal
 
 .local
-; loads A with the hit die, and B with the number of die to roll
-get_hit_dice::
-    ld (resolving_character), hl
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
-    ld d, a
-
-    ld hl, (resolving_character)
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
-    ld e, a
-    ld c, monster_mask
-    and a, c
-    cp a, 0
-    jp nz, monster_dice
-
-    ld b, d
-    ld hl, hit_die_array
-    ld d, 0
-    add hl, de
-    ld a, (hl)
-    ret
-
-monster_dice:
-    call get_monster_hit_die
-    ld b, d
-    ret
-.endlocal
-
-.local
 damage_table:
 .dw get_fighter_damage
 .dw get_wizard_damage
