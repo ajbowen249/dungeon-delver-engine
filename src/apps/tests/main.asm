@@ -361,6 +361,14 @@ test_class_mechanics:
     ld hl, monster_drow_elf
     call get_hit_points
 .expect a = 30
+    ld hl, monster_duergar
+    call get_hit_points
+.expect a = 7
+    ld a, 10
+    ld (monster_duergar_level), a
+    ld hl, monster_duergar
+    call get_hit_points
+.expect a = 52
     ret
 
 iterate_a_total: .db 0

@@ -10,6 +10,14 @@ int_val: .db 0
 wis_val: .db 0
 chr_val: .db 0
 
+padded_ability_label_pointers:
+.dw padded_str_label
+.dw padded_dex_label
+.dw padded_con_label
+.dw padded_int_label
+.dw padded_wis_label
+.dw padded_chr_label
+
 remaining_points: .db 0
 
 ability_index: .db 0
@@ -168,6 +176,31 @@ clear_arrows:
 
     ret
 
+print_ability_label_callback:
+    ld b, 0
+    ld c, a
+    push bc
+
+    ld h, 2
+    ld l, abilities_first_row
+    add a, l
+    ld l, a
+    call rom_set_cursor
+
+    pop bc
+    ld a, c
+    ld b, 2
+    call mul_a_b
+    ld hl, padded_ability_label_pointers
+    ld b, 0
+    ld c, a
+    add hl, bc
+    ld bc, (hl)
+    ld hl, bc
+    call print_compressed_string
+
+    ret
+
 init_screen:
     call rom_clear_screen
 
@@ -179,12 +212,9 @@ init_screen:
     PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 3, abilities_column + 6, padded_re_roll_label
     PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 4, abilities_column + 6, enter_to_continue_label
 
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 0, 2, padded_str_label
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 1, 2, padded_dex_label
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 2, 2, padded_con_label
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 3, 2, padded_int_label
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 4, 2, padded_wis_label
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 5, 2, padded_chr_label
+    ld a, 6
+    ld hl, print_ability_label_callback
+    call iterate_a
 
     ; Initialize ability scores
     ld a, 0
@@ -236,21 +266,31 @@ total_loop:
     call de_to_decimal_string
     PRINT_AT_LOCATION abilities_first_row, abilities_column + 17, bc
 
-.macro PRINT_ABILITY_SCORE &VALUE, &ROW
+    ld a, 6
+    ld hl, print_ability_score_callback
+    call iterate_a
+
+    ret
+
+print_ability_score_callback:
+    ld b, 0
+    ld c, a
+    push bc
+
+    ld h, abilities_column
+    add a, 2
+    ld l, a
+    call rom_set_cursor
+
+    pop bc
+    ld hl, ability_values
+    add hl, bc
+    ld a, (hl)
     ld d, 0
-    ld a, (&VALUE)
     ld e, a
     call de_to_decimal_string
-
-    PRINT_AT_LOCATION &ROW, abilities_column, bc
-.endm
-
-    PRINT_ABILITY_SCORE str_val, 2
-    PRINT_ABILITY_SCORE dex_val, 3
-    PRINT_ABILITY_SCORE con_val, 4
-    PRINT_ABILITY_SCORE int_val, 5
-    PRINT_ABILITY_SCORE wis_val, 6
-    PRINT_ABILITY_SCORE chr_val, 7
+    ld hl, bc
+    call print_string
 
     ret
 

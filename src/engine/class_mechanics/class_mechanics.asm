@@ -279,7 +279,8 @@ damage_table:
 .dw get_m_hobgoblin_damage
 .dw get_m_goblin_damage
 .dw get_m_drow_elf_damage
-.block 2 * remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
+.dw get_m_duergar_damage
+.block 2 * remaining_builtin_monsters ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_damage_table::
 .block 2 * max_campaign_monsters
 
@@ -354,5 +355,12 @@ get_m_drow_elf_damage:
     call roll_d6
     inc a
     inc a
+    ret
+
+get_m_duergar_damage:
+    ; war pick
+    ; 1d8+2
+    call roll_d8
+    add a, 2
     ret
 .endlocal

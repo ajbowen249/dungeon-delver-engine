@@ -33,6 +33,10 @@ opt_class:
 .db default_options_flags
 .dw opt_class_m_drow_elf_label
 
+.db class_m_duergar
+.db default_options_flags
+.dw opt_class_m_duergar_label
+
 .macro CAMPAIGN_CLASS &IDX
 campaign_class_&IDX:
 campaign_class_&IDX_value: .db 0
