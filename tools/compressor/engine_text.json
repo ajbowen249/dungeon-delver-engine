@@ -83,5 +83,10 @@
     "padded_con_label": "Constitution",
     "padded_int_label": "Intelligence",
     "padded_wis_label": "      Wisdom",
-    "padded_chr_label": "    Charisma"
+    "padded_chr_label": "    Charisma",
+
+    "blank_window_string": "                               ",
+    "blank_message_row_string": "                                       ",
+    "blank_19_char_string": "                   ",
+    "blank_20_char_string": "                    "
 }

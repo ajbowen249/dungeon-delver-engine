@@ -125,7 +125,7 @@ on_selection_changed:
     ld a, ch_diamond
     call rom_print_a
 
-    PRINT_AT_LOCATION 2, action_menu_column, blank_window_string
+    PRINT_COMPRESSED_AT_LOCATION 2, action_menu_column, blank_window_string
 
     ld l, 2
     ld h, action_menu_column

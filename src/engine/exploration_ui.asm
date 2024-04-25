@@ -1,8 +1,5 @@
 .local
 
-blank_19_char_string: .asciz "                   "
-blank_20_char_string: .asciz "                    "
-
 screen_data: .dw 0
 
 avatar_data:
@@ -487,12 +484,12 @@ clear_exploration_message_area::
     ld hl, clear_exploration_message_area_callback
     call iterate_a
 
-    PRINT_AT_LOCATION 8, 21, blank_19_char_string
+    PRINT_COMPRESSED_AT_LOCATION 8, 21, blank_19_char_string
     ret
 
 clear_exploration_message_area_callback:
     add a, 2
-    PRINT_AT_LOCATION a, 21, blank_20_char_string
+    PRINT_COMPRESSED_AT_LOCATION a, 21, blank_20_char_string
     ret
 
 configure_inputs:

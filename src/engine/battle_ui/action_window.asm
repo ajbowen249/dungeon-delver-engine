@@ -1,8 +1,6 @@
 #include "./battle_menu_options.asm"
 
 #define action_menu_column 8
-blank_window_string: .asciz "                               "
-blank_message_row_string: .asciz "                                       "
 
 should_end_turn: .db 0
 current_menu_address: .dw 0
@@ -93,7 +91,7 @@ clear_action_window:
 
 clear_action_window_callback:
     inc a
-    PRINT_AT_LOCATION a, action_menu_column, blank_window_string
+    PRINT_COMPRESSED_AT_LOCATION a, action_menu_column, blank_window_string
     ret
 
 clear_message_rows:
@@ -104,7 +102,7 @@ clear_message_rows:
 
 clear_message_rows_callback:
     add a, 7
-    PRINT_AT_LOCATION a, 1, blank_message_row_string
+    PRINT_COMPRESSED_AT_LOCATION a, 1, blank_message_row_string
     ret
 
 print_turn_header:
