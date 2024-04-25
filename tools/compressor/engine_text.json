@@ -40,6 +40,8 @@
     "opt_bm_option_inspect_label": "Inspect",
     "opt_bm_option_end_turn_label": "End Turn",
 
+    "str_too_far": "Too far",
+
     "spell_option_firebolt_label": "Fire Bolt",
     "spell_option_sacred_flame_label": "Sacred Flame",
 

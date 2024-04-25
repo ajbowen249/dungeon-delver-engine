@@ -195,13 +195,27 @@ handle_inspect:
 attack_result: .db 0
 damage_result: .db 0
 handle_attack:
-    ; TODO: Forbid attack if both players are in the back, and apply disadvantage if one is in the back.
+    call select_enemy
+
+    call get_selected_enemy_distance
+    cp a, 2
+    jp z, forbid_attack
+
     ld a, 0
     ld (bm_root_attack_flags), a
     ld (bm_root_cast_flags), a
 
-    call select_enemy
     call attack_selected_enemy
+    ret
+
+forbid_attack:
+    call clear_message_rows
+    ld h, 1
+    ld l, 7
+    call rom_set_cursor
+
+    ld hl, str_too_far
+    call print_compressed_string
     ret
 
 handle_cast:
@@ -336,6 +350,34 @@ select_root:
 
 hit_bonus_func: .dw 0
 
+; returns 0, 1, or 2 in A
+get_selected_enemy_distance:
+    ld bc, 0
+    push bc
+    call get_combatant_in_turn
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    and a, cbt_flag_line
+    cp a, 0
+    jp z, add_enemy_distance
+    pop bc
+    inc bc
+    push bc
+
+add_enemy_distance:
+    ld hl, (selected_combatant_location)
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    and a, cbt_flag_line
+    cp a, 0
+    jp z, return_distance
+    pop bc
+    inc bc
+    push bc
+
+return_distance:
+    pop bc
+    ld a, c
+    ret
+
 try_hit_selected_enemy:
     call clear_message_rows
     ld h, 1
@@ -346,7 +388,6 @@ try_hit_selected_enemy:
     call print_compressed_string
 
     call roll_d20
-    ld a, l
     ld (attack_result), a
 
     cp a, 1
