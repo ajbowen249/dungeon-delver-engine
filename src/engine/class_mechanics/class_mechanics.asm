@@ -280,7 +280,7 @@ damage_table:
 .dw get_m_goblin_damage
 .dw get_m_drow_elf_damage
 .dw get_m_duergar_damage
-.block 2 * remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
+.block 2 * remaining_builtin_monsters ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_damage_table::
 .block 2 * max_campaign_monsters
 

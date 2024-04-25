@@ -14,7 +14,7 @@ monster_size_hobgoblin: .db monster_size_medium
 monster_size_goblin: .db monster_size_small
 monster_size_drow_elf: .db monster_size_medium
 monster_size_duergar: .db monster_size_medium
-.block remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
+.block remaining_builtin_monsters ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_size_table::
 .block max_campaign_monsters
 
@@ -24,7 +24,7 @@ monster_ac_hobgoblin: .db 18
 monster_ac_goblin: .db 15
 monster_ac_drow_elf: .db 15
 monster_ac_duergar: .db 16
-.block remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
+.block remaining_builtin_monsters ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_ac_table::
 .block max_campaign_monsters
 
@@ -44,7 +44,7 @@ monster_modifiers_table:
     MONSTER_MODIFIERS goblin, -1, 2, 0, 0, -1, -1
     MONSTER_MODIFIERS drow_elf, 0, 2, 0, 0, 0, 1
     MONSTER_MODIFIERS duergar, 2, 0, 2, 0, 0, -1
-.block remaining_campaign_classes * modifier_block_size ; leave space for built-in creatures, and then campaign monsters
+.block remaining_builtin_monsters * modifier_block_size ; leave space for built-in creatures, and then campaign monsters
 campaign_monster_modifiers_table::
 .block max_campaign_monsters * modifier_block_size
 
