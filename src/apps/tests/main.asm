@@ -283,6 +283,11 @@ test_class_mechanics:
     ld hl, test_character1
     call get_hit_points
 .expect a = 53
+    ld a, 10
+    ld (test_character1 + pl_offs_level), a
+    ld hl, test_character1
+    call get_hit_points
+.expect a = 125
     ld a, 5
     ld (test_character1 + pl_offs_level), a
     ld hl, test_character1

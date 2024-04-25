@@ -40,8 +40,6 @@
     "opt_bm_option_end_turn_label": "End Turn",
 
     "spell_option_firebolt_label": "Fire Bolt",
-    "spell_option_acid_splash_label": "Acid Splash",
-    "spell_option_ray_of_frost_label": "Ray of Frost",
     "spell_option_sacred_flame_label": "Sacred Flame",
 
     "str_lvl": " lvl ",
@@ -85,5 +83,10 @@
     "padded_con_label": "Constitution",
     "padded_int_label": "Intelligence",
     "padded_wis_label": "      Wisdom",
-    "padded_chr_label": "    Charisma"
+    "padded_chr_label": "    Charisma",
+
+    "blank_window_string": "                               ",
+    "blank_message_row_string": "                                       ",
+    "blank_19_char_string": "                   ",
+    "blank_20_char_string": "                    "
 }

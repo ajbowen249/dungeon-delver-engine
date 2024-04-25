@@ -2,22 +2,12 @@
 ; flags here should be configured via configure_spell_menu for the selected class+level before display
 
 #define spell_firebolt $01
-#define spell_acid_splash $02
-#define spell_ray_of_frost $03
-#define spell_sacred_flame $04
+#define spell_sacred_flame $02
 
 spell_menu_root:
 .db spell_firebolt
 spell_menu_firebolt_flags: .db default_options_flags
 .dw spell_option_firebolt_label
-
-.db spell_acid_splash
-spell_menu_acid_splash_flags: .db default_options_flags
-.dw spell_option_acid_splash_label
-
-.db spell_ray_of_frost
-spell_menu_ray_of_frost_flags: .db default_options_flags
-.dw spell_option_ray_of_frost_label
 
 .db spell_sacred_flame
 spell_menu_sacred_flame_flags: .db default_options_flags
@@ -31,8 +21,6 @@ spell_menu_sacred_flame_flags: .db default_options_flags
 configure_spell_menu::
     ld a, 0
     ld (spell_menu_firebolt_flags), a
-    ld (spell_menu_acid_splash_flags), a
-    ld (spell_menu_ray_of_frost_flags), a
     ld (spell_menu_sacred_flame_flags), a
 
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
@@ -69,8 +57,6 @@ ret_cast:
 spell_check_type_table:
 .db 0
 firebolt_type: .db spell_type_ranged
-acid_splash_type: .db spell_type_ranged
-ray_of_frost_type: .db spell_type_ranged
 sacred_flame_type: .db ability_dex
 
 ; If the spell in A requires a saving throw, A will be 0-5, matching the indices for roll_ability_check for the enemy
@@ -91,10 +77,6 @@ spell_damage_dice_table:
 .db 0
 firebolt_damage_dice: .db 1
 firebolt_damage_die: .db 10
-acid_splash_damage_dice: .db 1
-acid_splash_damage_die: .db 6
-ray_of_frost_damage_dice: .db 1
-ray_of_frost_damage_die: .db 8
 sacred_flame_damage_dice: .db 1
 sacred_flame_damage_die: .db 8
 

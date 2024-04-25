@@ -100,3 +100,46 @@ flag_exploration_exit_with_conditions::
     ld b, &EXIT_ARG
     call flag_exploration_exit_with_conditions
 .endm
+
+.local
+resetting_screen: .dw 0
+
+; given screen data in HL, start X in B and start Y in C, reset interactable flags and set start X/Y
+reset_screen::
+    ld (resetting_screen), hl
+    ld de, bc
+
+    ld a, d
+    WRITE_A_TO_ATTR_THROUGH_HL sc_offs_start_x
+
+    ld hl, (resetting_screen)
+    ld a, e
+    WRITE_A_TO_ATTR_THROUGH_HL sc_offs_start_y
+
+    ld hl, reset_screen_callback
+    ld a, sc_interactable_array_elements
+    call iterate_a
+
+    ret
+
+reset_screen_callback:
+    ld hl, (resetting_screen)
+    POINT_HL_TO_ATTR sc_offs_interactables_start
+    ld b, a
+    ld a, in_data_size
+    call get_array_item
+
+    POINT_HL_TO_ATTR in_offs_flags
+    ld a, (hl)
+    or a, $80
+    ld (hl), a
+
+    ret
+.endlocal
+
+.macro RESET_SCREEN &DATA, &START_X, &START_Y
+    ld hl, &DATA
+    ld b, &START_X
+    ld c, &START_Y
+    call reset_screen
+.endm
