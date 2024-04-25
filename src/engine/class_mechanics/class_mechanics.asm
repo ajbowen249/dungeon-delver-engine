@@ -2,59 +2,7 @@
 #include "./monsters.asm"
 #include "./spells.asm"
 
-; each get_character_x function takes a pointer to a player data structure in HL and returns in A the total value for that
-; item, including any and all bonuses atop the core stat. All destroy HL
-
 .local
-; but just return their base attrs, for now. This will be filled in later with leveling mechanics.
-get_character_strength::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_str
-    ret
-
-get_character_dexterity::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
-    ret
-
-get_character_constitution::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_con
-    ret
-
-get_character_intelligence::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_int
-    ret
-
-get_character_wisdom::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_wis
-    ret
-
-get_character_charisma::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_chr
-    ret
-.endlocal
-
-; Each perform_x_check makes a D20 roll and adds the subsequent total modifier for that skill for the player in HL
-; Returns the result in A
-
-.local
-bonus_backup: .db 0
-.macro ABILITY_CHECK_SUBROUTINE &ABILITY
-roll_&ABILITY_check::
-    call get_character_&ABILITY
-    ld (bonus_backup), a
-    call roll_d20
-
-    ld a, (bonus_backup)
-    add a, l
-    ret
-.endm
-
-    ABILITY_CHECK_SUBROUTINE strength
-    ABILITY_CHECK_SUBROUTINE dexterity
-    ABILITY_CHECK_SUBROUTINE constitution
-    ABILITY_CHECK_SUBROUTINE intelligence
-    ABILITY_CHECK_SUBROUTINE wisdom
-    ABILITY_CHECK_SUBROUTINE charisma
-
 ; Performs a check against skill A with player HL
 roll_ability_check::
     POINT_HL_TO_ATTR pl_offs_attrs_array
@@ -141,13 +89,15 @@ get_fighter_ac:
 
 get_wizard_ac:
     ld hl, (resolving_character)
-    call get_character_dexterity
+    ; temporary; replacing soon with bonus getter
+    ld a, 0 ; should be dex bonus!
     add a, 10
     ret
 
 get_cleric_ac:
     ld hl, (resolving_character)
-    call get_character_dexterity
+    ; temporary; replacing soon with bonus getter
+    ld a, 0 ; should be dex bonus!
     cp a, 2 ; Medium armor, max 2 bonus
     jp z, cleric_apply_medium_armor
     jp m, cleric_apply_medium_armor
@@ -163,7 +113,8 @@ cleric_apply_medium_armor:
 
 get_barbarian_ac:
     ld hl, (resolving_character)
-    call get_character_dexterity
+    ; temporary; replacing soon with bonus getter
+    ld a, 8 ; should be dex bonus!
     add a, 11 ; Leather Armor
     ret
 

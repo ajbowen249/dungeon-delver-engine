@@ -20,7 +20,8 @@ initiative_result: .db 0
 initialize_combatants_foreach_callback:
     ; roll initiative
     ld hl, (foreach_player_address)
-    call roll_dexterity_check
+    ld a, 1
+    call roll_ability_check
     ld (initiative_result), a
 
     ld hl, (foreach_combat_address)
