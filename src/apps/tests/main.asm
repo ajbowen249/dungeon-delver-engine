@@ -264,7 +264,7 @@ array_tests:
 test_class_mechanics:
     ld hl, test_character1
     call get_character_armor_class
-.expect a = 19
+.expect a = 10
     ld hl, test_character1
     call get_hit_points
 .expect a = 17

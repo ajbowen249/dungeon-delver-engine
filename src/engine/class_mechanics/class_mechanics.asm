@@ -145,15 +145,16 @@ get_fighter_ac:
 
 get_wizard_ac:
     ld hl, (resolving_character)
-    ; temporary; replacing soon with modifier getter
-    ld a, 0 ; should be dex modifier!
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
+    call ability_score_to_modifier
     add a, 10
     ret
 
 get_cleric_ac:
     ld hl, (resolving_character)
     ; temporary; replacing soon with modifier getter
-    ld a, 0 ; should be dex modifier!
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
+    call ability_score_to_modifier
     cp a, 2 ; Medium armor, max 2 modifier
     jp z, cleric_apply_medium_armor
     jp m, cleric_apply_medium_armor
@@ -169,8 +170,8 @@ cleric_apply_medium_armor:
 
 get_barbarian_ac:
     ld hl, (resolving_character)
-    ; temporary; replacing soon with modifier getter
-    ld a, 8 ; should be dex modifier!
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
+    call ability_score_to_modifier
     add a, 11 ; Leather Armor
     ret
 
