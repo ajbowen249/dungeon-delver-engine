@@ -378,6 +378,24 @@ return_distance:
     ld a, c
     ret
 
+roll_d20_with_advantage:
+    ld hl, str_advantage_parenthetical
+    call print_compressed_string
+
+    call roll_d20
+    ld b, a
+    push bc
+    call roll_d20
+    pop bc
+
+    cp a, b
+    jp c, return_b
+    ret
+
+return_b:
+    ld a, b
+    ret
+
 try_hit_selected_enemy:
     call clear_message_rows
     ld h, 1
@@ -387,7 +405,12 @@ try_hit_selected_enemy:
     ld hl, attack_roll_str
     call print_compressed_string
 
-    call roll_d20
+    call get_selected_enemy_distance
+    cp a, 0
+
+    call nz, roll_d20
+    call z, roll_d20_with_advantage
+
     ld (attack_result), a
 
     cp a, 1

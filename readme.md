@@ -50,10 +50,8 @@ DDE follows a typical RPG setup with screens for exploration, combat, and dialog
     - Each side has its own two lines, for a total of 4.
     - Players are limited to their side's lines.
     - Players may move between lines at least once each turn.
-        - Stretch goal: Allow players with a high enough movement speed to make multiple moves in one turn.
     - Normal melee rules apply when attacker and defender are 1 line apart (both in the "front"). If both players are in the back line, they are out of melee range. If one player is in the back and the other the front, the attacker has disadvantage. (If there was a hard range cutoff, then ranged characters could always beat melee-only combatants by never going up front in this system.)
-    - Ranged attacks more-or-less follow SRD rules, but the range is determined by battle line distance, and ranges of weapons and spells are defined in terms of that distance. For example, a short bow may work normally with the attacker in the back and the defender in the front, and have disadvantage if the defender is also in the back. A long bow, then, would not have disadvantage at long distance. Both bows would have disadvantage if both attacker and defender are in the front.
-    - Stretch goal: Opportunity attacks still fit in with this system, if you consider 1 line of distance normal melee range.
+    - Ranged combat currently just assumes players are in the spell's normal range.
 
 ## Architecture
 
