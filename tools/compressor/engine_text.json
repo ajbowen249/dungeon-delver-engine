@@ -42,6 +42,7 @@
 
     "str_too_far": "Too far",
     "str_advantage_parenthetical": "(Adv.)",
+    "str_attacking": "Attacking ",
 
     "spell_option_firebolt_label": "Fire Bolt",
     "spell_option_sacred_flame_label": "Sacred Flame",

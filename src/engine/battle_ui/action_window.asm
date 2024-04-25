@@ -66,7 +66,7 @@ enemy_turn:
     call handle_move
 
 enemy_turn_pick_target:
-    call get_first_living_player
+    call pick_automatic_target
     ld b, a
     push bc
     call get_combatant_at_index_a
@@ -76,6 +76,17 @@ enemy_turn_pick_target:
     ld a, b
     call get_character_at_index_a
     ld (selected_character_location), hl
+
+    ld h, 8
+    ld l, 2
+    call rom_set_cursor
+
+    ld hl, str_attacking
+    call print_compressed_string
+
+    ld hl, (selected_character_location)
+    POINT_HL_TO_ATTR pl_offs_name
+    call print_compressed_string
 
     call attack_selected_enemy
     call await_any_keypress
@@ -551,6 +562,48 @@ non_player_killed:
 battle_done:
     ld a, 1
     ld (should_end_turn), a
+    ret
+
+pick_automatic_target:
+    ; tried a handful of times to pick a random living player, but falls back to get_first_living_player
+    ld bc, 10
+    push bc
+
+pick_automatic_target_loop:
+    pop bc
+    dec bc
+    push bc
+    ld a, c
+    cp a, 0
+    jp z, pick_automatic_target_fallback
+
+    call roll_d4
+    cp a, 0
+    jp z, pick_automatic_target_loop
+
+    dec a ; zero-based
+
+    ld b, a
+    ld a, (party_size)
+    cp a, b
+    jp z, pick_automatic_target_loop
+    jp m, pick_automatic_target_loop
+
+    push bc
+    ld a, b
+    call get_combatant_at_index_a
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offst_hit_points
+    cp a, 0
+    pop bc
+    ld a, b
+    jp z, pick_automatic_target_loop
+
+    pop bc
+    ret
+
+pick_automatic_target_fallback:
+    pop bc
+    call get_first_living_player
     ret
 
 get_first_living_player:
