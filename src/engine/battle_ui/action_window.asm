@@ -346,6 +346,7 @@ try_hit_selected_enemy:
     call print_compressed_string
 
     call roll_d20
+    ld a, l
     ld (attack_result), a
 
     cp a, 1

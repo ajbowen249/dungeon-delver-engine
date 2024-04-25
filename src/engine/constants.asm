@@ -121,6 +121,7 @@
 #define pl_name_max_len 10
 #define pl_name_data_len 11
 
+#define pl_offs_attrs_array 0
 #define pl_offs_str 0
 #define pl_offs_dex 1
 #define pl_offs_con 2
