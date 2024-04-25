@@ -3,8 +3,6 @@
 character_loc: .dw 0
 counter: .db 0
 
-enum_buffer:  .asciz "          "
-
 ; Presents the Character Sheet for the character data beginning in HL
 ; Currently display-only and will exit on keypress.
 character_sheet_ui::

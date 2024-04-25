@@ -28,26 +28,6 @@ monster_ac_duergar: .db 16
 campaign_monster_ac_table::
 .block max_campaign_monsters
 
-#define modifier_block_size 6
-.macro MONSTER_MODIFIERS &NAME, &STR, &DEX, &CON, &INT, &WIS, &CHA
-modifier_&NAME_str: .db &STR
-modifier_&NAME_dex: .db &DEX
-modifier_&NAME_con: .db &CON
-modifier_&NAME_int: .db &INT
-modifier_&NAME_wis: .db &WIS
-modifier_&NAME_cha: .db &CHA
-.endm
-
-monster_modifiers_table:
-    MONSTER_MODIFIERS badger, -3, 0, 1, -4, 1, -3
-    MONSTER_MODIFIERS hobgoblin, 1, 1, 1, 0, 0, -1
-    MONSTER_MODIFIERS goblin, -1, 2, 0, 0, -1, -1
-    MONSTER_MODIFIERS drow_elf, 0, 2, 0, 0, 0, 1
-    MONSTER_MODIFIERS duergar, 2, 0, 2, 0, 0, -1
-.block remaining_builtin_monsters * modifier_block_size ; leave space for built-in creatures, and then campaign monsters
-campaign_monster_modifiers_table::
-.block max_campaign_monsters * modifier_block_size
-
     DEFINE_PLAYER monster_badger, 4, 11, 12, 2, 12, 5, race_monster, class_m_badger, 1, "Badger"
 .db 0
 .db 0
@@ -121,15 +101,8 @@ get_monster_hp::
 
     ; plus constitution modifier (not overall value)
     ld hl, (resolving_character)
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_class
-    ld b, class_cutoff
-    sub a, b
-    ld b, modifier_block_size
-    ld hl, monster_modifiers_table
-    call get_array_item
-    ld bc, 2
-    add hl, bc ; get up to constitution
-    ld a, (hl)
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_con
+    call ability_score_to_modifier
     add d
 
     ret
@@ -141,13 +114,7 @@ get_monster_hp::
 ; 0: class enum value (must be at least 32. 0-15 are classes, 16-31 are built-in monsters)
 ; 1: size
 ; 2: armor class
-; 3: STR modifier - Modifier, not base stat! Base stats goes in player struct (what HL points to as the arumgnet of most
-; 4: DEX modifier   of the class_mechanics calls)
-; 5: CON modifier
-; 6: INT modifier
-; 7: WIS modifier
-; 8: CHR modifier
-; 9-10: pointer to a subroutine to determine damage dealt on successful default attack. A will be loaded with the class
+; 3-4: pointer to a subroutine to determine damage dealt on successful default attack. A will be loaded with the class
 ; value when called.
 adding_monster_class_value: .db 0
 adding_monster_class_offset_value: .db 0
@@ -190,22 +157,6 @@ register_campaign_monster::
     inc hl
     ld (reading_address), hl
 
-    ; reading_address is now at the start of the modifiers block
-    ld a, (adding_monster_class_offset_value)
-    ld b, modifier_block_size
-    ld hl, campaign_monster_modifiers_table
-    call get_array_item
-    ld bc, hl
-    ld hl, (reading_address)
-    ld a, modifier_block_size
-    call copy_hl_bc
-
-    ld hl, (reading_address)
-    ld b, 0
-    ld c, modifier_block_size
-    add hl, bc
-    ld (reading_address), hl
-
     ld de, (hl) ; de has damage function pointer
     ld a, (adding_monster_class_offset_value)
     ld b, 2
@@ -216,16 +167,10 @@ register_campaign_monster::
     ret
 .endlocal
 
-.macro CAMPAIGN_MONSTER_DESCRIPTOR &LABEL, &CLASS, &SIZE, &AC, &STR_M, &DEX_M, CON_M, &INT_M, &WIS_M, &CHR_M, &DAMAGE
+.macro CAMPAIGN_MONSTER_DESCRIPTOR &LABEL, &CLASS, &SIZE, &AC, &DAMAGE
 &LABEL:
 cmd_&LABEL_class: .db &CLASS
 cmd_&LABEL_size: .db &SIZE
 cmd_&LABEL_ac: .db &AC
-cmd_&LABEL_str_mod: .db &STR_M
-cmd_&LABEL_dex_mod: .db &DEX_M
-cmd_&LABEL_con_mod: .db &CON_M
-cmd_&LABEL_int_mod: .db &INT_M
-cmd_&LABEL_wis_mod: .db &WIS_M
-cmd_&LABEL_chr_mod: .db &CHR_M
 cmd_&LABEL_damage_sub: .dw &DAMAGE
 .endm

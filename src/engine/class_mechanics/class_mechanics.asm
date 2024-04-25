@@ -2,106 +2,77 @@
 #include "./monsters.asm"
 #include "./spells.asm"
 
-; each get_character_x function takes a pointer to a player data structure in HL and returns in A the total value for that
-; item, including any and all bonuses atop the core stat. All destroy HL
-
 .local
-; but just return their base attrs, for now. This will be filled in later with leveling mechanics.
-get_character_strength::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_str
+.macro MODIFIER_TABLE_ENTRY &ABILITY_SCORE, &MODIFIER_VALUE
+.db &ABILITY_SCORE
+.db &MODIFIER_VALUE
+.endm
+
+modifier_table:
+    MODIFIER_TABLE_ENTRY 0, -5
+    MODIFIER_TABLE_ENTRY 2, -4
+    MODIFIER_TABLE_ENTRY 4, -3
+    MODIFIER_TABLE_ENTRY 6, -2
+    MODIFIER_TABLE_ENTRY 8, -1
+    MODIFIER_TABLE_ENTRY 10, 0
+    MODIFIER_TABLE_ENTRY 12, 1
+    MODIFIER_TABLE_ENTRY 14, 2
+    MODIFIER_TABLE_ENTRY 16, 3
+    MODIFIER_TABLE_ENTRY 18, 4
+    MODIFIER_TABLE_ENTRY 20, 5
+    MODIFIER_TABLE_ENTRY 22, 6
+    MODIFIER_TABLE_ENTRY 24, 7
+    MODIFIER_TABLE_ENTRY 26, 8
+    MODIFIER_TABLE_ENTRY 28, 9
+
+#define modifier_table_max_score 30
+#define modifier_table_max_value 10
+
+; given an ability score in A, set A to the modifier value.
+ability_score_to_modifier::
+    ld b, a
+    cp a, modifier_table_max_score
+    jp p, ret_max_modifier
+    jp z, ret_max_modifier
+
+    ld hl, modifier_table
+find_range_loop:
+    ld a, (hl)
+    inc hl
+    ld c, a
+    ld a, b
+    cp a, c
+    jp p, next_entry
+
+    dec hl
+    dec hl
+    ld a, (hl)
     ret
 
-get_character_dexterity::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
-    ret
+next_entry:
+    inc hl
+    jp find_range_loop
 
-get_character_constitution::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_con
-    ret
-
-get_character_intelligence::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_int
-    ret
-
-get_character_wisdom::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_wis
-    ret
-
-get_character_charisma::
-    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_chr
+ret_max_modifier:
+    ld a, modifier_table_max_value
     ret
 .endlocal
 
-; Each perform_x_check makes a D20 roll and adds the subsequent total modifier for that skill for the player in HL
-; Returns the result in A
-
 .local
-bonus_backup: .db 0
-.macro ABILITY_CHECK_SUBROUTINE &ABILITY
-roll_&ABILITY_check::
-    call get_character_&ABILITY
-    ld (bonus_backup), a
-    call roll_d20
-
-    ld a, (bonus_backup)
-    add a, l
-    ret
-.endm
-
-    ABILITY_CHECK_SUBROUTINE strength
-    ABILITY_CHECK_SUBROUTINE dexterity
-    ABILITY_CHECK_SUBROUTINE constitution
-    ABILITY_CHECK_SUBROUTINE intelligence
-    ABILITY_CHECK_SUBROUTINE wisdom
-    ABILITY_CHECK_SUBROUTINE charisma
-
 ; Performs a check against skill A with player HL
 roll_ability_check::
-    ; IMPROVE: Table-based approach would burn HL
-    cp a, skill_index_str
-    jp z, check_str
-
-    cp a, skill_index_dex
-    jp z, check_dex
-
-    cp a, skill_index_con
-    jp z, check_con
-
-    cp a, skill_index_int
-    jp z, check_int
-
-    cp a, skill_index_wis
-    jp z, check_wis
-
-    cp a, skill_index_chr
-    jp z, check_chr
-
+    POINT_HL_TO_ATTR pl_offs_attrs_array
+    ld b, 0
+    ld c, a
+    add hl, bc
+    ld a, (hl)
+    ld b, a
+    push bc
+    call roll_d20
+    pop bc
+    ld a, b
+    add a, l
     ret
-
-check_str:
-    call roll_strength_check
-    ret
-
-check_dex:
-    call roll_dexterity_check
-    ret
-
-check_con:
-    call roll_constitution_check
-    ret
-
-check_int:
-    call roll_intelligence_check
-    ret
-
-check_wis:
-    call roll_wisdom_check
-    ret
-
-check_chr:
-    call roll_charisma_check
-    ret
-
 .endlocal
 
 hit_die_array:
@@ -174,14 +145,17 @@ get_fighter_ac:
 
 get_wizard_ac:
     ld hl, (resolving_character)
-    call get_character_dexterity
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
+    call ability_score_to_modifier
     add a, 10
     ret
 
 get_cleric_ac:
     ld hl, (resolving_character)
-    call get_character_dexterity
-    cp a, 2 ; Medium armor, max 2 bonus
+    ; temporary; replacing soon with modifier getter
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
+    call ability_score_to_modifier
+    cp a, 2 ; Medium armor, max 2 modifier
     jp z, cleric_apply_medium_armor
     jp m, cleric_apply_medium_armor
     ld a, 2
@@ -196,7 +170,8 @@ cleric_apply_medium_armor:
 
 get_barbarian_ac:
     ld hl, (resolving_character)
-    call get_character_dexterity
+    LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_dex
+    call ability_score_to_modifier
     add a, 11 ; Leather Armor
     ret
 

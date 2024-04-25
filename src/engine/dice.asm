@@ -3,7 +3,6 @@
 .macro ROLL_MASK &MASK
     call random_16
     ; mask down to the bits that cap to 0-(N-1)
-    ld h, 0
     ld a, l
     and &MASK
     inc a ; this is 0-(N-1) now, so get up to 1-N
@@ -26,64 +25,53 @@
     ld a, h
     add a, l
     inc a ; this is 0-(N-1) now, so get up to 1-N
-
-    ld h, 0
-    ld l, a
     ret
 .endm
 
 .local
-; loads HL with a random number 1-2
-; Uses A
+; loads A with a random number 1-2
 roll_d2::
     ROLL_MASK $01
 .endlocal
 
 .local
-; loads HL with a random number 1-4
-; Uses A
+; loads A with a random number 1-4
 roll_d4::
     ROLL_MASK $03
 .endlocal
 
 .local
-; loads HL with a random number 1-8
-; Uses a, b
+; loads A with a random number 1-8
 roll_d6::
     ADD_MASK $01, $03
 .endlocal
 
 .local
-; loads HL with a random number 1-8
-; Uses A
+; loads A with a random number 1-8
 roll_d8::
     ROLL_MASK $07
 .endlocal
 
 .local
-; loads HL with a random number 1-10
-; Uses bc
+; loads A with a random number 1-10
 roll_d10::
     ADD_MASK $01, $07
 .endlocal
 
 .local
-; loads HL with a random number 1-12
-; Uses bc
+; loads A with a random number 1-12
 roll_d12::
     ADD_MASK $03, $04
 .endlocal
 
 .local
-; loads HL with a random number 1-16
-; Uses A
+; loads A with a random number 1-16
 roll_d16::
     ROLL_MASK $0F
 .endlocal
 
 .local
-; loads HL with a random number 1-20
-; Uses bc
+; loads A with a random number 1-20
 roll_d20::
     ADD_MASK $03, $0F
 .endlocal
@@ -112,9 +100,8 @@ dice_table:
 .dw roll_d16
 .dw roll_d20
 
-; Loads HL with a value from 1-a
+; Loads A with a value from 1-a
 ; a may only be 2, 4, 6, 8, 10, 12, 16, or 20.
-; uses a, bc
 roll_a::
     rla
     and a, $FE
