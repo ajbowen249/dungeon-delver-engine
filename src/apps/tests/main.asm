@@ -67,7 +67,7 @@ copy_test_dst:
 .db 0
 
 #define class_mc_test_monster 16
-    DEFINE_PLAYER test_campaign_monster_class, 10, 9, 8, 7, 6, 5, race_human, class_mc_test_monster, 1, "TEST"
+    DEFINE_PLAYER test_campaign_monster_class, 10, 9, 8, 7, 6, 5, race_monster, class_mc_test_monster, 1, "TEST"
 .db 0
 .db 0
 .db 0
@@ -75,7 +75,7 @@ copy_test_dst:
 .db 0
 .db 0
 
-    CAMPAIGN_MONSTER_DESCRIPTOR test_campaign_monster_descriptor, class_mc_test_monster, monster_size_large, 5, 1, 2, 3, 4, 5, 6, test_damage_s
+    CAMPAIGN_MONSTER_DESCRIPTOR test_campaign_monster_descriptor, class_mc_test_monster, monster_size_large, 5, test_damage_s
 
 test_damage_s:
     ld a, 12
@@ -324,7 +324,7 @@ test_class_mechanics:
 
     ld hl, test_campaign_monster_class
     call get_hit_points
-.expect a = 9
+.expect a = 5
     ld hl, test_campaign_monster_class
     call get_damage_value
 .expect a = 12
@@ -336,7 +336,7 @@ test_class_mechanics:
 
     ld hl, test_campaign_monster_class
     call get_hit_points
-.expect a = 14
+.expect a = 10
     ld hl, monster_hobgoblin
     call get_hit_points
 .expect a = 6
@@ -369,6 +369,36 @@ test_class_mechanics:
     ld hl, monster_duergar
     call get_hit_points
 .expect a = 52
+
+    ld a, 1
+    call ability_score_to_modifier
+.expect a = 251
+
+.macro MODIFIER_TABLE_TEST_PAIR &B1, &B2, &VAL
+    ld a, &B1
+    call ability_score_to_modifier
+.expect a = &VAL
+    ld a, &B2
+    call ability_score_to_modifier
+.expect a = &VAL
+.endm
+
+    MODIFIER_TABLE_TEST_PAIR 2, 3, 252
+    MODIFIER_TABLE_TEST_PAIR 4, 5, 253
+    MODIFIER_TABLE_TEST_PAIR 6, 7, 254
+    MODIFIER_TABLE_TEST_PAIR 8, 9, 255
+    MODIFIER_TABLE_TEST_PAIR 10, 11, 0
+    MODIFIER_TABLE_TEST_PAIR 12, 13, 1
+    MODIFIER_TABLE_TEST_PAIR 14, 15, 2
+    MODIFIER_TABLE_TEST_PAIR 16, 17, 3
+    MODIFIER_TABLE_TEST_PAIR 18, 19, 4
+    MODIFIER_TABLE_TEST_PAIR 20, 21, 5
+    MODIFIER_TABLE_TEST_PAIR 22, 23, 6
+    MODIFIER_TABLE_TEST_PAIR 24, 25, 7
+    MODIFIER_TABLE_TEST_PAIR 26, 27, 8
+    MODIFIER_TABLE_TEST_PAIR 28, 29, 9
+    MODIFIER_TABLE_TEST_PAIR 30, 40, 10
+
     ret
 
 iterate_a_total: .db 0

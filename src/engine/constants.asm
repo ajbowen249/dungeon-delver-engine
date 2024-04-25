@@ -123,15 +123,15 @@
 
 #define pl_offs_attrs_array 0
 #define pl_offs_str 0
-#define pl_offs_dex 1
-#define pl_offs_con 2
-#define pl_offs_int 3
-#define pl_offs_wis 4
-#define pl_offs_chr 5
-#define pl_offs_race 6
-#define pl_offs_class 7
-#define pl_offs_level 8
-#define pl_offs_name 9
+#define pl_offs_dex pl_offs_str + 1
+#define pl_offs_con pl_offs_dex + 1
+#define pl_offs_int pl_offs_con + 1
+#define pl_offs_wis pl_offs_int + 1
+#define pl_offs_chr pl_offs_wis + 1
+#define pl_offs_race pl_offs_chr + 1
+#define pl_offs_class pl_offs_race + 1
+#define pl_offs_level pl_offs_class + 1
+#define pl_offs_name pl_offs_level + 1
 
 #define pl_data_size pl_offs_name + pl_name_data_len
 

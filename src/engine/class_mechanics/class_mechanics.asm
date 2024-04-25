@@ -3,6 +3,62 @@
 #include "./spells.asm"
 
 .local
+.macro MODIFIER_TABLE_ENTRY &ABILITY_SCORE, &MODIFIER_VALUE
+.db &ABILITY_SCORE
+.db &MODIFIER_VALUE
+.endm
+
+modifier_table:
+    MODIFIER_TABLE_ENTRY 0, -5
+    MODIFIER_TABLE_ENTRY 2, -4
+    MODIFIER_TABLE_ENTRY 4, -3
+    MODIFIER_TABLE_ENTRY 6, -2
+    MODIFIER_TABLE_ENTRY 8, -1
+    MODIFIER_TABLE_ENTRY 10, 0
+    MODIFIER_TABLE_ENTRY 12, 1
+    MODIFIER_TABLE_ENTRY 14, 2
+    MODIFIER_TABLE_ENTRY 16, 3
+    MODIFIER_TABLE_ENTRY 18, 4
+    MODIFIER_TABLE_ENTRY 20, 5
+    MODIFIER_TABLE_ENTRY 22, 6
+    MODIFIER_TABLE_ENTRY 24, 7
+    MODIFIER_TABLE_ENTRY 26, 8
+    MODIFIER_TABLE_ENTRY 28, 9
+
+#define modifier_table_max_score 30
+#define modifier_table_max_value 10
+
+; given an ability score in A, set A to the modifier value.
+ability_score_to_modifier::
+    ld b, a
+    cp a, modifier_table_max_score
+    jp p, ret_max_modifier
+    jp z, ret_max_modifier
+
+    ld hl, modifier_table
+find_range_loop:
+    ld a, (hl)
+    inc hl
+    ld c, a
+    ld a, b
+    cp a, c
+    jp p, next_entry
+
+    dec hl
+    dec hl
+    ld a, (hl)
+    ret
+
+next_entry:
+    inc hl
+    jp find_range_loop
+
+ret_max_modifier:
+    ld a, modifier_table_max_value
+    ret
+.endlocal
+
+.local
 ; Performs a check against skill A with player HL
 roll_ability_check::
     POINT_HL_TO_ATTR pl_offs_attrs_array
@@ -89,16 +145,16 @@ get_fighter_ac:
 
 get_wizard_ac:
     ld hl, (resolving_character)
-    ; temporary; replacing soon with bonus getter
-    ld a, 0 ; should be dex bonus!
+    ; temporary; replacing soon with modifier getter
+    ld a, 0 ; should be dex modifier!
     add a, 10
     ret
 
 get_cleric_ac:
     ld hl, (resolving_character)
-    ; temporary; replacing soon with bonus getter
-    ld a, 0 ; should be dex bonus!
-    cp a, 2 ; Medium armor, max 2 bonus
+    ; temporary; replacing soon with modifier getter
+    ld a, 0 ; should be dex modifier!
+    cp a, 2 ; Medium armor, max 2 modifier
     jp z, cleric_apply_medium_armor
     jp m, cleric_apply_medium_armor
     ld a, 2
@@ -113,8 +169,8 @@ cleric_apply_medium_armor:
 
 get_barbarian_ac:
     ld hl, (resolving_character)
-    ; temporary; replacing soon with bonus getter
-    ld a, 8 ; should be dex bonus!
+    ; temporary; replacing soon with modifier getter
+    ld a, 8 ; should be dex modifier!
     add a, 11 ; Leather Armor
     ret
 
