@@ -11,6 +11,7 @@ resolving_character: .dw 0
 #define class_m_hobgoblin 9
 #define class_m_goblin 10
 #define class_m_drow_elf 11
+#define class_m_duergar 12
 #define campaign_monster_cutoff 16
 #define monster_mask $F8
 
@@ -22,7 +23,7 @@ resolving_character: .dw 0
 #define monster_size_gargantuan 5
 
 #define max_builtin_classes 8
-#define actual_builtin_classes 4
+#define actual_builtin_classes 5
 #define remaining_campaign_classes max_builtin_classes - actual_builtin_classes
 
 #define max_campaign_monsters 2

@@ -13,6 +13,7 @@ monster_size_badger: .db monster_size_tiny
 monster_size_hobgoblin: .db monster_size_medium
 monster_size_goblin: .db monster_size_small
 monster_size_drow_elf: .db monster_size_medium
+monster_size_duergar: .db monster_size_medium
 .block remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_size_table::
 .block max_campaign_monsters
@@ -22,6 +23,7 @@ monster_ac_badger: .db 4
 monster_ac_hobgoblin: .db 18
 monster_ac_goblin: .db 15
 monster_ac_drow_elf: .db 15
+monster_ac_duergar: .db 16
 .block remaining_campaign_classes ; leave space for built-in creatures, and another then campaign monsters
 campaign_monster_ac_table::
 .block max_campaign_monsters
@@ -41,6 +43,7 @@ monster_modifiers_table:
     MONSTER_MODIFIERS hobgoblin, 1, 1, 1, 0, 0, -1
     MONSTER_MODIFIERS goblin, -1, 2, 0, 0, -1, -1
     MONSTER_MODIFIERS drow_elf, 0, 2, 0, 0, 0, 1
+    MONSTER_MODIFIERS duergar, 2, 0, 2, 0, 0, -1
 .block remaining_campaign_classes * modifier_block_size ; leave space for built-in creatures, and then campaign monsters
 campaign_monster_modifiers_table::
 .block max_campaign_monsters * modifier_block_size
@@ -61,6 +64,11 @@ campaign_monster_modifiers_table::
 .db 0
 
     DEFINE_PLAYER monster_drow_elf, 10, 14, 10, 11, 11, 12, race_monster, class_m_drow_elf, 1, "Drow Elf"
+.db 0
+.db 0
+
+    DEFINE_PLAYER monster_duergar, 14, 11, 14, 11, 10, 9, race_monster, class_m_duergar, 1, "Duergar"
+.db 0
 .db 0
 .db 0
 
