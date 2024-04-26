@@ -15,6 +15,24 @@ read_loop:
 
     ret
 
+print_label_callback:
+    ld b, a
+    push bc
+
+    ld h, 1
+    add a, 2
+    ld l, a
+    call rom_set_cursor
+
+    ld hl, skill_labels
+    pop bc
+    ld a, 4
+    call get_array_item
+
+    call print_compressed_string
+
+    ret
+
 init_screen:
     call rom_clear_screen
     PRINT_COMPRESSED_AT_LOCATION 1, 1, character_sheet_header
@@ -24,12 +42,9 @@ init_screen:
     add hl, bc
     call print_compressed_string
 
-    PRINT_COMPRESSED_AT_LOCATION 2, 1, str_label
-    PRINT_COMPRESSED_AT_LOCATION 3, 1, dex_label
-    PRINT_COMPRESSED_AT_LOCATION 4, 1, con_label
-    PRINT_COMPRESSED_AT_LOCATION 5, 1, int_label
-    PRINT_COMPRESSED_AT_LOCATION 6, 1, wis_label
-    PRINT_COMPRESSED_AT_LOCATION 7, 1, chr_label
+    ld a, 6
+    ld hl, print_label_callback
+    call iterate_a
 
     ld a, 0
     ld (counter), a
@@ -103,6 +118,38 @@ stats_loop:
 
     ld hl, (character_loc)
     LOAD_A_WITH_ATTR_THROUGH_HL pl_offs_level
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld h, 10
+    ld l, 5
+    call rom_set_cursor
+
+    ld hl, hp_string
+    call print_compressed_string
+
+    ld hl, (character_loc)
+    call get_hit_points
+
+    ld d, 0
+    ld e, a
+    call de_to_decimal_string
+    ld hl, bc
+    call print_string
+
+    ld h, 10
+    ld l, 6
+    call rom_set_cursor
+
+    ld hl, ac_string
+    call print_compressed_string
+
+    ld hl, (character_loc)
+    call get_character_armor_class
+
     ld d, 0
     ld e, a
     call de_to_decimal_string

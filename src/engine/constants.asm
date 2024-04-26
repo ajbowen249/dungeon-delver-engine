@@ -103,7 +103,7 @@
 #define ability_int 3
 #define ability_wis 4
 #define ability_chr 5
-#define ability_max_value 20
+#define ability_max_value 18
 
 ; none yet implemented
 #define race_human      0

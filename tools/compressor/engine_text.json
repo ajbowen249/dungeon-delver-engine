@@ -63,6 +63,7 @@
     "hit_str": " Hit",
     "miss_str": " Miss",
     "saved_str": " Saved",
+    "str_cancel": "Cancel",
 
     "str_victory": "Victory!",
     "str_game_over": "Game Over",
