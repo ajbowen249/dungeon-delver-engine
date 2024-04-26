@@ -66,7 +66,7 @@ enemy_turn:
     call handle_move
 
 enemy_turn_pick_target:
-    call get_first_living_player
+    call pick_automatic_target
     ld b, a
     push bc
     call get_combatant_at_index_a
@@ -76,6 +76,17 @@ enemy_turn_pick_target:
     ld a, b
     call get_character_at_index_a
     ld (selected_character_location), hl
+
+    ld h, 8
+    ld l, 2
+    call rom_set_cursor
+
+    ld hl, str_attacking
+    call print_compressed_string
+
+    ld hl, (selected_character_location)
+    POINT_HL_TO_ATTR pl_offs_name
+    call print_compressed_string
 
     call attack_selected_enemy
     call await_any_keypress
@@ -195,13 +206,27 @@ handle_inspect:
 attack_result: .db 0
 damage_result: .db 0
 handle_attack:
-    ; TODO: Forbid attack if both players are in the back, and apply disadvantage if one is in the back.
+    call select_enemy
+
+    call get_selected_enemy_distance
+    cp a, 2
+    jp z, forbid_attack
+
     ld a, 0
     ld (bm_root_attack_flags), a
     ld (bm_root_cast_flags), a
 
-    call select_enemy
     call attack_selected_enemy
+    ret
+
+forbid_attack:
+    call clear_message_rows
+    ld h, 1
+    ld l, 7
+    call rom_set_cursor
+
+    ld hl, str_too_far
+    call print_compressed_string
     ret
 
 handle_cast:
@@ -336,6 +361,52 @@ select_root:
 
 hit_bonus_func: .dw 0
 
+; returns 0, 1, or 2 in A
+get_selected_enemy_distance:
+    ld bc, 0
+    push bc
+    call get_combatant_in_turn
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    and a, cbt_flag_line
+    cp a, 0
+    jp z, add_enemy_distance
+    pop bc
+    inc bc
+    push bc
+
+add_enemy_distance:
+    ld hl, (selected_combatant_location)
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offs_flags
+    and a, cbt_flag_line
+    cp a, 0
+    jp z, return_distance
+    pop bc
+    inc bc
+    push bc
+
+return_distance:
+    pop bc
+    ld a, c
+    ret
+
+roll_d20_with_advantage:
+    ld hl, str_advantage_parenthetical
+    call print_compressed_string
+
+    call roll_d20
+    ld b, a
+    push bc
+    call roll_d20
+    pop bc
+
+    cp a, b
+    jp c, return_b
+    ret
+
+return_b:
+    ld a, b
+    ret
+
 try_hit_selected_enemy:
     call clear_message_rows
     ld h, 1
@@ -345,8 +416,12 @@ try_hit_selected_enemy:
     ld hl, attack_roll_str
     call print_compressed_string
 
-    call roll_d20
-    ld a, l
+    call get_selected_enemy_distance
+    cp a, 0
+
+    call nz, roll_d20
+    call z, roll_d20_with_advantage
+
     ld (attack_result), a
 
     cp a, 1
@@ -487,6 +562,48 @@ non_player_killed:
 battle_done:
     ld a, 1
     ld (should_end_turn), a
+    ret
+
+pick_automatic_target:
+    ; tried a handful of times to pick a random living player, but falls back to get_first_living_player
+    ld bc, 10
+    push bc
+
+pick_automatic_target_loop:
+    pop bc
+    dec bc
+    push bc
+    ld a, c
+    cp a, 0
+    jp z, pick_automatic_target_fallback
+
+    call roll_d4
+    cp a, 0
+    jp z, pick_automatic_target_loop
+
+    dec a ; zero-based
+
+    ld b, a
+    ld a, (party_size)
+    cp a, b
+    jp z, pick_automatic_target_loop
+    jp m, pick_automatic_target_loop
+
+    push bc
+    ld a, b
+    call get_combatant_at_index_a
+    LOAD_A_WITH_ATTR_THROUGH_HL cbt_offst_hit_points
+    cp a, 0
+    pop bc
+    ld a, b
+    jp z, pick_automatic_target_loop
+
+    pop bc
+    ret
+
+pick_automatic_target_fallback:
+    pop bc
+    call get_first_living_player
     ret
 
 get_first_living_player:

@@ -164,8 +164,6 @@ cleric_apply_medium_armor:
     ld b, a
     ld a, 14; Scale Mail
     add a, b
-    ld b, 2 ; shield
-    add a, b
     ret
 
 get_barbarian_ac:
