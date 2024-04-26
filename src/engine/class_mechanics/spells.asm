@@ -1,6 +1,7 @@
 ; complete menu of all spells.
 ; flags here should be configured via configure_spell_menu for the selected class+level before display
 
+#define spell_none $00
 #define spell_firebolt $01
 #define spell_sacred_flame $02
 
@@ -12,6 +13,10 @@ spell_menu_firebolt_flags: .db default_options_flags
 .db spell_sacred_flame
 spell_menu_sacred_flame_flags: .db default_options_flags
 .dw spell_option_sacred_flame_label
+
+.db spell_none
+.db default_options_flags
+.dw str_cancel
 
 #define spell_menu_total_options 4
 

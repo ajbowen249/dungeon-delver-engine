@@ -207,6 +207,8 @@ attack_result: .db 0
 damage_result: .db 0
 handle_attack:
     call select_enemy
+    cp a, 0
+    jp z, handle_attack_end
 
     call get_selected_enemy_distance
     cp a, 2
@@ -217,6 +219,7 @@ handle_attack:
     ld (bm_root_cast_flags), a
 
     call attack_selected_enemy
+handle_attack_end:
     ret
 
 forbid_attack:
@@ -244,7 +247,12 @@ selected_spell: .db 0
 saving_throw: .db 0
 process_cast_option:
     ld (selected_spell), a
+    cp a, 0
+    jp z, process_cast_cancel
+
     call select_enemy
+    cp a, 0
+    jp z, process_cast_cancel
 
     ld a, (selected_spell)
     call get_spell_check_type
@@ -333,6 +341,9 @@ process_cast_done:
     ld a, 0
     ld (bm_root_cast_flags), a
     ld (bm_root_attack_flags), a
+    ret
+process_cast_cancel:
+    call set_up_root_menu
     ret
 
 set_up_root_menu:

@@ -10,26 +10,29 @@ selected_combatant_location: .dw 0
 #define enemy_inspect_column 1
 
 .local
-should_exit_iui: .db 0
+; set to 1 to exit with selection, and 0 to exit without
+iui_exit_code: .db 2
 
+; exits non-zero if a selection was made, and 0 if cancelled
 inspect_ui::
     call clear_action_window
 
-    ld a, 0
-    ld (should_exit_iui), a
+    ld a, 2
+    ld (iui_exit_code), a
 
     call on_selection_changed
 
-    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, 0, 0, 0
+    REGISTER_INPUTS on_up_arrow, on_down_arrow, on_left_arrow, on_right_arrow, on_confirm, on_escape, 0, 0
 
 read_loop:
     call iterate_input_table
 
-    ld a, (should_exit_iui)
-    cp a, 0
+    ld a, (iui_exit_code)
+    cp a, 2
     jp z, read_loop
 
     call clear_diamond
+    ld a, (iui_exit_code)
     ret
 
 load_player_from_index:
@@ -86,7 +89,12 @@ on_right_arrow:
 
 on_confirm:
     ld a, 1
-    ld (should_exit_iui), a
+    ld (iui_exit_code), a
+    ret
+
+on_escape:
+    ld a, 0
+    ld (iui_exit_code), a
     ret
 
 position_inspect_cursor_location:
