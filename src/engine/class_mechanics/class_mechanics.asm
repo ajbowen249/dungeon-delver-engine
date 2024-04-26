@@ -66,6 +66,7 @@ roll_ability_check::
     ld c, a
     add hl, bc
     ld a, (hl)
+    call ability_score_to_modifier
     ld b, a
     push bc
     call roll_d20
