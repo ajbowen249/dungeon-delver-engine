@@ -2,7 +2,6 @@
 
 _All screens extremely WIP_
 ![demo](/gh_media/battle_demo.gif)
-![demo](/gh_media/cantrips_demo.gif)
 ![demo](/gh_media/exploration_demo.gif)
 ![demo](/gh_media/skill_check_demo.gif)
 ![demo](/gh_media/roll_abilities_demo.gif)
