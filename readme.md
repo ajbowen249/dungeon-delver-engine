@@ -1,6 +1,7 @@
 # Dungeon Delver Engine
 
 _All screens extremely WIP_
+
 ![demo](/gh_media/battle_demo.gif)
 ![demo](/gh_media/exploration_demo.gif)
 ![demo](/gh_media/skill_check_demo.gif)
@@ -10,7 +11,7 @@ This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizar
 
 ## Building
 
-This project uses [zasm](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html), [make](https://www.gnu.org/software/make/manual/make.html), and [python 3](https://www.python.org/). To build the unit tests and the test campaign, run `make` from the project root. To only build and run the tests, use `make test`.
+This project uses [`zasm`](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html), [`make`](https://www.gnu.org/software/make/manual/make.html), [`python 3`](https://www.python.org/), and [`perl`](https://www.perl.org/), and assumes all are in your `PATH`. To build the unit tests and the test campaign, run `make` from the project root. To only build and run the tests, use `make test`.
 
 ## System Requirements
 
@@ -20,23 +21,28 @@ DDE is designed for systems with at least 24k of RAM (i.e, `21446` Bytes Free up
 
 Built into this project is a test campaign that flexes features of the engine. Other projects that wish to use this engine should be able to simply use `zasm` with the `--8080` argument and include `src/engine/dde.asm`.
 
-Only the raw binary is created for the test campaign, at `build/test_campaign.hex`. It is meant to be loaded at `$B200` (`45568`).
+The build process creates raw binaries in two formats for the "Test Campaign," which should be output at `build/test_campaign.co` and `build/test_campaign.hex`. The former is a Model 100 `.co`-format machine language program file, and the `.hex` file is an Intel Hex format encoding of the raw campaign binary.
 
-Before either method, get into the BASIC prompt and run `clear 256, 45568`.
+> Note: So far, both the large flagship project and even the small test campaign are already too large for the `.co` file to be saved to the Model 100's internal storage.
 
-### Physical Model 100
+### From Cassette
+
+With help from [majick](https://github.com/majick), the build script produces a `.co`-formatted file binary file. This file is too large to work in the Model 100's built-in storage, but can be loaded up through the cassette interface. This is currently only confirmed working on [CloudT](https://bitchin100.com/CloudT/#!/M100Display), but should, theoretically, work on a stock Model 100 when loaded through the cassette interface as well. To run it on CloudT:
+
+1. Enter BASIC, and run `clear 256,45568`
+2. Click "Choose File," and select `test_campaign.co`
+3. Run `cloadm`
+4. When it's done loading, run `call 45568`
+
+### Physical Model 100 With Just a Serial Cable
 
 If you have a serial connection established with a PC running an application that can send ascii files, this repository includes a two-step process to transfer the campaign binary to it. For the first step, run `clear 256, 45056`, as we'll be using some higher memory than the campaign itself. Transfer the `loadhx.ba` BASIC program under `utils` to your machine and start it up. It will await an intel hex format file and begin poking it into `$B000` (`45056`). Send over `build/ldhx.hex`. Note that this first loader script is slow, and has only been proven to work consistently through [`Tera Term`](https://tera-term.en.softonic.com/) with a 50ms delay between characters. It will only be used to load the faster loader. When it is complete, an assembly-language version of essentially this same application will be loaded, and you can save it for easier re-use now with `savem "ldhx",45056,45568,45056`. Once this is complete, you'll want to delete the original `loadhx.do` file to make some room.
 
-Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$B200` (`45568`). This loader is much faster, and has proven stable with only a 5ms delay between characters.
+Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$B200` (`45568`). This loader is much faster, and has proven stable with only a 5ms delay between characters. Once it's done loading, start it up with `call 45586`.
 
 ### Virtual-T
 
-Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear` command above. Then, using the `Memory Editor` tool, load the output hex file starting at address `$B200`.
-
-#### Once Loaded
-
-Once the binary is loaded into memory through any method, you can run it with `call 45568`. Note that the binary size is currently unoptimized, and the test campaign appears to already exceed the size that a 24k machine can save for later via the `savem` command.
+Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear 256,45568`. Then, using the `Memory Editor` tool, load the output `.hex` file starting at address `$B200`. Once that is done, you can run it with `call 45568`.
 
 ## Gameplay
 
