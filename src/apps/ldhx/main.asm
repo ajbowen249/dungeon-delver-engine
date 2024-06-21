@@ -2,7 +2,8 @@
 ; Currently the assembly language equivalent of utils/loadhx.ba, since the BASIC version gets overloaded after a while
 ; with a delay of any less than 50ms per character.
 
-.org $B000
+#include "../../../build/generated/ldhx/generated_header.asm"
+
     call main
 
 #define start_address $B200

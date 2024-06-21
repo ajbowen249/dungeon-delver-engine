@@ -1,13 +1,14 @@
 ; Dungeon Delver Engine Test Campaign
 ; This is a CRPG built on the Dungeon Delver Engine
 
-.org $B200
+; this will set .org
+#include "../../../build/generated/test_campaign/generated_header.asm"
 
 ; Keep this at the top; this is the entry point
     call main
     ret
 
-#include "../../../build/generated/compressed_text.asm"
+#include "../../../build/generated/test_campaign/compressed_text.asm"
 #include "../../engine/dde.asm"
 #include "./global_data.asm"
 #include "./main_menu.asm"

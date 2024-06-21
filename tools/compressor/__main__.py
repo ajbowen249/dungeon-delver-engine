@@ -5,8 +5,6 @@ import os
 
 from compressor import Compressor
 
-engine_text_path = './engine_text.json'
-
 def process_args():
     parser = argparse.ArgumentParser(
         prog='DDE Text Compressor',
@@ -23,7 +21,7 @@ def process_args():
 def main():
     args = process_args()
 
-    engine_json = json.load(open(os.path.join(os.path.dirname(__file__), engine_text_path)))
+    engine_json = json.loads("{}")
 
     if args.input is not None:
         for input_file in args.input:
