@@ -11,7 +11,11 @@ This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizar
 
 ## Building
 
-This project uses [`zasm`](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html), [`make`](https://www.gnu.org/software/make/manual/make.html), [`python 3`](https://www.python.org/), and [`perl`](https://www.perl.org/), and assumes all are in your `PATH`. To build the unit tests and the test campaign, run `make` from the project root. To only build and run the tests, use `make test`.
+This project requires [`zasm`](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html) and [`python 3`](https://www.python.org/). The build system is [`waf`](https://waf.io/), which itself is built on Python, and the `waf` "executable" is versioned alongside this project. To use `waf`, you can invoke it with `./waf` on *nix platforms, or use `./waf.bat` on Windows. It's recommended, especially if you use other `waf` projects, to set up an alias to make invocation simpler (such as `alias waf=./waf`).
+
+When you first check the project out (or after pulling down updates), you'll first want to run `waf configure`, which will set up some paths and ensure it can find `zasm`. This step will fail if `zasm` is not in your `PATH`, or if your python version is below 3.
+
+After that, simply run `waf` to build all outputs and run unit tests. You'll usually only need to run `waf configure` after changes to the build script.
 
 ## System Requirements
 
@@ -91,4 +95,4 @@ A simple string compression algorithm allows for apps to store their strings in 
 If your app doesn't need to compress its text, it should still run `tools/compressor` without the `-i` argument to get the compressed core engine text and include the generated file.
 
 ### Unit Tests
-Tests are located in `src/apps/tests/main.asm`, and are compiled and run automatically by `zasm`. They can be run individually with `make test`.
+Tests are located in `src/apps/tests/main.asm`, and are compiled and run automatically by `zasm` when the file is assembled.
