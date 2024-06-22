@@ -1,8 +1,8 @@
 ; Unit tests
 
-.org $B200
+#include "../../../build/generated/tests/generated_header.asm"
 
-#include "../../../build/generated/compressed_text.asm"
+#include "../../../build/generated/tests/compressed_text.asm"
 #include "../../engine/dde.asm"
 
 test_associative_array:
