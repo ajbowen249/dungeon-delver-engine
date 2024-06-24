@@ -66,37 +66,37 @@ inlin_hl:
 #define ch_pound_sterling $BF
 #define ch_paragraph $AF
 
-; these are reasonable accurate
-#charset map "▛" = $8B
-#charset map "▜" = $87
-#charset map "▙" = $8E
-#charset map "▟" = $8D
-#charset map "▌" = $8A
-#charset map "▐" = $85
-#charset map "▀" = $83
-#charset map "▄" = $8C
-#charset map "█" = $8F
-#charset map "▘" = $82
-#charset map "▝" = $81
-#charset map "▗" = $84
-#charset map "▖" = $88
-#charset map "▚" = $86
-#charset map "▞" = $89
-#charset map "▔" = $83
-#charset map "▂" = $8C
+; analogous mappings
+#charset map "▛" = $EB
+#charset map "▜" = $EC
+#charset map "▙" = $ED
+#charset map "▟" = $EE
+#charset map "▌" = $E9
+#charset map "▐" = $EA
+#charset map "▀" = $E7
+#charset map "▄" = $E8
+#charset map "█" = $EF
+#charset map "▘" = $E1
+#charset map "▝" = $E2
+#charset map "▗" = $E4
+#charset map "▖" = $E3
+#charset map "▚" = $E5
+#charset map "▞" = $E6
+#charset map "▔" = $E7
+#charset map "▂" = $E8
+#charset map "▓" = $FF
 
-; none of these are mppaed yet!
-#charset map "┌" = $FF
-#charset map "┐" = $FF
-#charset map "└" = $FF
-#charset map "┘" = $FF
-#charset map "│" = $FF
-#charset map "─" = $FF
-#charset map "┬" = $FF
-#charset map "├" = $FF
-#charset map "┴" = $FF
-#charset map "┤" = $FF
-#charset map "┼" = $FF
+#charset map "┌" = $F0
+#charset map "┐" = $F2
+#charset map "└" = $F6
+#charset map "┘" = $F7
+#charset map "│" = $F5
+#charset map "─" = $F1
+#charset map "┬" = $F3
+#charset map "├" = $F4
+#charset map "┴" = $F8
+#charset map "┤" = $F9
+#charset map "┼" = $FA
 
 #charset map "◤" = ch_corner_upper_left
 #charset map "◥" = ch_corner_upper_right
