@@ -78,7 +78,7 @@ init_screen:
     LOAD_A_WITH_ATTR_THROUGH_HL sc_offs_start_y
     ld (avatar_y), a
 
-    call rom_clear_screen
+    call clear_screen
     call draw_background
     call draw_avatar
     call draw_status_window_base
@@ -87,18 +87,18 @@ init_screen:
 
 draw_avatar:
     call load_avatar_location_into_hl
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, ch_stick_person_1
-    call rom_print_a
+    call print_a
     ret
 
 clear_avatar:
     call load_avatar_location_into_hl
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, " "
-    call rom_print_a
+    call print_a
     ret
 
 ; helper for exploration_ui_movement
@@ -193,7 +193,7 @@ on_escape:
     cp a, 0
     jp nz, on_escape_done
 
-    call rom_clear_screen
+    call clear_screen
     call draw_background
     call draw_avatar
     call draw_status_window_base
@@ -211,7 +211,7 @@ draw_background:
 draw_bg_loop:
     ld h, 1
     ld l, d
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, (background_index)
     call print_string
@@ -283,7 +283,7 @@ cannot_enter:
 draw_status_window_base:
     ld h, 21
     ld l, 1
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, (screen_data)
     POINT_HL_TO_ATTR sc_offs_title

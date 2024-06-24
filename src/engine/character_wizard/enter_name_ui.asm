@@ -1,6 +1,7 @@
 .local
 destination_og: .dw 0
 destination: .dw 0
+inlin_result: .dw 0
 
 ; Presents the name entry screen
 ; The name (max 10 chars) will be written to the buffer beginning at BC
@@ -13,13 +14,14 @@ enter_name_ui::
 
     ld l, 2
     ld h, 3
-    call rom_set_cursor
+    call set_cursor_hl
 
-    call rom_inlin
+    call inlin_hl
+    ld (inlin_result), hl
 
     ld c, 0
 copy_loop:
-    ld hl, inlin_result
+    ld hl, (inlin_result)
     ld b, 0
     add hl, bc
 
@@ -47,7 +49,7 @@ copy_done:
     ret
 
 init_screen:
-    call rom_clear_screen
+    call clear_screen
     PRINT_COMPRESSED_AT_LOCATION 1, 1, enter_name_header
 
     ret

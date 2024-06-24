@@ -13,7 +13,7 @@ default_party_ui::
     ret
 
 init_screen:
-    call rom_clear_screen
+    call clear_screen
     PRINT_AT_LOCATION 1, 1, header
     ret
 .endlocal

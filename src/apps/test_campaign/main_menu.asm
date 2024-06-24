@@ -10,7 +10,7 @@ menu:
 .dw opt_resume_label
 
 main_menu::
-    call rom_clear_screen
+    call clear_screen
     PRINT_AT_LOCATION 1, 1, menu_label
 
     ld a, 1

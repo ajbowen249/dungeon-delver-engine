@@ -1,14 +1,14 @@
 ; Dungeon Delver Engine Test Campaign
 ; This is a CRPG built on the Dungeon Delver Engine
 
-; this will set .org
-#include "../../../build/generated/test_campaign/generated_header.asm"
+; This file will be included by a wrapper file for the target platform that sets the origin point.
 
 ; Keep this at the top; this is the entry point
     call main
     ret
 
 #include "../../../build/generated/test_campaign/compressed_text.asm"
+#include "../../../build/platform_api.asm"
 #include "../../engine/dde.asm"
 #include "./global_data.asm"
 #include "./main_menu.asm"

@@ -41,11 +41,11 @@ random_16::
 ; seeds the RNG based on the ASCII date characters for current seconds
 .local
 seed_random::
-    ld a,(seconds_10s)
+    ld a,(random_seed_0)
     ld (seed1), a
     inc a
     ld (seed1 + 1), a
-    ld a,(seconds_1s)
+    ld a,(random_seed_1)
     ld (seed2), a
     inc a
     ld (seed2 + 1), a

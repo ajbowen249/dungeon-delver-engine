@@ -63,7 +63,7 @@ call_hl:
 .local
 await_any_keypress::
 loop:
-    call rom_kyread
+    call keyread_a
     jp z, loop
     ret
 .endlocal

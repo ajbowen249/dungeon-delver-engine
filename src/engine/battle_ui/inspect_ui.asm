@@ -108,7 +108,7 @@ position_inspect_cursor_location:
     inc a
     ld l, a
     ld h, party_inspect_column
-    call rom_set_cursor
+    call set_cursor_hl
     ret
 
 position_cursor_enemy:
@@ -116,13 +116,13 @@ position_cursor_enemy:
     inc a
     ld l, a
     ld h, enemy_inspect_column
-    call rom_set_cursor
+    call set_cursor_hl
     ret
 
 clear_diamond:
     call position_inspect_cursor_location
     ld a, " "
-    call rom_print_a
+    call print_a
 
     ret
 
@@ -131,13 +131,13 @@ on_selection_changed:
     call position_inspect_cursor_location
 
     ld a, ch_diamond
-    call rom_print_a
+    call print_a
 
     PRINT_COMPRESSED_AT_LOCATION 2, action_menu_column, blank_window_string
 
     ld l, 2
     ld h, action_menu_column
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, (selected_character_location)
     ld bc, pl_offs_name
@@ -158,7 +158,7 @@ on_selection_changed:
     call print_string
 
     ld a, " "
-    call rom_print_a
+    call print_a
 
     ld hl, (selected_character_location)
     ld bc, pl_offs_class
@@ -175,7 +175,7 @@ on_selection_changed:
 
     ld l, 3
     ld h, action_menu_column
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, hp_string
     call print_compressed_string
@@ -191,7 +191,7 @@ on_selection_changed:
 
     ld l, 4
     ld h, action_menu_column
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, ac_string
     call print_compressed_string

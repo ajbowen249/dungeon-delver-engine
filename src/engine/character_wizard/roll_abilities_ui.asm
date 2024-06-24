@@ -141,17 +141,17 @@ draw_arrows:
     ld l, a
 
     ld h, abilities_column - 1
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, ch_printable_arrow_left
-    call rom_print_a
+    call print_a
 
     ld h, abilities_column + 3
     ; l should still have row
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, ch_printable_arrow_right
-    call rom_print_a
+    call print_a
 
     ret
 
@@ -162,17 +162,17 @@ clear_arrows:
     ld l, a
 
     ld h, abilities_column - 1
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, " "
-    call rom_print_a
+    call print_a
 
     ld h, abilities_column + 3
     ; l should still have row
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, " "
-    call rom_print_a
+    call print_a
 
     ret
 
@@ -185,7 +185,7 @@ print_ability_label_callback:
     ld l, abilities_first_row
     add a, l
     ld l, a
-    call rom_set_cursor
+    call set_cursor_hl
 
     pop bc
     ld a, c
@@ -202,7 +202,7 @@ print_ability_label_callback:
     ret
 
 init_screen:
-    call rom_clear_screen
+    call clear_screen
 
     ; draw static labels
     PRINT_COMPRESSED_AT_LOCATION 1, 1, roll_abilities_header
@@ -280,7 +280,7 @@ print_ability_score_callback:
     ld h, abilities_column
     add a, 2
     ld l, a
-    call rom_set_cursor
+    call set_cursor_hl
 
     pop bc
     ld hl, ability_values
@@ -302,7 +302,7 @@ update_points:
     ld l, a
 
     ld h, abilities_column
-    call rom_set_cursor
+    call set_cursor_hl
 
     ; load ability value
     ld hl, ability_values
@@ -323,7 +323,7 @@ update_points:
     ; move to remaining points position
     ld h, abilities_column + 17
     ld l, abilities_first_row + 1
-    call rom_set_cursor
+    call set_cursor_hl
 
     ; load remaining points
     ld a, (remaining_points)
