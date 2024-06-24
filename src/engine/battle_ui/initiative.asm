@@ -79,7 +79,7 @@ initialize_combatants_foreach_callback_done:
     ret
 
 display_initiative_order:
-    call rom_clear_screen
+    call clear_screen
 
     PRINT_COMPRESSED_AT_LOCATION 1, 1, initiative_header
 
@@ -97,7 +97,7 @@ display_initiative_order_callback:
     ld h, 25
     ld l, a
     inc l
-    call rom_set_cursor
+    call set_cursor_hl
 
     pop bc
     push bc
@@ -119,7 +119,7 @@ display_initiative_order_callback:
     ld l, b
     inc l
     ld h, 14
-    call rom_set_cursor
+    call set_cursor_hl
 
     pop bc
     ld a, b

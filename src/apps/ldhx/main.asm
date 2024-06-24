@@ -2,15 +2,12 @@
 ; Currently the assembly language equivalent of utils/loadhx.ba, since the BASIC version gets overloaded after a while
 ; with a delay of any less than 50ms per character.
 
-#include "../../../build/generated/ldhx/generated_header.asm"
-
     call main
 
 #define start_address $B200
 #include "../../engine/constants.asm"
-#include "../../engine/rom_api.asm"
+#include "./old_rom_api.asm"
 #include "../../engine/util.asm"
-#include "../../engine/string.asm"
 #include "../../engine/hex_string.asm"
 
 loading_message: .asciz "Loading"
@@ -24,10 +21,10 @@ writing_address: .dw 0
 main:
     ld hl, start_address
     ld (writing_address), hl
-    call rom_clear_screen
+    call clear_screen
     ld h, 1
     ld l, 1
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, loading_message
     call print_string
@@ -37,7 +34,7 @@ main:
 main_read_loop:
     ld h, 1
     ld l, 1
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, newline_string
     call print_string

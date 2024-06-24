@@ -91,7 +91,7 @@ draw_combatant_enemy_column:
     ld l, a
 
 draw_combatants_print:
-    call rom_set_cursor
+    call set_cursor_hl
     ld hl, combat_string_buffer
     call print_string
 

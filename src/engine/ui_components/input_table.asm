@@ -38,7 +38,7 @@ input_table_btn_2: .dw 0
 ; non-blocking call to check input and dispatch any appropriate callback. Returns immediately if there is no input
 ; Be sure to REGISTER_INPUTS before calling this.
 iterate_input_table::
-    call rom_kyread
+    call keyread_a
     jp z, exit_input_table
 
     ON_KEY_JUMP ch_up_arrow, on_arrow_up

@@ -79,7 +79,7 @@ enemy_turn_pick_target:
 
     ld h, 8
     ld l, 2
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, str_attacking
     call print_compressed_string
@@ -119,7 +119,7 @@ clear_message_rows_callback:
 print_turn_header:
     ld h, action_menu_column
     ld l, 1
-    call rom_set_cursor
+    call set_cursor_hl
 
     call get_character_in_turn
     POINT_HL_TO_ATTR pl_offs_name
@@ -226,7 +226,7 @@ forbid_attack:
     call clear_message_rows
     ld h, 1
     ld l, 7
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, str_too_far
     call print_compressed_string
@@ -267,7 +267,7 @@ process_cast_option:
     call clear_message_rows
     ld h, 1
     ld l, 7
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, spell_save_str
     call print_compressed_string
@@ -282,7 +282,7 @@ process_cast_option:
 
     ld h, 1
     ld l, 8
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, saving_throw_str
     call print_compressed_string
@@ -307,7 +307,7 @@ process_cast_option:
 
     ld h, 23
     ld l, 7
-    call rom_set_cursor
+    call set_cursor_hl
     jp process_cast_deal_damage
 
 enemy_saved:
@@ -324,7 +324,7 @@ cast_ranged_spell:
 
     ld h, 1
     ld l, 8
-    call rom_set_cursor
+    call set_cursor_hl
 
 process_cast_deal_damage:
     ld hl, (character_in_turn)
@@ -422,7 +422,7 @@ try_hit_selected_enemy:
     call clear_message_rows
     ld h, 1
     ld l, 7
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, attack_roll_str
     call print_compressed_string
@@ -659,7 +659,7 @@ attack_selected_enemy:
 
     ld h, 1
     ld l, 8
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, (character_in_turn)
     call get_damage_value

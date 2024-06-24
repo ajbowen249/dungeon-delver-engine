@@ -59,7 +59,7 @@ menu_draw_callback:
     ld a, (menu_row)
     add a, d
     ld l, a
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld b, d
     ld a, mi_data_size
@@ -139,10 +139,10 @@ draw_arrow:
     ld l, a
     ld a, (menu_column)
     ld h, a
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, ch_printable_arrow_right
-    call rom_print_a
+    call print_a
     ret
 
 clear_arrow:
@@ -153,10 +153,10 @@ clear_arrow:
     ld l, a
     ld a, (menu_column)
     ld h, a
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, " "
-    call rom_print_a
+    call print_a
 
     ret
 .endlocal

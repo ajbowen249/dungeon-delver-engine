@@ -11,7 +11,7 @@ select_class_ui::
     ret
 
 init_screen:
-    call rom_clear_screen
+    call clear_screen
     PRINT_COMPRESSED_AT_LOCATION 1, 1, select_class_header
     ret
 .endlocal

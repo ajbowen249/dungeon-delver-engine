@@ -15,7 +15,7 @@ loop:
     jp nz, compressed_sequence
 
     ; it's just a regular character
-    call rom_print_a
+    call print_a
 
 loop_continue
     inc hl
@@ -59,7 +59,7 @@ block_print::
 
 block_print_callback:
     ld hl, (screen_coords)
-    call rom_set_cursor
+    call set_cursor_hl
     inc l
     ld (screen_coords), hl
 

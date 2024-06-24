@@ -1,8 +1,7 @@
 ; Unit tests
 
-#include "../../../build/generated/tests/generated_header.asm"
-
 #include "../../../build/generated/tests/compressed_text.asm"
+#include "../../../build/platform_api.asm"
 #include "../../engine/dde.asm"
 
 test_associative_array:

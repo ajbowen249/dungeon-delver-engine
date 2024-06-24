@@ -61,11 +61,11 @@ battle_loop_continue:
     jp battle_loop
 
 on_player_party_dead:
-    call rom_clear_screen
+    call clear_screen
 
     ld h, 15
     ld l, 4
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, str_game_over
     call print_compressed_string
@@ -77,11 +77,11 @@ on_player_party_dead:
     ret
 
 on_enemy_party_dead:
-    call rom_clear_screen
+    call clear_screen
 
     ld h, 16
     ld l, 4
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, str_victory
     call print_compressed_string
@@ -92,7 +92,7 @@ on_enemy_party_dead:
     ret
 
 init_screen_graphics:
-    call rom_clear_screen
+    call clear_screen
     call draw_combatants
     ret
 

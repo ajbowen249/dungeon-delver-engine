@@ -18,7 +18,7 @@ skill_check_ui::
     ld (skill_check_player), hl
     ld hl, de
     ld (skill_check_loc), hl
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, skill_labels
     ld a, (skill_check_skill)
@@ -38,7 +38,7 @@ skill_check_ui::
 
     ld hl, (skill_check_loc)
     inc l
-    call rom_set_cursor
+    call set_cursor_hl
     ld hl, roll_str
     call print_compressed_string
 
@@ -55,7 +55,7 @@ skill_check_ui::
     ld hl, (skill_check_loc)
     inc l
     inc l
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld a, (skill_check_required)
     ld b, a

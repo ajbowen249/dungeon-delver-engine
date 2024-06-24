@@ -10,7 +10,7 @@ character_sheet_ui::
     call init_screen
 
 read_loop:
-    call rom_kyread
+    call keyread_a
     jp z, read_loop
 
     ret
@@ -22,7 +22,7 @@ print_label_callback:
     ld h, 1
     add a, 2
     ld l, a
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, skill_labels
     pop bc
@@ -34,7 +34,7 @@ print_label_callback:
     ret
 
 init_screen:
-    call rom_clear_screen
+    call clear_screen
     PRINT_COMPRESSED_AT_LOCATION 1, 1, character_sheet_header
 
     ld hl, (character_loc)
@@ -65,7 +65,7 @@ stats_loop:
     ld a, (counter)
     add a, 2
     ld l, a
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, bc
     call print_string
@@ -80,7 +80,7 @@ stats_loop:
     ; print race
     ld h, 10
     ld l, 2
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, (character_loc)
     ld bc, pl_offs_race
@@ -98,7 +98,7 @@ stats_loop:
     ; print class
     ld h, 10
     ld l, 3
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, (character_loc)
     ld bc, pl_offs_class
@@ -126,7 +126,7 @@ stats_loop:
 
     ld h, 10
     ld l, 5
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, hp_string
     call print_compressed_string
@@ -142,7 +142,7 @@ stats_loop:
 
     ld h, 10
     ld l, 6
-    call rom_set_cursor
+    call set_cursor_hl
 
     ld hl, ac_string
     call print_compressed_string
