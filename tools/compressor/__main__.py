@@ -7,6 +7,7 @@ from compressor import Compressor
 
 # IMPROVE: Ugh. de-duplicate
 PLATFORM_TRS80_M100 = 'trs80_m100'
+PLATFORM_ZX_SPECTRUM = 'zx_spectrum'
 
 def process_args():
     parser = argparse.ArgumentParser(

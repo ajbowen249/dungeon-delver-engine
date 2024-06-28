@@ -6,16 +6,19 @@ import os
 GENERATED_DISCLAIMER = '; File is auto-generated. Changes will not be saved.\n'
 
 PLATFORM_TRS80_M100 = 'trs80_m100'
+PLATFORM_ZX_SPECTRUM = 'zx_spectrum'
 
-ALL_PLATFORMS = [ PLATFORM_TRS80_M100 ]
+ALL_PLATFORMS = [ PLATFORM_TRS80_M100, PLATFORM_ZX_SPECTRUM ]
 DEFAULT_PLATFORMS = [ PLATFORM_TRS80_M100 ]
 
 DEFAULT_ENTRY_POINTS = {
     PLATFORM_TRS80_M100: 0xAB00,
+    PLATFORM_ZX_SPECTRUM: 0x8000,
 }
 
 PLATFORM_IDS = {
     PLATFORM_TRS80_M100: 1,
+    PLATFORM_ZX_SPECTRUM: 2,
 }
 
 def dde_options(ctx):
@@ -39,6 +42,10 @@ def configure_dde(ctx, dde_root):
     ctx.env.PLATFORMS = ctx.options.platforms
     ctx.find_program('zasm', var='ZASM')
     ctx.find_program('python3', var='PYTHON')
+
+    if PLATFORM_ZX_SPECTRUM in platforms:
+        ctx.find_program('bin2tap', var='BIN2TAP')
+
     ctx.env.TEXT_COMPRESSOR = dde_root.find_node('tools/compressor').abspath()
     ctx.env.ENGINE_TEXT = dde_root.find_node('tools/compressor/engine_text.json').abspath()
 
@@ -109,6 +116,27 @@ class LinkCO(Task):
 
             with open(self.inputs[0].abspath(), 'rb') as obj_file:
                 co_file.write(obj_file.read())
+
+class CreateTAP(Task):
+    ext_out = ['.tap']
+    after = [ 'Assemble' ]
+    def run(self):
+        print('running CreateTAP')
+        return self.exec_command([
+            self.env.BIN2TAP[0],
+            '-b',
+            '-cb',
+            '1',
+            '-cp',
+            '7',
+            '-ci',
+            '0',
+            '-c',
+            str(self.entry_point),
+            '-o',
+            self.outputs[0].abspath(),
+            self.inputs[0].abspath(),
+        ])
 
 @TaskGen.feature('dde_game')
 @TaskGen.before('dde_game')
@@ -184,6 +212,17 @@ def dde_game(self):
             entry_point = self.entry_point,
         )
 
+    if self.platform == PLATFORM_ZX_SPECTRUM and self.build_zx_tap:
+        link_inputs = [self.out_obj]
+        link_inputs.extend(asm_inputs)
+
+        self.create_task(
+            'CreateTAP',
+            link_inputs,
+            self.out_tap,
+            entry_point = self.entry_point,
+        )
+
 def build_dde_game(bld, path, **kwargs):
     platform_filter = bld.env.PLATFORMS.split(',')
     name = path.name
@@ -209,6 +248,7 @@ def build_dde_game(bld, path, **kwargs):
             out_tap = platform_node.make_node(f'{name}.tap'),
             build_hex = kwargs.get('build_hex', True),
             build_m100_co = kwargs.get('build_m100_co', True),
+            build_zx_tap = kwargs.get('build_zx_tap', True),
             entry_point = kwargs.get(f'entry_point_{platform}', DEFAULT_ENTRY_POINTS[platform]),
             is_dde_inner = kwargs.get('is_dde_inner', False),
             is_8080 = platform == PLATFORM_TRS80_M100,
