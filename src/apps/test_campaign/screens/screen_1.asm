@@ -7,22 +7,12 @@ screen_1_background:
 .asciz "│    왓              "
 .asciz "│           ∩      │"
 .asciz "│                  │"
-.asciz "│                  │"
-.asciz "│                  │"
-.asciz "│∩∩          왓     │"
-.asciz "└──────────────────┘"
+.asciz "│  ┌┬┐             │"
+.asciz "│  └┼┤             │"
+.asciz "│∩∩ ├┘       왓     │"
+.asciz "└───┴──────────────┘"
 screen_1_title: .asciz "Test Room"
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
+.block 11, 0
 screen_1_start_x: .db 2 ; 1-indexed since it's screen coordinates!
 screen_1_start_y: .db 2
 screen_1_interactables:

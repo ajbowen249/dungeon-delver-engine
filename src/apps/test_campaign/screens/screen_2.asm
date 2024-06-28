@@ -3,24 +3,16 @@
 .local
 screen_2_data:
 screen_2_background:
-.asciz "┌──────────────────┐"
-.asciz "                   │"
-.asciz "│                  │"
-.asciz "│            옷     │"
-.asciz "│                  │"
-.asciz "│               ∩∩ │"
-.asciz "│     옷            │"
-.asciz "└──────────────────┘"
+.asciz "▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜"
+.asciz "     ▚▞     ↕      ▐"
+.asciz "▌               ▓  ▐"
+.asciz "▌         ▗▖       ▐"
+.asciz "▌         ▝▘   ◇   ▐"
+.asciz "▌          €     ◢◣▐"
+.asciz "▌      █  ⌂✝ㅑ£¶  ◥◤▐"
+.asciz "▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟"
 screen_2_title: .asciz "Test Room 2"
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
-.db 0
+.block 9, 0
 screen_2_start_x: .db 2 ; 1-indexed since it's screen coordinates!
 screen_2_start_y: .db 2
 screen_2_interactables:
