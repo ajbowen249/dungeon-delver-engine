@@ -56,12 +56,12 @@
 
     "turn_header": "'s turn",
     "trs80_m100:attack_roll_str": "Attack Roll: ",
-    "attack_roll_str": "Attack Roll: ",
-    "damage_roll_str": "Damage Roll: ",
+    "zx_spectrum:attack_roll_str": "Attack:",
     "trs80_m100:damage_roll_str": "Damage Roll: ",
+    "zx_spectrum:damage_roll_str": "Damage:",
     "saving_throw_str": "Saving Throw: ",
     "trs80_m100:spell_save_str": "Spell Save Bonus: ",
-    "spell_save_str": "Spell Save Bonus: ",
+    "zx_spectrum:spell_save_str": "Spell Save Bonus:",
     "critical_str": "Critical",
     "hit_str": " Hit",
     "miss_str": " Miss",
@@ -96,7 +96,7 @@
 
     "blank_window_string": "                               ",
     "trs80_m100:blank_message_row_string": "                                       ",
-    "blank_message_row_string": "                                       ",
+    "zx_spectrum:blank_message_row_string": "                               ",
     "blank_19_char_string": "                   ",
     "blank_20_char_string": "                    "
 }

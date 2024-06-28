@@ -454,12 +454,87 @@ iterate_a_tests:
 
     ret
 
+#if dde_platform == platform_zx_spectrum
+zx_spectrum_tests:
+    ld hl, $0506
+    call set_cursor_hl
+    ld a, (zx_cursor_x)
+.expect a = $04
+    ld a, (zx_cursor_y)
+.expect a = $05
+
+    call get_spectrum_cursor_address
+.expect hl = $40A4
+
+    ld hl, $0101
+    call set_cursor_hl
+    ld a, (zx_cursor_x)
+.expect a = $00
+    ld a, (zx_cursor_y)
+.expect a = $00
+
+    call get_spectrum_cursor_address
+.expect hl = $4000
+
+    ld hl, $2018
+    call set_cursor_hl
+    ld a, (zx_cursor_x)
+.expect a = 31
+    ld a, (zx_cursor_y)
+.expect a = 23
+
+    call get_spectrum_cursor_address
+.expect hl = $50FF
+
+    ld hl, $0715
+    call set_cursor_hl
+    ld a, (zx_cursor_x)
+.expect a = 6
+    ld a, (zx_cursor_y)
+.expect a = 20
+
+    call get_spectrum_cursor_address
+.expect hl = $5086
+
+    ld hl, $180B
+    call set_cursor_hl
+    ld a, (zx_cursor_x)
+.expect a = 23
+    ld a, (zx_cursor_y)
+.expect a = 10
+
+    call get_spectrum_cursor_address
+.expect hl = $4857
+
+    ld a, "a"
+    call get_spectrum_character_address
+.expect hl = $3F08
+
+
+    ld hl, $0506
+    call set_cursor_hl
+    ld a, "a"
+
+    call get_spectrum_character_address
+    push hl
+
+    call get_spectrum_cursor_address
+    pop de
+
+.expect hl = $40A4
+.expect de = $3F08
+    ret
+#endif
+
 test_start:
     call math_tests
     call test_decimal
     call array_tests
     call test_class_mechanics
     call iterate_a_tests
+#if dde_platform == platform_zx_spectrum
+    call zx_spectrum_tests
+#endif
     ret
 
 test_entry:
