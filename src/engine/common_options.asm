@@ -116,7 +116,7 @@ opt_stub:
 stub_menu:
     ld a, 1
     ld hl, opt_stub
-    ld b, 21
-    ld c, 8
+    ld b, ex_message_col
+    ld c, ex_message_row + 7
     call menu_ui
     ret

@@ -44,7 +44,7 @@
     "str_advantage_parenthetical": "(Adv.)",
     "str_attacking": "Attacking ",
 
-    "spell_option_firebolt_label": "Fire Bolt",
+    "spell_option_fire_bolt_label": "Fire Bolt",
     "spell_option_sacred_flame_label": "Sacred Flame",
 
     "str_lvl": " lvl ",
@@ -55,9 +55,12 @@
     "roll_str": "Roll: ",
 
     "turn_header": "'s turn",
+    "trs80_m100:attack_roll_str": "Attack Roll: ",
     "attack_roll_str": "Attack Roll: ",
     "damage_roll_str": "Damage Roll: ",
+    "trs80_m100:damage_roll_str": "Damage Roll: ",
     "saving_throw_str": "Saving Throw: ",
+    "trs80_m100:spell_save_str": "Spell Save Bonus: ",
     "spell_save_str": "Spell Save Bonus: ",
     "critical_str": "Critical",
     "hit_str": " Hit",
@@ -92,6 +95,7 @@
     "padded_chr_label": "    Charisma",
 
     "blank_window_string": "                               ",
+    "trs80_m100:blank_message_row_string": "                                       ",
     "blank_message_row_string": "                                       ",
     "blank_19_char_string": "                   ",
     "blank_20_char_string": "                    "

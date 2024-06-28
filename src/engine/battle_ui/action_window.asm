@@ -1,7 +1,5 @@
 #include "./battle_menu_options.asm"
 
-#define action_menu_column 8
-
 should_end_turn: .db 0
 current_menu_address: .dw 0
 current_menu_option_count: .db 0
@@ -77,8 +75,8 @@ enemy_turn_pick_target:
     call get_character_at_index_a
     ld (selected_character_location), hl
 
-    ld h, 8
-    ld l, 2
+    ld h, ba_action_menu_column
+    ld l, ba_action_menu_row + 1
     call set_cursor_hl
 
     ld hl, str_attacking
@@ -101,8 +99,8 @@ clear_action_window:
     ret
 
 clear_action_window_callback:
-    inc a
-    PRINT_COMPRESSED_AT_LOCATION a, action_menu_column, blank_window_string
+    add a, ba_action_menu_row
+    PRINT_COMPRESSED_AT_LOCATION a, ba_action_menu_column, blank_window_string
     ret
 
 clear_message_rows:
@@ -112,13 +110,13 @@ clear_message_rows:
     ret
 
 clear_message_rows_callback:
-    add a, 7
+    add a, ba_message_row
     PRINT_COMPRESSED_AT_LOCATION a, 1, blank_message_row_string
     ret
 
 print_turn_header:
-    ld h, action_menu_column
-    ld l, 1
+    ld h, ba_action_menu_column
+    ld l, ba_action_menu_row
     call set_cursor_hl
 
     call get_character_in_turn
@@ -132,16 +130,16 @@ print_turn_header:
 show_selected_menu:
     call print_turn_header
 
-    ld b, action_menu_column
-    ld c, 2
+    ld b, ba_action_menu_column
+    ld c, ba_action_menu_row + 1
 
     ld a, (current_menu_option_count)
     ld hl, (current_menu_address)
     ld bc, common_consolidated_menu
 
     call consolidate_menu_hl_bc
-    ld b, action_menu_column
-    ld c, 2
+    ld b, ba_action_menu_column
+    ld c, ba_action_menu_row + 1
     ld hl, common_consolidated_menu
     call menu_ui
 
@@ -225,7 +223,7 @@ handle_attack_end:
 forbid_attack:
     call clear_message_rows
     ld h, 1
-    ld l, 7
+    ld l, ba_message_row
     call set_cursor_hl
 
     ld hl, str_too_far
@@ -266,7 +264,7 @@ process_cast_option:
 
     call clear_message_rows
     ld h, 1
-    ld l, 7
+    ld l, ba_message_row
     call set_cursor_hl
 
     ld hl, spell_save_str
@@ -281,7 +279,7 @@ process_cast_option:
     call print_string
 
     ld h, 1
-    ld l, 8
+    ld l, ba_message_row + 1
     call set_cursor_hl
 
     ld hl, saving_throw_str
@@ -305,8 +303,8 @@ process_cast_option:
     ld hl, hit_str
     call print_compressed_string
 
-    ld h, 23
-    ld l, 7
+    ld h, ba_cast_damage_colum
+    ld l, ba_message_row
     call set_cursor_hl
     jp process_cast_deal_damage
 
@@ -323,7 +321,7 @@ cast_ranged_spell:
     jp z, process_cast_done
 
     ld h, 1
-    ld l, 8
+    ld l, ba_message_row + 1
     call set_cursor_hl
 
 process_cast_deal_damage:
@@ -421,7 +419,7 @@ return_b:
 try_hit_selected_enemy:
     call clear_message_rows
     ld h, 1
-    ld l, 7
+    ld l, ba_message_row
     call set_cursor_hl
 
     ld hl, attack_roll_str
@@ -658,7 +656,7 @@ attack_selected_enemy:
     jp z, attack_no_hit
 
     ld h, 1
-    ld l, 8
+    ld l, ba_message_row + 1
     call set_cursor_hl
 
     ld hl, (character_in_turn)

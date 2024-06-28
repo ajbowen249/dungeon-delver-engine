@@ -59,7 +59,7 @@ iterate_input_table::
 
     ON_KEY_JUMP ch_enter, on_confirm
 
-    ON_KEY_JUMP ch_escape, on_escape
+    ON_KEY_JUMP ch_pause_escape_key, on_escape
 
     ON_KEY_JUMP ch_r, on_btn_1
     ON_KEY_JUMP ch_R, on_btn_1
