@@ -64,7 +64,7 @@ on_player_party_dead:
     call clear_screen
 
     ld h, 15
-    ld l, 4
+    ld l, ba_end_msg_row
     call set_cursor_hl
 
     ld hl, str_game_over
@@ -79,8 +79,8 @@ on_player_party_dead:
 on_enemy_party_dead:
     call clear_screen
 
-    ld h, 16
-    ld l, 4
+    ld h, ba_victory_col
+    ld l, ba_end_msg_row
     call set_cursor_hl
 
     ld hl, str_victory

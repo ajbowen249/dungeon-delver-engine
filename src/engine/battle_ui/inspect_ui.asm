@@ -133,10 +133,10 @@ on_selection_changed:
     ld a, ch_diamond
     call print_a
 
-    PRINT_COMPRESSED_AT_LOCATION 2, action_menu_column, blank_window_string
+    PRINT_COMPRESSED_AT_LOCATION ba_action_menu_row + 1, ba_action_menu_column, blank_window_string
 
-    ld l, 2
-    ld h, action_menu_column
+    ld h, ba_action_menu_column
+    ld l, ba_action_menu_row + 1
     call set_cursor_hl
 
     ld hl, (selected_character_location)
@@ -173,8 +173,8 @@ on_selection_changed:
     ld hl, bc
     call print_compressed_string
 
-    ld l, 3
-    ld h, action_menu_column
+    ld h, ba_action_menu_column
+    ld l, ba_action_menu_row + 2
     call set_cursor_hl
 
     ld hl, hp_string
@@ -189,8 +189,8 @@ on_selection_changed:
     ld hl, bc
     call print_string
 
-    ld l, 4
-    ld h, action_menu_column
+    ld h, ba_action_menu_column
+    ld l, ba_action_menu_row + 3
     call set_cursor_hl
 
     ld hl, ac_string

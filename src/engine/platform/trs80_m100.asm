@@ -17,6 +17,30 @@ inlin_hl:
 #define random_seed_0 seconds_10s
 #define random_seed_1 seconds_1s
 
+#define ex_view_col 1
+#define ex_view_row 1
+
+#define ex_message_col 21
+#define ex_message_row 1
+
+#define ex_title_col 21
+#define ex_title_row 1
+
+#define ra_ability_label_col 2
+#define ra_ability_label_row 2
+#define ra_instructions_col 22
+#define ra_instructions_row 2
+
+#define ba_action_menu_column 8
+#define ba_action_menu_row 1
+#define ba_message_row 7
+#define ba_cast_damage_colum 23
+#define ba_victory_col 16
+#define ba_game_over_col 15
+#define ba_end_msg_row 4
+
+#define ch_pause_escape_key ch_escape
+
 ; character set
 #charset ascii
 
@@ -103,6 +127,10 @@ inlin_hl:
 #charset map "◣" = ch_corner_lower_left
 #charset map "◢" = ch_corner_lower_right
 
+#charset map "↕" = ch_up_down_arrows
+#charset map "◇" = ch_diamond
+#charset map "✝" = ch_cross
+
 #charset map "⌂" = ch_house
 #charset map "£" = ch_pound_sterling
 #charset map "¶" = ch_paragraph
@@ -114,3 +142,5 @@ inlin_hl:
 #charset map "∩" = ch_chest
 #charset map "€" = ch_mushroom
 #charset map "ㅑ" = ch_quad_thing
+
+#define ex_avatar_char ch_stick_person_1

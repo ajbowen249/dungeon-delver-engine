@@ -57,8 +57,12 @@
 #define iflags_normal $80
 #define iflags_door $81
 
+#define sc_background_rows 8
+#define sc_background_characters 20
+#define sc_background_string_bytes sc_background_characters + 1 ; null terminator
+
 ; screen data structure
-#define sc_background_data_len 21 * 8
+#define sc_background_data_len sc_background_string_bytes * sc_background_rows
 #define sc_title_max_len 20
 #define sc_title_data_len sc_title_max_len + 1
 #define sc_interactable_array_elements 10

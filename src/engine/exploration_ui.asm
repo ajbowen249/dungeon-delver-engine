@@ -85,16 +85,30 @@ init_screen:
 
     ret
 
+avatar_location_to_screen_location:
+    ld a, ex_view_col
+    sub a, 1
+    add a, h
+    ld h, a
+
+    ld a, ex_view_row
+    sub a, 1
+    add a, l
+    ld l, a
+    ret
+
 draw_avatar:
     call load_avatar_location_into_hl
+    call avatar_location_to_screen_location
     call set_cursor_hl
 
-    ld a, ch_stick_person_1
+    ld a, ex_avatar_char
     call print_a
     ret
 
 clear_avatar:
     call load_avatar_location_into_hl
+    call avatar_location_to_screen_location
     call set_cursor_hl
 
     ld a, " "
@@ -203,13 +217,15 @@ on_escape_done:
 
 background_index: .dw 0
 draw_background:
+    call set_cursor_hl
+
     ld hl, (screen_data)
     ld (background_index), hl
 
-    ld d, 1
+    ld d, ex_view_row
 
 draw_bg_loop:
-    ld h, 1
+    ld h, ex_view_col
     ld l, d
     call set_cursor_hl
 
@@ -217,13 +233,13 @@ draw_bg_loop:
     call print_string
 
     ld hl, (background_index)
-    ld bc, 21 ; 20 char string plus terminator
+    ld bc, sc_background_string_bytes
     add hl, bc
     ld (background_index), hl
 
     inc d
     ld a, d
-    cp a, 9 ; rows 1-8
+    cp a, ex_view_row + 8 ; rows 1-8
     jp nz, draw_bg_loop
 
     ret
@@ -234,8 +250,7 @@ get_background_address:
     ; coordinates are 1-based, so drop down to 0-based
     dec h
     dec l
-    ; data is stored in row strings of 20 chars (21 bytes)
-    ld a, 21
+    ld a, sc_background_string_bytes
     ld b, l
     call mul_a_b
 
@@ -281,8 +296,8 @@ cannot_enter:
     ret
 
 draw_status_window_base:
-    ld h, 21
-    ld l, 1
+    ld h, ex_title_col
+    ld l, ex_title_row
     call set_cursor_hl
 
     ld hl, (screen_data)
@@ -438,7 +453,7 @@ on_position_changed_found_interactable:
 
     ld bc, hl
 
-    PRINT_COMPRESSED_AT_LOCATION 2, 21, bc
+    PRINT_COMPRESSED_AT_LOCATION ex_message_row + 1, ex_message_col, bc
 
     ret
 
@@ -484,12 +499,12 @@ clear_exploration_message_area::
     ld hl, clear_exploration_message_area_callback
     call iterate_a
 
-    PRINT_COMPRESSED_AT_LOCATION 8, 21, blank_19_char_string
+    PRINT_COMPRESSED_AT_LOCATION ex_message_row + 7, ex_message_col, blank_19_char_string
     ret
 
 clear_exploration_message_area_callback:
-    add a, 2
-    PRINT_COMPRESSED_AT_LOCATION a, 21, blank_20_char_string
+    add a, ex_message_row + 1
+    PRINT_COMPRESSED_AT_LOCATION a, ex_message_col, blank_20_char_string
     ret
 
 configure_inputs:
@@ -528,7 +543,7 @@ clear_interactable_inner:
     LOAD_A_WITH_ATTR_THROUGH_HL in_offs_row
     dec a ; 1-based
     ld b, a
-    ld a, 21
+    ld a, sc_background_string_bytes
     call mul_a_b
     ld d, a
 
@@ -582,7 +597,7 @@ clear_graphic_if_flag::
     dec h
     dec l
     ld a, l
-    ld b, 21
+    ld b, sc_background_string_bytes
     call mul_a_b
 
     add a, h

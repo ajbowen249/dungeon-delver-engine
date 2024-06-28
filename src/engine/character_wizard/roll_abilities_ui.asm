@@ -1,6 +1,5 @@
 .local
-#define abilities_first_row 2
-#define abilities_column 16
+#define abilities_column ra_ability_label_col + 14
 
 ability_values:
 str_val: .db 0
@@ -94,7 +93,7 @@ on_left_arrow_end:
     ret
 
 on_right_arrow:
-    ; can't increment if 20
+    ; can't increment if 18
     ld hl, ability_values
     ld a, (ability_index)
     ld b, 0
@@ -136,7 +135,7 @@ on_btn_1:
 
 draw_arrows:
     ld a, (ability_index)
-    ld b, abilities_first_row
+    ld b, ra_ability_label_row
     add b
     ld l, a
 
@@ -157,7 +156,7 @@ draw_arrows:
 
 clear_arrows:
     ld a, (ability_index)
-    ld b, abilities_first_row
+    ld b, ra_ability_label_row
     add b
     ld l, a
 
@@ -181,8 +180,8 @@ print_ability_label_callback:
     ld c, a
     push bc
 
-    ld h, 2
-    ld l, abilities_first_row
+    ld h, ra_ability_label_col
+    ld l, ra_ability_label_row
     add a, l
     ld l, a
     call set_cursor_hl
@@ -206,11 +205,11 @@ init_screen:
 
     ; draw static labels
     PRINT_COMPRESSED_AT_LOCATION 1, 1, roll_abilities_header
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row, abilities_column + 6, padded_total_label
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 1, abilities_column + 6, remaining_label
+    PRINT_COMPRESSED_AT_LOCATION ra_instructions_row, ra_instructions_col, padded_total_label
+    PRINT_COMPRESSED_AT_LOCATION ra_instructions_row + 1, ra_instructions_col, remaining_label
 
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 3, abilities_column + 6, padded_re_roll_label
-    PRINT_COMPRESSED_AT_LOCATION abilities_first_row + 4, abilities_column + 6, enter_to_continue_label
+    PRINT_COMPRESSED_AT_LOCATION ra_instructions_row + 3, ra_instructions_col, padded_re_roll_label
+    PRINT_COMPRESSED_AT_LOCATION ra_instructions_row + 4, ra_instructions_col, enter_to_continue_label
 
     ld a, 6
     ld hl, print_ability_label_callback
@@ -264,7 +263,7 @@ total_loop:
     ld d, 0
     ld e, a
     call de_to_decimal_string
-    PRINT_AT_LOCATION abilities_first_row, abilities_column + 17, bc
+    PRINT_AT_LOCATION ra_instructions_row, ra_instructions_col + 11, bc
 
     ld a, 6
     ld hl, print_ability_score_callback
@@ -278,7 +277,7 @@ print_ability_score_callback:
     push bc
 
     ld h, abilities_column
-    add a, 2
+    add a, ra_ability_label_row
     ld l, a
     call set_cursor_hl
 
@@ -297,7 +296,7 @@ print_ability_score_callback:
 update_points:
     ; move to current cell
     ld a, (ability_index)
-    ld b, abilities_first_row
+    ld b, ra_ability_label_row
     add b
     ld l, a
 
@@ -321,8 +320,8 @@ update_points:
     call print_string
 
     ; move to remaining points position
-    ld h, abilities_column + 17
-    ld l, abilities_first_row + 1
+    ld h, ra_instructions_col + 11
+    ld l, ra_instructions_row + 1
     call set_cursor_hl
 
     ; load remaining points

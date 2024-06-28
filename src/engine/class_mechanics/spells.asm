@@ -8,7 +8,7 @@
 spell_menu_root:
 .db spell_firebolt
 spell_menu_firebolt_flags: .db default_options_flags
-.dw spell_option_firebolt_label
+.dw spell_option_fire_bolt_label
 
 .db spell_sacred_flame
 spell_menu_sacred_flame_flags: .db default_options_flags

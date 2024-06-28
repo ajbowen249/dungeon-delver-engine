@@ -25,12 +25,12 @@ skill_demo:
 skill_demo_choice: .db 0
 
 dialog_skill_demo::
-    PRINT_AT_LOCATION 2, 21, dialog_skill_demo_intro
+    PRINT_AT_LOCATION ex_message_row + 1, ex_message_col, dialog_skill_demo_intro
 
     ld a, 3
     ld hl, skill_demo
-    ld b, 21
-    ld c, 3
+    ld b, ex_message_col
+    ld c, ex_message_row + 2
     call menu_ui
     ld (skill_demo_choice), a
 
@@ -52,8 +52,8 @@ pick_lock:
     ld a, skill_index_dex
     ld b, 18
     ld hl, test_character1
-    ld d, 21
-    ld e, 2
+    ld d, ex_message_col
+    ld e, ex_message_row + 1
     call skill_check_ui
     ret
 
@@ -61,8 +61,8 @@ smash_chest:
     ld a, skill_index_str
     ld b, 12
     ld hl, test_character1
-    ld d, 21
-    ld e, 2
+    ld d, ex_message_col
+    ld e, ex_message_row + 1
     call skill_check_ui
     ret
 

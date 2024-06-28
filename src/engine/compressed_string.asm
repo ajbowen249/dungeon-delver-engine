@@ -78,3 +78,7 @@ block_print_callback:
     ld c, &START_ROW
     call block_print
 .endm
+
+.macro BLOCK_PRINT_EXPLORATION_MESSAGE &BLOCK_NAME
+    BLOCK_PRINT &BLOCK_NAME, ex_message_col, ex_message_row + 1
+.endm
