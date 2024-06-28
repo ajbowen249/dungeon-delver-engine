@@ -24,3 +24,7 @@ Each supported platform has a an `asm` file here that implements the required in
 |`ex_title_row`|The 1-indexed row number to place the room title in the exploration UI.|
 |`ex_avatar_char`|The character to use as the player avatar.|
 |`ch_pause_escape_key`|The character to use for "pause/escape" functionality. Usually `ch_escape`, but not every platform has an escape key.|
+
+## Character Mappings
+
+This project originated on the TRS-80 Model 100. Currently, the engine assumes a certain subset of its custom character set exists. This will eventually be less coupled to some degree, but, for now, check the character mapping files of the implemented platforms to see what is currently needed.

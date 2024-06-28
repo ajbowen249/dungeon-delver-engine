@@ -1,35 +1,58 @@
 # Dungeon Delver Engine
 
-_All screens extremely WIP_
+This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizards.com/resources/systems-reference-document) for the [Tandy TRS-80 Model 100](https://en.wikipedia.org/wiki/TRS-80_Model_100) and [ZX Spectrum](https://en.wikipedia.org/wiki/ZX_Spectrum).
 
 ![demo](/gh_media/battle_demo.gif)
 ![demo](/gh_media/exploration_demo.gif)
 ![demo](/gh_media/skill_check_demo.gif)
 ![demo](/gh_media/roll_abilities_demo.gif)
 
-This is an implementation of a limited subset of [OGL-SRD 5.1](https://dnd.wizards.com/resources/systems-reference-document) for the [Tandy TRS-80 Model 100](https://en.wikipedia.org/wiki/TRS-80_Model_100).
+![demo](/gh_media/zx_spectrum_demo.gif)
+
 
 ## Building
 
+### Basics
 This project requires [`zasm`](https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html) and [`python 3`](https://www.python.org/). The build system is [`waf`](https://waf.io/), which itself is built on Python, and the `waf` "executable" is versioned alongside this project. To use `waf`, you can invoke it with `./waf` on *nix platforms, or use `./waf.bat` on Windows. It's recommended, especially if you use other `waf` projects, to set up an alias to make invocation simpler (such as `alias waf=./waf`).
 
 When you first check the project out (or after pulling down updates), you'll first want to run `waf configure`, which will set up some paths and ensure it can find `zasm`. This step will fail if `zasm` is not in your `PATH`, or if your python version is below 3.
 
-After that, simply run `waf` to build all outputs and run unit tests. You'll usually only need to run `waf configure` after changes to the build script.
+After that, simply run `waf` to build all outputs and run unit tests. You'll usually only need to run `waf configure` after changes to the build script, or to make changes to your selected options.
+
+### ZX Spectrum (Experimental)
+
+The ZX Spectrum build is currently disabled by default until stabilized. To enable it, pass `zx_spectrum` to `waf configure`'s `--platform` option. You can supply it on its own, or with both platforms:
+
+```shell
+# Spectrum on its own
+waf configure --platforms=zx_spectrum
+# Spectrum and Model 100
+waf configure --platforms=trs80_m100,zx_spectrum
+```
+
+When you select the `zx_spectrum` platform, `waf configure` will also ensure you have [`bin2tap`](https://sourceforge.net/p/zxspectrumutils/wiki/bin2tap/) (from [`zxspectrum-utils`](https://sourceforge.net/projects/zxspectrumutils/)) available in your path. This is required to package the raw binary output from `zasm` into a tape format with a `BASIC` bootloader.
+
+> **Note:** The reason this is disabled by default is that the build will currently fail on the first pass when calling `bin2tap`. Simply invoking `waf` multiple times _does_ eventually produce a working `tap` file.
+
 
 ## System Requirements
 
+### TRS80-Model 100
 DDE is designed for systems with at least 24k of RAM (i.e, `21446` Bytes Free upon cold boot).
+
+### ZX Spectrum
+DDE is designed for systems with at least 48k of RAM.
 
 ## Running
 
-Built into this project is a test campaign that flexes features of the engine. Other projects that wish to use this engine should be able to simply use `zasm` with the `--8080` argument and include `src/engine/dde.asm`.
+Built into this project is a test campaign that flexes features of the engine. Other projects that wish to use this engine should be able to utilize this engine to create bigger experiences.
 
-The build process creates raw binaries in two formats for the "Test Campaign," which should be output at `build/test_campaign.co` and `build/test_campaign.hex`. The former is a Model 100 `.co`-format machine language program file, and the `.hex` file is an Intel Hex format encoding of the raw campaign binary.
+### TRS-80 Model 100
+The build process creates raw binaries in two formats for the "Test Campaign," which should be output at `build/trs80_m100/test_campaign.co` and `build/trs80_m100/test_campaign.hex`. The former is a Model 100 `.co`-format machine language program file, and the `.hex` file is an Intel Hex format encoding of the raw campaign binary.
 
 > Note: So far, both the large flagship project and even the small test campaign are already too large for the `.co` file to be saved to the Model 100's internal storage.
 
-### From Cassette
+#### From Cassette
 
 With help from [majick](https://github.com/majick), the build script produces a `.co`-formatted file binary file. This file is too large to work in the Model 100's built-in storage, but can be loaded up through the cassette interface. This is currently only confirmed working on [CloudT](https://bitchin100.com/CloudT/#!/M100Display), but should, theoretically, work on a stock Model 100 when loaded through the cassette interface as well. To run it on CloudT:
 
@@ -38,15 +61,21 @@ With help from [majick](https://github.com/majick), the build script produces a 
 3. Run `cloadm`
 4. When it's done loading, run `call 43776`
 
-### Physical Model 100 With Just a Serial Cable
+#### Physical Model 100 With Just a Serial Cable
 
-If you have a serial connection established with a PC running an application that can send ascii files, this repository includes a two-step process to transfer the campaign binary to it. For the first step, run `clear 256, 43264`, as we'll be using some higher memory than the campaign itself. Transfer the `loadhx.ba` BASIC program under `utils` to your machine and start it up. It will await an intel hex format file and begin poking it into `$A900` (`43264`). Send over `build/ldhx.hex`. Note that this first loader script is slow, and has only been proven to work consistently through [`Tera Term`](https://tera-term.en.softonic.com/) with a 50ms delay between characters. It will only be used to load the faster loader. When it is complete, an assembly-language version of essentially this same application will be loaded, and you can save it for easier re-use now with `savem "ldhx",43264,43674,43264`. Before saving, you'll want to delete the original `loadhx.do` file to make some room.
+If you have a serial connection established with a PC running an application that can send ascii files, this repository includes a two-step process to transfer the campaign binary to it. For the first step, run `clear 256, 43264`, as we'll be using some higher memory than the campaign itself. Transfer the `loadhx.ba` BASIC program under `utils` to your machine and start it up. It will await an intel hex format file and begin poking it into `$A900` (`43264`). Send over `build/trs80_m100/ldhx.hex`. Note that this first loader script is slow, and has only been proven to work consistently through [`Tera Term`](https://tera-term.en.softonic.com/) with a 50ms delay between characters. It will only be used to load the faster loader. When it is complete, an assembly-language version of essentially this same application will be loaded, and you can save it for easier re-use now with `savem "ldhx",43264,43674,43264`. Before saving, you'll want to delete the original `loadhx.do` file to make some room.
 
 Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$AB00` (`43776`). This loader is much faster, and has proven stable with only a 5ms delay between characters. Once it's done loading, start it up with `call 43776`.
 
-### Virtual-T
+> **Note:**: Both loaders hardcode the serial port `STAT` value to `88N1E`. Ensure your serial terminal is configured appropriately.
+
+#### Virtual-T
 
 Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear 256,43776`. Then, using the `Memory Editor` tool, load the output `.hex` file starting at address `$AB00`. Once that is done, you can run it with `call 43776`.
+
+### ZX Spectrum
+
+If configured to build for the Spectrum, a `tap` file will be available at `build/zx_spectrum/test_campaign.tap`. You can load it like any other tape with `LOAD ""`. This has so far only been verified via the [`Fuze`](https://fuse-emulator.sourceforge.net/) emulator set to the `Spectrum 48k` ROM, and has not been verified on physical hardware.
 
 ## Gameplay
 
