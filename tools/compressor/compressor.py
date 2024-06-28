@@ -7,8 +7,9 @@ def sequence_label(id):
 
 class Compressor:
     """Compresses blocks of text"""
-    def __init__(self, input_dict):
-        self.line_table = LineTable(input_dict)
+    def __init__(self, input_dict, platform):
+        self.platform = platform
+        self.line_table = LineTable(input_dict, platform)
 
     def compress(self):
         final_sequence_table = {}

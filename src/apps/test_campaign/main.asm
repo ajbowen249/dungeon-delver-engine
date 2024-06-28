@@ -7,7 +7,6 @@
     call main
     ret
 
-#include "../../../build/generated/test_campaign/compressed_text.asm"
 #include "../../../build/platform_api.asm"
 #include "../../engine/dde.asm"
 #include "./global_data.asm"
@@ -16,6 +15,8 @@
 #include "./screens/screen_table.asm"
 #include "./encounters/encounter_table.asm"
 #include "party_wizard/party_wizard.asm"
+
+    INCLUDE_GENERATED_TEXT
 
 main:
     call seed_random
