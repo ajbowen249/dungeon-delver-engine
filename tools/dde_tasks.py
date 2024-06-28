@@ -8,6 +8,7 @@ GENERATED_DISCLAIMER = '; File is auto-generated. Changes will not be saved.\n'
 PLATFORM_TRS80_M100 = 'trs80_m100'
 
 ALL_PLATFORMS = [ PLATFORM_TRS80_M100 ]
+DEFAULT_PLATFORMS = [ PLATFORM_TRS80_M100 ]
 
 DEFAULT_ENTRY_POINTS = {
     PLATFORM_TRS80_M100: 0xAB00,
@@ -18,11 +19,13 @@ PLATFORM_IDS = {
 }
 
 def dde_options(ctx):
-    all_platforms_str = ','.join(ALL_PLATFORMS)
+    to_str = lambda list: ','.join(list)
+    all_platforms_str = to_str(ALL_PLATFORMS)
+    default_platforms_str = to_str(DEFAULT_PLATFORMS)
     ctx.add_option(
         '--platforms',
         action='store',
-        default=all_platforms_str,
+        default=default_platforms_str,
         help=f'List of platforms ({all_platforms_str})'
     )
 
@@ -39,22 +42,45 @@ def configure_dde(ctx, dde_root):
     ctx.env.TEXT_COMPRESSOR = dde_root.find_node('tools/compressor').abspath()
     ctx.env.ENGINE_TEXT = dde_root.find_node('tools/compressor/engine_text.json').abspath()
 
+class CompressText(Task):
+    ext_out = ['.asm']
+    after = [ 'GenerateMain' ]
+    before = [ 'GenerateMain', 'Assemble' ]
+    def run(self):
+        all_inputs = [self.env.ENGINE_TEXT]
+        all_inputs.extend([x.abspath() for x in self.inputs])
+
+        args = [
+            self.env.PYTHON[0],
+            self.env.TEXT_COMPRESSOR,
+            '-p',
+            self.platform,
+            '-i',
+        ]
+
+        args.extend(all_inputs)
+        args.extend([
+            '-o',
+            self.outputs[0].abspath(),
+        ])
+
+        return self.exec_command(args)
+
 class GenerateMain(Task):
     ext_out = ['.asm']
-    before = [ 'CompressText' ]
+    before = [ 'Assemble' ]
+    after = ['CompressText']
     def run(self):
         with open(self.outputs[0].abspath(), 'w') as file:
             file.write(GENERATED_DISCLAIMER)
             file.write(f'.org {self.entry_point}\n')
-            relative_path = self.inputs[0].path_from(self.outputs[0].parent).replace('\\', '/')
+            main_path = self.inputs[0].path_from(self.outputs[0].parent).replace('\\', '/')
+            compressed_text_path = self.compressed_text.path_from(self.inputs[0].parent).replace('\\', '/')
             file.write(f'#define dde_platform {PLATFORM_IDS[self.platform]}\n')
-            file.write(f'#include "{relative_path}"\n')
-
-class CompressText(Task):
-    run_str = '${PYTHON} ${TEXT_COMPRESSOR} -i ${ENGINE_TEXT} ${SRC} -o ${TGT}'
-    ext_out = ['.asm']
-    after = [ 'GenerateMain' ]
-    before = [ 'Assemble' ]
+            file.write('.macro INCLUDE_GENERATED_TEXT\n')
+            file.write(f'#include "{compressed_text_path}"\n')
+            file.write('.endm\n')
+            file.write(f'#include "{main_path}"\n')
 
 class Assemble(Task):
     after = [ 'GenerateMain', 'CompressText' ]
@@ -107,23 +133,24 @@ def dde_game(self):
     platform_generated = generated_folder.make_node(self.platform)
     platform_generated.mkdir()
 
-    outer_main_asm = platform_generated.make_node('outer_main.asm')
-
-    self.create_task(
-        'GenerateMain',
-        self.main_asm,
-        outer_main_asm,
-        entry_point = self.entry_point,
-        platform = self.platform,
-    )
-
-    compressed_text = generated_folder.make_node('compressed_text.asm')
+    compressed_text = platform_generated.make_node('compressed_text.asm')
 
     json_files = self.text_json
     self.create_task(
         'CompressText',
         json_files,
         compressed_text,
+        platform = self.platform,
+    )
+
+    outer_main_asm = platform_generated.make_node('outer_main.asm')
+    self.create_task(
+        'GenerateMain',
+        self.main_asm,
+        outer_main_asm,
+        entry_point = self.entry_point,
+        platform = self.platform,
+        compressed_text = compressed_text,
     )
 
     asm_inputs = [outer_main_asm, compressed_text]

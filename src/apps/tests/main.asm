@@ -1,6 +1,6 @@
 ; Unit tests
 
-#include "../../../build/generated/tests/compressed_text.asm"
+    INCLUDE_GENERATED_TEXT
 #include "../../../build/platform_api.asm"
 #include "../../engine/dde.asm"
 

@@ -87,14 +87,29 @@ class Sequence:
     saved_bytes = 0
     score = 0
 
+KEY_SEPARATOR = ":"
+
 class LineTable:
     """Tracks the state text that needs to be put into the table."""
 
-    def __init__(self, from_json):
+    def __init__(self, from_json, platform):
+        self.platform = platform
         self.blocks = {}
 
-        for key in from_json:
-            self.blocks[key] = Block(key, from_json[key])
+        for raw_key in from_json:
+            if KEY_SEPARATOR in raw_key:
+                parts = raw_key.split(KEY_SEPARATOR)
+                if len(parts) != 2:
+                    raise Exception(f'Unexpected key format: "{raw_key}"')
+
+                if parts[0] != self.platform:
+                    continue
+
+                key = parts[1]
+            else:
+                key = raw_key
+
+            self.blocks[key] = Block(key, from_json[raw_key])
 
     def replace_string(self, text, id):
         """Within all lines of all blocks, replace instances of text with a reference to id"""
