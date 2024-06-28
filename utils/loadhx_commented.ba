@@ -1,8 +1,9 @@
 10 'allows loading of co files from the serial port in hex format
+11 ' TODO: Send loadhx.do to the machine instead. Let's auto-generate that in the future.
 20 'com stats
 21 cs$ = "COM:88N1E"
 22 'start address
-23 sa% = -20480
+23 sa% = -22272
 
 50 ad% = sa%
 60 open cs$ for input as 1
@@ -25,10 +26,10 @@
 201   print ".";
 210   poke ad%, va%
 220   ad% = ad% + 1
-230   sum% = sum% + va%
-235   if sum% > 255 then sum% = sum% - 255
+230   'sum% = sum% + va%
+235   'if sum% > 255 then sum% = sum% - 255
 240 next b%
-250 gosub 1000 'checksum
+250 gosub 1000 'read checksum bytes
 259 'checksum not yet working. Gotta take 2's compliment.
 260 'if va% <> sum% then print "chk warning ";va%;"";sum%
 270 goto 100

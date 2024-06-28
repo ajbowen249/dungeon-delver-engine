@@ -33,20 +33,20 @@ The build process creates raw binaries in two formats for the "Test Campaign," w
 
 With help from [majick](https://github.com/majick), the build script produces a `.co`-formatted file binary file. This file is too large to work in the Model 100's built-in storage, but can be loaded up through the cassette interface. This is currently only confirmed working on [CloudT](https://bitchin100.com/CloudT/#!/M100Display), but should, theoretically, work on a stock Model 100 when loaded through the cassette interface as well. To run it on CloudT:
 
-1. Enter BASIC, and run `clear 256,45568`
+1. Enter BASIC, and run `clear 256,43776`
 2. Click "Choose File," and select `test_campaign.co`
 3. Run `cloadm`
-4. When it's done loading, run `call 45568`
+4. When it's done loading, run `call 43776`
 
 ### Physical Model 100 With Just a Serial Cable
 
-If you have a serial connection established with a PC running an application that can send ascii files, this repository includes a two-step process to transfer the campaign binary to it. For the first step, run `clear 256, 45056`, as we'll be using some higher memory than the campaign itself. Transfer the `loadhx.ba` BASIC program under `utils` to your machine and start it up. It will await an intel hex format file and begin poking it into `$B000` (`45056`). Send over `build/ldhx.hex`. Note that this first loader script is slow, and has only been proven to work consistently through [`Tera Term`](https://tera-term.en.softonic.com/) with a 50ms delay between characters. It will only be used to load the faster loader. When it is complete, an assembly-language version of essentially this same application will be loaded, and you can save it for easier re-use now with `savem "ldhx",45056,45568,45056`. Once this is complete, you'll want to delete the original `loadhx.do` file to make some room.
+If you have a serial connection established with a PC running an application that can send ascii files, this repository includes a two-step process to transfer the campaign binary to it. For the first step, run `clear 256, 43264`, as we'll be using some higher memory than the campaign itself. Transfer the `loadhx.ba` BASIC program under `utils` to your machine and start it up. It will await an intel hex format file and begin poking it into `$A900` (`43264`). Send over `build/ldhx.hex`. Note that this first loader script is slow, and has only been proven to work consistently through [`Tera Term`](https://tera-term.en.softonic.com/) with a 50ms delay between characters. It will only be used to load the faster loader. When it is complete, an assembly-language version of essentially this same application will be loaded, and you can save it for easier re-use now with `savem "ldhx",43264,43674,43264`. Before saving, you'll want to delete the original `loadhx.do` file to make some room.
 
-Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$B200` (`45568`). This loader is much faster, and has proven stable with only a 5ms delay between characters. Once it's done loading, start it up with `call 45586`.
+Once the fast loader is loaded, running it will once again wait for an intel hex format file, only now it will begin inserting at `$AB00` (`43776`). This loader is much faster, and has proven stable with only a 5ms delay between characters. Once it's done loading, start it up with `call 43776`.
 
 ### Virtual-T
 
-Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear 256,45568`. Then, using the `Memory Editor` tool, load the output `.hex` file starting at address `$B200`. Once that is done, you can run it with `call 45568`.
+Using the [Virtual-T](https://sourceforge.net/projects/virtualt/) emulator, first run `clear 256,43776`. Then, using the `Memory Editor` tool, load the output `.hex` file starting at address `$AB00`. Once that is done, you can run it with `call 43776`.
 
 ## Gameplay
 

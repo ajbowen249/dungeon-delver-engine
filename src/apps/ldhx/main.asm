@@ -4,7 +4,7 @@
 
     call main
 
-#define start_address $B200
+#define start_address $AB00
 #include "../../engine/constants.asm"
 #include "./old_rom_api.asm"
 #include "../../engine/util.asm"
