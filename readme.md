@@ -91,6 +91,10 @@ DDE follows a typical RPG setup with screens for exploration, combat, and dialog
     - Normal melee rules apply when attacker and defender are 1 line apart (both in the "front"). If both players are in the back line, they are out of melee range. If one player is in the back and the other the front, the attacker has disadvantage. (If there was a hard range cutoff, then ranged characters could always beat melee-only combatants by never going up front in this system.)
     - Ranged combat currently just assumes players are in the spell's normal range.
 
+## Controls
+
+On all platforms, both arrow keys and `WASD` are supported for movement and navigating menus. `ENTER` is used to select menu options and interact with interactables. On the Model 100, the `ESC` key can be used to bring up the menu and cancel combat attacks and casting. That key is `DELETE` (backspace) for the ZX Spectrum.
+
 ## Architecture
 
 The `E` in `DDE` stands for `Engine` because it is structured as a set of modules designed to present gameplay components to progress through campaigns designed for SRD 5.1 (though many features will be left unimplemented). This project's top-level entry points are under `src/apps`, and they include `src/engine/dde.asm`. This means everything within `DDE` itself could end up located anywhere once assembled, depending on the campaign. Currently, the two apps are the unit tests and a test campaign. This may expand to include a faster version of the hex loader in assembly, or a more-substantial example campaign.
