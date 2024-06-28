@@ -11,6 +11,7 @@ def configure(ctx):
 
 def build(bld):
     build_dde_game(bld, bld.path.find_node('src/apps/test_campaign'), is_dde_inner = True)
+
     build_dde_game(
         bld,
         bld.path.find_node('src/apps/tests'),
@@ -24,7 +25,7 @@ def build(bld):
         bld,
         bld.path.find_node('src/apps/ldhx'),
         build_m100_co = False,
-        entry_point_trs80_m100 = 0xB000,
+        entry_point_trs80_m100 = 0xA900,
         platforms = [ PLATFORM_TRS80_M100 ],
         is_dde_inner = True,
     )
