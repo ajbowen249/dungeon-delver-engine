@@ -122,6 +122,9 @@ Since each screen does so much, you may generally expect all registers to be des
 ### Screen Controller
 The subroutines in `screen_controller` allow for simple setup of the exploration/combat loop. By registering "room" and "encounter" tables and the player party, one can create subroutines that wrap the `exploration_ui` and `combat_ui`. The combat UI will always exit to the last room, and the exploration UI can exit to either another exploration wrapper or combat wrapper by setting `last_screen_exit_code` and `last_screen_exit_argument` before exiting. See `apps/test_campaign/screens` for examples.
 
+### Screen File Generation
+The screen table and boilerplate for screens and basic interactions is generated from JSON via `tools/screen_generator`. Check `apps/test_campaign/dde_project.json` for examples. Each screen is listed in the `dde_project.json` file, along with its background data and "interactables." An assembly file is generated for each one, and you can provide an optional custom assembly file under `screens/<name>.asm` for any extra needed functionality. Everything in the additional file will be with a `.local` scope to the generated file.
+
 ### Text Compression
 A simple string compression algorithm allows for apps to store their strings in a JSON file and run it through `tools/compressor` to generate an assembly file where all strings are declared, but up to 126 of the most-common sequences of characters will be extracted to the top, and a single-byte reference to each sequence in the lookup table is used as a byte in each original string with its MSB flagged. To print them, use `print_compressed_string`, `PRINT_COMPRESSED_AT_LOCATION`, or `BLOCK_PRINT`. Note that compressible text may not contain characters above value `126` (`~`), though that range does include most typeable, non-graphical characters. Make sure to include the generated output file somewhere in your source code.
 
