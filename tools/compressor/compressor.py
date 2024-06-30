@@ -1,4 +1,4 @@
-from line_table import LineTable, Reference
+from tools.compressor.line_table import LineTable, Reference
 
 MAX_SEQUENCE_ID = 126 # Saving ID 127 for possible flag to second-byte ID.
 

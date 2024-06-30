@@ -1,0 +1,2 @@
+PLATFORM_TRS80_M100 = 'trs80_m100'
+PLATFORM_ZX_SPECTRUM = 'zx_spectrum'

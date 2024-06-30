@@ -2,10 +2,11 @@ import json
 import argparse
 import os
 import pathlib
+import sys
 
-# IMPROVE: Ugh. de-duplicate
-PLATFORM_TRS80_M100 = 'trs80_m100'
-PLATFORM_ZX_SPECTRUM = 'zx_spectrum'
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+from tools.constants import PLATFORM_TRS80_M100, PLATFORM_ZX_SPECTRUM
 
 SCREEN_TITLE_MAX_LENGTH = 20
 SCREEN_TITLE_BYTES = SCREEN_TITLE_MAX_LENGTH + 1
