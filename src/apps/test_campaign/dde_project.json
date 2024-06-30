@@ -1,0 +1,109 @@
+{
+    "name": "test_campaign",
+    "menu_label": "main_menu",
+    "player_party_label": "player_party",
+    "party_size_label": "party_size",
+    "screens": [
+        {
+            "name": "screen_1",
+            "title": "Test Room",
+            "background": [
+                "┌──────────────────┐",
+                "│    왓              ",
+                "│           ∩      │",
+                "│                  │",
+                "│  ┌┬┐             │",
+                "│  └┼┤             │",
+                "│∩∩ ├┘       왓     │",
+                "└───┴──────────────┘"
+            ],
+            "start_location": {
+                "col": 2,
+                "row": 2
+            },
+            "interactables": [
+                {
+                    "label": "chest_1",
+                    "type": "in_chest",
+                    "flags": "iflags_normal",
+                    "prompt_label": "chest_prompt",
+                    "location": {
+                        "col": 13,
+                        "row": 3
+                    },
+                    "action": {
+                        "type": "call",
+                        "call_label": "dialog_skill_demo"
+                    }
+                },
+                {
+                    "label": "door_1",
+                    "type": "in_door",
+                    "flags": "iflags_door",
+                    "location": {
+                        "col": 20,
+                        "row": 2
+                    },
+                    "action": {
+                        "type": "exit",
+                        "exit_code": "ec_door",
+                        "exit_id": "screen_id_screen_2",
+                        "store_location": {
+                            "col": 19,
+                            "row": 2
+                        }
+                    }
+                },
+                {
+                    "label": "test_npc",
+                    "type": "in_npc",
+                    "flags": "iflags_normal",
+                    "prompt_label": "test_npc_prompt",
+                    "location": {
+                        "col": 6,
+                        "row": 2
+                    },
+                    "action": {
+                        "type": "exit",
+                        "exit_code": "ec_encounter",
+                        "exit_id": "encounter_id_badger"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "screen_2",
+            "title": "Test Room 2",
+            "background": [
+                "▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜",
+                "     ▚▞     ↕      ▐",
+                "▌               ▓  ▐",
+                "▌         ▗▖       ▐",
+                "▌         ▝▘   ◇   ▐",
+                "▌          €     ◢◣▐",
+                "▌      █  ⌂✝ㅑ£¶  ◥◤▐",
+                "▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟"
+            ],
+            "start_location": {
+                "col": 2,
+                "row": 2
+            },
+            "interactables": [
+                {
+                    "label": "door_1",
+                    "type": "in_door",
+                    "flags": "iflags_door",
+                    "location": {
+                        "col": 1,
+                        "row": 2
+                    },
+                    "action": {
+                        "type": "exit",
+                        "exit_code": "ec_door",
+                        "exit_id": "screen_id_screen_1"
+                    }
+                }
+            ]
+        }
+    ]
+}

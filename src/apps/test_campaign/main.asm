@@ -12,7 +12,7 @@
 #include "./global_data.asm"
 #include "./main_menu.asm"
 #include "./dialog/dialog.asm"
-#include "./screens/screen_table.asm"
+    INCLUDE_SCREEN_TABLE
 #include "./encounters/encounter_table.asm"
 #include "party_wizard/party_wizard.asm"
 

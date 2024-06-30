@@ -35,3 +35,5 @@ return:
     ld hl, &STRING_ADDR
     call print_compressed_string
 .endm
+
+empty_str: .db 0
