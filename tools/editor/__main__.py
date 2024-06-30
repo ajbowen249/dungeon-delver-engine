@@ -1,5 +1,4 @@
 import sys
-import json
 import argparse
 import os
 
@@ -16,9 +15,8 @@ def process_args():
         '-i',
         '--input',
         dest='input',
-        type=argparse.FileType('r', encoding='utf-8'),
-        help='JSON Input file',
-        required=True
+        type=str,
+        help='JSON Input file'
     )
 
     result = parser.parse_args()
@@ -27,9 +25,7 @@ def process_args():
 
 def main():
     args = process_args()
-    dde_project = json.load(args.input)
-
-    editor = Editor(dde_project)
+    editor = Editor(args.input)
     editor.main_loop()
 
 if __name__ == '__main__':
