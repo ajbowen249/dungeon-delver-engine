@@ -49,9 +49,10 @@ def configure_dde(ctx, dde_root):
     ctx.env.TEXT_COMPRESSOR = dde_root.find_node('tools/compressor').abspath()
     ctx.env.ENGINE_TEXT = dde_root.find_node('tools/compressor/engine_text.json').abspath()
 
+    ctx.env.SCREEN_GENERATOR = dde_root.find_node('tools/screen_generator').abspath()
+
 class CompressText(Task):
     ext_out = ['.asm']
-    after = [ 'GenerateMain' ]
     before = [ 'GenerateMain', 'Assemble' ]
     def run(self):
         all_inputs = [self.env.ENGINE_TEXT]
@@ -73,10 +74,25 @@ class CompressText(Task):
 
         return self.exec_command(args)
 
+class GenerateScreens(Task):
+    ext_out = ['.asm']
+    before = [ 'GenerateMain', 'Assemble' ]
+    def run(self):
+        return self.exec_command([
+            self.env.PYTHON[0],
+            self.env.SCREEN_GENERATOR,
+            '-p',
+            self.platform,
+            '-i',
+            self.inputs[0].abspath(),
+            '-o',
+            self.outputs[0].abspath(),
+        ])
+
 class GenerateMain(Task):
     ext_out = ['.asm']
     before = [ 'Assemble' ]
-    after = ['CompressText']
+    after = ['CompressText', 'GenerateScreens']
     def run(self):
         with open(self.outputs[0].abspath(), 'w') as file:
             file.write(GENERATED_DISCLAIMER)
@@ -84,6 +100,7 @@ class GenerateMain(Task):
             main_path = self.inputs[0].path_from(self.outputs[0].parent).replace('\\', '/')
             compressed_text_path = self.compressed_text.path_from(self.inputs[0].parent).replace('\\', '/')
             file.write(f'#define dde_platform {PLATFORM_IDS[self.platform]}\n')
+            file.write(f'#include "./screens.asm"\n')
             file.write('.macro INCLUDE_GENERATED_TEXT\n')
             file.write(f'#include "{compressed_text_path}"\n')
             file.write('.endm\n')
@@ -153,7 +170,7 @@ def generate_platform_include_file(self):
             platform_api.write('#endif\n\n')
 
 @TaskGen.feature('dde_game')
-@TaskGen.after('compress_text')
+@TaskGen.after('generate_platform_include_file')
 def dde_game(self):
     cwd = self.get_cwd()
 
@@ -171,6 +188,13 @@ def dde_game(self):
         platform = self.platform,
     )
 
+    self.create_task(
+        'GenerateScreens',
+        self.project_json,
+        cwd.find_node('generated'),
+        platform = self.platform,
+    )
+
     outer_main_asm = platform_generated.make_node('outer_main.asm')
     self.create_task(
         'GenerateMain',
@@ -183,6 +207,8 @@ def dde_game(self):
 
     asm_inputs = [outer_main_asm, compressed_text]
     asm_inputs.extend(self.all_asm)
+    asm_inputs.extend(cwd.ant_glob('screens/**/*.asm'))
+    asm_inputs.append(self.project_json)
 
     self.create_task(
         'Assemble',
@@ -242,6 +268,7 @@ def build_dde_game(bld, path, **kwargs):
             main_asm = path.find_node('main.asm'),
             text_json = kwargs.get('text_json', []),
             all_asm = bld.path.ant_glob('**/*.asm', excl=['build']),
+            project_json = path.find_node('dde_project.json'),
             out_hex = platform_node.make_node(f'{name}.hex'),
             out_obj = platform_node.make_node(f'{name}.obj'),
             out_co = platform_node.make_node(f'{name}.co'),
