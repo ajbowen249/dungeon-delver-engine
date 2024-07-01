@@ -101,9 +101,18 @@ class Editor:
     def edit_screen(self, index):
         if self.tile_palette is None:
             self.tile_palette = TilePalette(self.root, lambda c: self.on_tile_palette_click(c))
+        else:
+            self.tile_palette.focus_set()
 
         def set_screen(s, i):
             self.dde_project['screens'][i] = s
+
+        self.open_screen_editors = [ed for ed in self.open_screen_editors if not ed.was_destroyed]
+
+        for existing_editor in self.open_screen_editors:
+            if existing_editor.screen_index == index:
+                existing_editor.focus_set()
+                return
 
         self.open_screen_editors.append(ScreenEditor(
             self.dde_project,
@@ -119,7 +128,7 @@ class Editor:
             self.tile_palette = None
 
         for editor in self.open_screen_editors:
-            editor.close()
+            editor.destroy()
 
         self.open_screen_editors = []
 

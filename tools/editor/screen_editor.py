@@ -8,40 +8,33 @@ from tools.editor.common import get_app_icon
 
 FONT = ('Arial', 15)
 
-class ScreenEditor:
+class ScreenEditor(Toplevel):
     def __init__(self, dde_project, screen_index, tk_root, save_callback, focus_callback):
+        super().__init__(tk_root)
         self.dde_project = copy.deepcopy(dde_project)
         self.screen_index = screen_index
         self.tk_root = tk_root
         self.save_callback = save_callback
         self.focus_callback = focus_callback
 
-        self.window = None
+        self.was_destroyed = False
+        self.protocol("WM_DELETE_WINDOW", lambda: self.close())
+
         self.background_cells = []
         self.selected_cell = None
         self.react_to_cell_entry = True
 
-        self.setup_window()
-
-    def close(self):
-        self.window.destroy()
-
-    def setup_window(self):
-        if self.window is not None:
-            self.window.destroy()
-
-        self.window = Toplevel(self.tk_root)
-        self.window.wm_iconphoto(False, get_app_icon())
+        self.wm_iconphoto(False, get_app_icon())
         screen = self.dde_project['screens'][self.screen_index]
-        self.window.title(screen['name'])
+        self.title(screen['name'])
 
-        self.window.bind("<FocusIn>", lambda e: self.on_focus())
+        self.bind("<FocusIn>", lambda e: self.on_focus())
 
         if screen.get('is_custom', False):
-            custom_label = Label(self.window, text=f'{screen["name"]} is a custom screen')
+            custom_label = Label(self, text=f'{screen["name"]} is a custom screen')
             custom_label.pack(side='top')
         else:
-            top_bar = Frame(self.window)
+            top_bar = Frame(self)
             top_bar.pack(side='top', fill='x')
             props_frame = Frame(top_bar)
 
@@ -67,7 +60,7 @@ class ScreenEditor:
 
             props_frame.pack(side='left', anchor='n')
 
-            middle_bar = Frame(self.window)
+            middle_bar = Frame(self)
             middle_bar.pack(side='top', fill='x')
 
             background_grid = Frame(middle_bar)
@@ -107,11 +100,16 @@ class ScreenEditor:
 
             cell_props_frame.pack(side='right', anchor='n')
 
-        bottom_frame = Frame(self.window)
+        bottom_frame = Frame(self)
         bottom_frame.pack(side='bottom', fill='x')
 
         apply_button = Button(bottom_frame, text='Apply', font=FONT, command=lambda: self.save())
         apply_button.pack(side='right')
+
+    def close(self):
+        if not self.was_destroyed:
+            self.was_destroyed = True
+            self.destroy()
 
     def save(self):
         # TODO: Move to observables; we have a deep copy of the project here.
