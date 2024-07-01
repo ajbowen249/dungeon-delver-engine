@@ -12,11 +12,10 @@ def process_args():
         description='Graphical editor for DDE Games')
 
     parser.add_argument(
-        '-i',
-        '--input',
         dest='input',
         type=str,
-        help='JSON Input file'
+        help='JSON Input file',
+        nargs='?'
     )
 
     result = parser.parse_args()

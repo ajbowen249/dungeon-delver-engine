@@ -128,7 +128,7 @@ The screen table and boilerplate for screens and basic interactions is generated
 ### Editor
 Screen backgrounds (and eventually more) can be edited via the Python application at `tools/editor`. For example:
 ```shell
-python tools/editor -i ./src/apps/test_campaign/dde_project.json
+python tools/editor ./src/apps/test_campaign/dde_project.json
 ```
 
 ![demo](/gh_media/editor_demo_1.gif)
