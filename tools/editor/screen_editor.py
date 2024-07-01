@@ -38,12 +38,11 @@ class ScreenEditor(Toplevel):
             top_bar.pack(side='top', fill='x')
             props_frame = Frame(top_bar)
 
-            def add_props_box(label, initial_text, row):
+            def add_props_box(label, var, row):
                 label = Label(props_frame, text=label, font=FONT)
                 label.grid(column=0, row=row)
 
-                text = Entry(props_frame, font=FONT)
-                text.insert(0, initial_text)
+                text = Entry(props_frame, font=FONT, textvariable=var)
                 text.grid(column=1, row=row)
 
                 return text
@@ -54,9 +53,23 @@ class ScreenEditor(Toplevel):
             text = Label(props_frame, text=screen['name'], font=FONT)
             text.grid(column=1, row=0)
 
-            self.title_box = add_props_box('Title', screen['title'], 1)
-            self.start_x_box = add_props_box('Start X', str(screen['start_location']['col']), 2)
-            self.start_y_box = add_props_box('Start Y', str(screen['start_location']['row']), 3)
+            def bind_prop(prop, source, name):
+                def set_prop():
+                    source[name] = prop.get()
+                prop.trace_add('write', lambda v, i, m: set_prop())
+
+            self.title_var = StringVar(props_frame, screen['title'])
+            bind_prop(self.title_var, screen, 'title')
+            add_props_box('Title', self.title_var, 1)
+
+            start_location = screen['start_location']
+            self.start_x_var = StringVar(props_frame, str(start_location['col']))
+            bind_prop(self.start_x_var, start_location, 'col')
+            add_props_box('Start X', self.start_x_var, 2)
+
+            self.start_y_var = StringVar(props_frame, str(start_location['row']))
+            bind_prop(self.start_y_var, start_location, 'row')
+            add_props_box('Start Y', self.start_y_var, 3)
 
             props_frame.pack(side='left', anchor='n')
 
@@ -92,7 +105,7 @@ class ScreenEditor(Toplevel):
 
             Label(cell_props_frame, text='Value ', font=FONT).grid(row=1, column=0)
 
-            self.selected_cell_value = StringVar()
+            self.selected_cell_value = StringVar(cell_props_frame)
             self.selected_cell_value.trace_add('write', lambda v, i, m: self.on_cell_value_changed())
             Entry(cell_props_frame, font=FONT, textvariable=self.selected_cell_value).grid(row=1, column=1)
 
@@ -112,11 +125,6 @@ class ScreenEditor(Toplevel):
             self.destroy()
 
     def save(self):
-        # TODO: Move to observables; we have a deep copy of the project here.
-        self.dde_project['screens'][self.screen_index]['title'] = self.title_box.get()
-        self.dde_project['screens'][self.screen_index]['start_location']['col'] = int(self.start_x_box.get())
-        self.dde_project['screens'][self.screen_index]['start_location']['row'] = int(self.start_y_box.get())
-
         self.save_callback(self.dde_project['screens'][self.screen_index], self.screen_index)
 
     def on_cell_clicked(self, cell, is_selected):
