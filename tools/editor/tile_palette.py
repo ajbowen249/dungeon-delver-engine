@@ -1,24 +1,27 @@
-import copy
-
 from tkinter import *
 
 from tools.constants import TILE_CHARACTERS
-from tools.editor.background_cell import CELL_HEIGHT, BackgroundCell
+from tools.editor.common import get_app_icon
 
 ROWS = 8
 
-class TilePalette:
+class TilePalette(Toplevel):
     def __init__(self, root, click_callback):
+        super().__init__(root)
         self.click_callback = click_callback
-        self.frame = Frame(root)
+        self.title('Tile Palette')
+        self.wm_iconphoto(False, get_app_icon())
+        self.protocol("WM_DELETE_WINDOW", lambda: None)
+        self.resizable(width=False, height=False)
 
         for i in range(0, len(TILE_CHARACTERS)):
             character = TILE_CHARACTERS[i]
             Button(
-                self.frame,
+                self,
                 text=character,
                 font=('Arial', 12),
                 command=lambda ch=character: click_callback(ch)
             ).grid(column=int(i / ROWS), row=i % ROWS)
 
-        self.frame.pack(side='right')
+    def close(self):
+        self.destroy()
