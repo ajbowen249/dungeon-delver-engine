@@ -6,12 +6,7 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from tools.constants import PLATFORM_TRS80_M100, PLATFORM_ZX_SPECTRUM
-
-SCREEN_TITLE_MAX_LENGTH = 20
-SCREEN_TITLE_BYTES = SCREEN_TITLE_MAX_LENGTH + 1
-MAX_INTERACTABLES = 10
-BACKGROUND_ROWS = 8
+from tools.constants import PLATFORM_TRS80_M100, PLATFORM_ZX_SPECTRUM, SCREEN_TITLE_BYTES, MAX_INTERACTABLES, BACKGROUND_COLS, BACKGROUND_ROWS
 
 def foreach(list, func):
     for item in list:
@@ -49,7 +44,7 @@ def validate_screen(screen):
     for i in range(0, len(background)):
         line = background[i]
         length = len(line)
-        if length != 20:
+        if length != BACKGROUND_COLS:
             raise Exception(f'Background line {i} is wrong length. len("{line}") == {length}')
 
 def main():
