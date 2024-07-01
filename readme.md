@@ -131,7 +131,7 @@ Screen backgrounds (and eventually more) can be edited via the Python applicatio
 python tools/editor ./src/apps/test_campaign/dde_project.json
 ```
 
-![demo](/gh_media/editor_demo_1.gif)
+![demo](/gh_media/editor_demo_2.gif)
 
 
 ### Text Compression
