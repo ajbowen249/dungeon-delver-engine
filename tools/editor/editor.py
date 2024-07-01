@@ -6,6 +6,7 @@ from tkinter import filedialog, messagebox, simpledialog
 
 from tools.editor.screen_editor import ScreenEditor
 from tools.editor.common import get_app_icon
+from tools.editor.tile_palette import TilePalette
 
 VALID_LABEL_CHARS = 'abcdefghijklmnopqrstuvwxyz_0123456789'
 
@@ -14,6 +15,9 @@ class Editor:
         self.path = path
         self.dde_project = None
         self.open_screen_editors = []
+
+        self.tile_palette = None
+        self.focused_screen_editor = None
 
         self.root = Tk()
         self.root.wm_iconphoto(False, get_app_icon())
@@ -95,6 +99,9 @@ class Editor:
             messagebox.showerror('Error', str(e))
 
     def edit_screen(self, index):
+        if self.tile_palette is None:
+            self.tile_palette = TilePalette(self.root, lambda c: self.on_tile_palette_click(c))
+
         def set_screen(s, i):
             self.dde_project['screens'][i] = s
 
@@ -102,10 +109,15 @@ class Editor:
             self.dde_project,
             index,
             self.root,
-            set_screen
+            set_screen,
+            lambda e: self.set_focused_screen_editor(e)
         ))
 
     def close_all_open_windows(self):
+        if self.tile_palette is not None:
+            self.tile_palette.close()
+            self.tile_palette = None
+
         for editor in self.open_screen_editors:
             editor.close()
 
@@ -149,3 +161,11 @@ class Editor:
         self.set_menu_state()
         self.edit_screen(len(screens) - 1)
 
+    def set_focused_screen_editor(self, editor):
+        self.focused_screen_editor = editor
+
+    def on_tile_palette_click(self, character):
+        if self.focused_screen_editor is None:
+            return
+
+        self.focused_screen_editor.use_character_from_palette(character)

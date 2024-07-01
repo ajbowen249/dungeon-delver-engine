@@ -4,17 +4,17 @@ from tkinter import *
 
 from tools.constants import BACKGROUND_COLS, BACKGROUND_ROWS, TILE_CHARACTERS
 from tools.editor.background_cell import CELL_HEIGHT, BackgroundCell
-from tools.editor.tile_palette import TilePalette
 from tools.editor.common import get_app_icon
 
 FONT = ('Arial', 15)
 
 class ScreenEditor:
-    def __init__(self, dde_project, screen_index, tk_root, save_callback):
+    def __init__(self, dde_project, screen_index, tk_root, save_callback, focus_callback):
         self.dde_project = copy.deepcopy(dde_project)
         self.screen_index = screen_index
         self.tk_root = tk_root
         self.save_callback = save_callback
+        self.focus_callback = focus_callback
 
         self.window = None
         self.background_cells = []
@@ -34,6 +34,8 @@ class ScreenEditor:
         self.window.wm_iconphoto(False, get_app_icon())
         screen = self.dde_project['screens'][self.screen_index]
         self.window.title(screen['name'])
+
+        self.window.bind("<FocusIn>", lambda e: self.on_focus())
 
         if screen.get('is_custom', False):
             custom_label = Label(self.window, text=f'{screen["name"]} is a custom screen')
@@ -88,8 +90,6 @@ class ScreenEditor:
                 self.background_cells.append(row_cells)
 
             background_grid.pack(side='left')
-
-            self.palette = TilePalette(top_bar, lambda c: self.use_character_from_palette(c))
 
             cell_props_frame = Frame(top_bar)
 
@@ -175,3 +175,6 @@ class ScreenEditor:
             return
 
         self.selected_cell.set_character_value(character)
+
+    def on_focus(self):
+        self.focus_callback(self)
