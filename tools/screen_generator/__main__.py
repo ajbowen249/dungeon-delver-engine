@@ -6,7 +6,8 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from tools.constants import PLATFORM_TRS80_M100, PLATFORM_ZX_SPECTRUM, SCREEN_TITLE_BYTES, MAX_INTERACTABLES, BACKGROUND_COLS, BACKGROUND_ROWS
+from tools.constants import PLATFORM_TRS80_M100, PLATFORM_ZX_SPECTRUM, SCREEN_TITLE_BYTES, MAX_INTERACTABLES
+from tools.dde_project import DDEProject
 
 def foreach(list, func):
     for item in list:
@@ -34,40 +35,26 @@ def process_args():
 
     return result
 
-def validate_screen(screen):
-    if screen.get('is_custom', False):
-        return
-
-    background = screen['background']
-    if len(background) != BACKGROUND_ROWS:
-        raise Exception(f'{screen["name"]} number of background lines ({len(background)})')
-    for i in range(0, len(background)):
-        line = background[i]
-        length = len(line)
-        if length != BACKGROUND_COLS:
-            raise Exception(f'Background line {i} is wrong length. len("{line}") == {length}')
-
 def main():
     args = process_args()
     all_generated_files = []
 
     with open(args.input, 'r', encoding='utf-8') as input_file:
-        project = json.loads(input_file.read())
+        project = DDEProject.from_dict(json.loads(input_file.read()))
         project_folder = pathlib.Path(args.input).parent
 
         out_root = pathlib.Path(args.output)
         out_root.mkdir(parents=True, exist_ok=True)
-        generated_folder = out_root.joinpath(project['name'], args.platform)
+        generated_folder = out_root.joinpath(project.name, args.platform)
         screens_path = generated_folder.joinpath('screens')
         screens_path.mkdir(parents=True, exist_ok=True)
 
-        for i in range(0, len(project['screens'])):
+        for i in range(0, len(project.screens)):
             screen_id = i + 1
-            screen = project['screens'][i]
-            validate_screen(screen)
-            name = screen["name"]
+            screen = project.screens[i]
+            name = screen.name
 
-            screen_file = screens_path.joinpath(screen['name'] + '.asm')
+            screen_file = screens_path.joinpath(screen.name + '.asm')
             all_generated_files.append(screen_file)
 
 
@@ -82,46 +69,46 @@ def main():
                     f'.local\n',
                 ])
 
-                if not screen.get('is_custom', False):
-                    title = screen["title"]
+                if not screen.is_custom:
+                    title = screen.title
                     write([
                         f'screen_data:\n',
                         f'screen_background:\n'
                     ])
 
-                    write([f'.asciz "{line}"\n' for line in screen['background']])
+                    write([f'.asciz "{line}"\n' for line in screen.background])
 
                     write([
                         f'screen_title: .asciz "{title}"\n',
                         f'.block {SCREEN_TITLE_BYTES - (len(title) + 1)}, 0\n',
 
-                        f'screen_start_x: .db {screen["start_location"]["col"]}\n',
-                        f'screen_start_y: .db {screen["start_location"]["row"]}\n',
+                        f'screen_start_x: .db {screen.start_location.col}\n',
+                        f'screen_start_y: .db {screen.start_location.row}\n',
 
                         f'{name}_interactables:\n'
                     ])
 
-                    interactables = screen['interactables']
+                    interactables = screen.interactables
 
                     for i in range(0, MAX_INTERACTABLES):
                         if i < len(interactables):
                             inter = interactables[i]
-                            loc = inter['location']
-                            write(f'    DEFINE_INTERACTABLE {inter["label"]}, {inter["type"]}, {inter["flags"]}, {loc["row"]}, {loc["col"]}\n')
+                            loc = inter.location
+                            write(f'    DEFINE_INTERACTABLE {inter.label}, {inter.type}, {inter.flags}, {loc.row}, {loc.col}\n')
                         else:
                             write(f'    DEFINE_INTERACTABLE blank_{i}, 0, iflags_normal, 0, 0\n')
 
                     write([
                         f'screen_interaction_prompt_callback_ptr: .dw get_interaction_prompt\n',
                         f'screen_interaction_callback_ptr: .dw on_interact\n',
-                        f'screen_menu_callback: .dw {project["menu_label"]}\n'
+                        f'screen_menu_callback: .dw {project.menu_label}\n'
                     ])
 
                     write([
                         f'{name}::\n',
-                        f'    call init_screen\n' if screen.get('init', False) else '',
-                        f'    ld hl, {project["player_party_label"]}\n',
-                        f'    ld a, ({project["party_size_label"]})\n',
+                        f'    call init_screen\n' if screen.init else '',
+                        f'    ld hl, {project.player_party_label}\n',
+                        f'    ld a, ({project.party_size_label})\n',
                         f'    ld bc, screen_data\n',
                         f'    call exploration_ui\n',
                         f'    ret\n'
@@ -131,12 +118,12 @@ def main():
                     write('get_interaction_prompt:\n')
                     for i in range(0, len(interactables)):
                         interactable = interactables[i]
-                        if interactable.get('prompt_label', '') == '':
+                        if interactable.prompt_label is None or interactable.prompt_label == '':
                             continue
 
                         write([
                             f'    cp a, {i}\n',
-                            f'    jp z, ret_label_{interactable["label"]}\n'
+                            f'    jp z, ret_label_{interactable.label}\n'
                         ])
 
                     write([
@@ -147,12 +134,12 @@ def main():
 
                     for i in range(0, len(interactables)):
                         interactable = interactables[i]
-                        prompt_label = interactable.get('prompt_label', '')
-                        if prompt_label == '':
+                        prompt_label = interactable.prompt_label
+                        if prompt_label is None or prompt_label == '':
                             continue
 
                         write([
-                            f'ret_label_{interactable["label"]}:\n',
+                            f'ret_label_{interactable.label}:\n',
                             f'    ld hl, {prompt_label}\n',
                             f'    ret\n'
                         ])
@@ -162,7 +149,7 @@ def main():
                         interactable = interactables[i]
                         write([
                             f'    cp a, {i}\n',
-                            f'    jp z, on_{interactable["label"]}\n'
+                            f'    jp z, on_{interactable.label}\n'
                         ])
                     write([
                         '    ret\n',
@@ -170,33 +157,33 @@ def main():
                     ])
 
                     for interactable in interactables:
-                        label = interactable["label"]
-                        action = interactable.get('action', None)
+                        label = interactable.label
+                        action = interactable.action
                         if action is None:
                             continue
 
                         write(f'on_{label}:\n')
-                        store_location = action.get('store_location', None)
+                        store_location = action.store_location
                         if store_location is not None:
                             write([
-                                f'    ld a, {store_location["col"]}\n',
+                                f'    ld a, {store_location.col}\n',
                                 f'    ld (screen_start_x), a\n',
-                                f'    ld a, {store_location["row"]}\n',
+                                f'    ld a, {store_location.row}\n',
                                 f'    ld (screen_start_y), a\n',
                             ])
 
-                        match action['type']:
+                        match action.type:
                             case 'exit':
-                                if action.get('hook_before', False):
+                                if action.hook_before:
                                     write(f'    call before_{label}\n')
 
                                 write([
-                                    f'    EXIT_EXPLORATION {action["exit_code"]}, {action["exit_id"]}\n',
+                                    f'    EXIT_EXPLORATION {action.exit_code}, {action.exit_id}\n',
                                     f'    ret\n'
                                 ])
                             case 'call':
                                 write([
-                                    f'    call {action["call_label"]}\n',
+                                    f'    call {action.call_label}\n',
                                     f'    ret\n'
                                 ])
 
@@ -221,8 +208,8 @@ def main():
             screens_table.write('\nscreen_table:\n')
             screens_table.write('.dw 0 ; reserve 0\n')
 
-            for screen in project['screens']:
-                screens_table.write(f'.dw {screen["name"]}\n')
+            for screen in project.screens:
+                screens_table.write(f'.dw {screen.name}\n')
 
         screens_root_file = generated_folder.joinpath('screens.asm')
         with open(screens_root_file, 'w') as screens_root:

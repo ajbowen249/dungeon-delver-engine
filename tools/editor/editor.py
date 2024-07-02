@@ -7,6 +7,7 @@ from tkinter import filedialog, messagebox, simpledialog
 from tools.editor.screen_editor import ScreenEditor
 from tools.editor.common import get_app_icon
 from tools.editor.tile_palette import TilePalette
+from tools.dde_project import DDEProject
 
 VALID_LABEL_CHARS = 'abcdefghijklmnopqrstuvwxyz_0123456789'
 
@@ -71,9 +72,9 @@ class Editor:
             if index is not None:
                 self.edit_screen_menu.delete(0, index)
 
-            for i in range(0, len(self.dde_project['screens'])):
-                screen = self.dde_project['screens'][i]
-                name = screen['name']
+            for i in range(0, len(self.dde_project.screens)):
+                screen = self.dde_project.screens[i]
+                name = screen.name
                 self.edit_screen_menu.add_command(label=name, command=lambda si=i: self.edit_screen(si))
 
     def open_file(self):
@@ -85,13 +86,13 @@ class Editor:
             return
 
         with open(self.path, 'w', encoding='utf-8') as out_file:
-            json.dump(self.dde_project, out_file, indent=4)
+            json.dump(self.dde_project.to_dict(), out_file, indent=4)
 
     def try_open(self, path):
         self.close_all_open_windows()
         try:
             with open(path, 'r', encoding='utf-8') as in_file:
-                new_dde_project = json.load(in_file)
+                new_dde_project = DDEProject.from_dict(json.load(in_file))
                 self.path = path
                 self.dde_project = new_dde_project
                 self.set_menu_state()
@@ -105,7 +106,7 @@ class Editor:
             self.tile_palette.focus_set()
 
         def set_screen(s, i):
-            self.dde_project['screens'][i] = s
+            self.dde_project.screens[i] = s
 
         self.open_screen_editors = [ed for ed in self.open_screen_editors if not ed.was_destroyed]
 
@@ -146,7 +147,7 @@ class Editor:
                 messagebox.showerror('Invalid Name', f'Name may only contain "{VALID_LABEL_CHARS}"')
                 return
 
-        screens = self.dde_project['screens']
+        screens = self.dde_project.screens
         screens.append({
             "name": screen_name,
             "title": screen_name,

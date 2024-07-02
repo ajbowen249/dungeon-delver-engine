@@ -1,5 +1,7 @@
 from tkinter import *
 
+from tools.dde_project import DDEScreen
+
 CELL_WIDTH = 35
 CELL_HEIGHT = 44
 SELECTED_COLOR = 'white'
@@ -10,7 +12,7 @@ HALF_CELL_WIDTH = int(CELL_WIDTH / 2)
 HALF_CELL_HEIGHT = int(CELL_HEIGHT / 2)
 
 class BackgroundCell:
-    def __init__(self, background_grid, row, col, screen, click_callback):
+    def __init__(self, background_grid, row: int, col: int, screen: DDEScreen, click_callback):
         self.row = row
         self.col = col
         self.screen = screen
@@ -30,7 +32,7 @@ class BackgroundCell:
         canvas.bind('<Button-1>', lambda e: self.on_click())
 
     def get_character(self):
-        return self.screen['background'][self.row][self.col]
+        return self.screen.background[self.row][self.col]
 
     def draw_character(self, color):
         # IMPROVE: This is only a slight improvement over vscode, but it at least doesn't suffer from inconsistent
@@ -73,9 +75,9 @@ class BackgroundCell:
         self.draw_character(SELECTED_CH_COLOR if self.is_selected else DESELECTED_CH_COLOR)
 
     def set_character_value(self, character):
-        line = self.screen['background'][self.row]
+        line = self.screen.background[self.row]
         left = line[:self.col]
         right = line[self.col + 1:]
-        self.screen['background'][self.row] = f'{left}{character}{right}'
+        self.screen.background[self.row] = f'{left}{character}{right}'
         self.draw()
         pass

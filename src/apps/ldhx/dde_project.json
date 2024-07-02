@@ -1,6 +1,8 @@
 {
     "name": "ldhx",
     "menu_label": "",
+    "player_party_label": "",
+    "party_size_label": "",
     "screens": [
     ]
 }
