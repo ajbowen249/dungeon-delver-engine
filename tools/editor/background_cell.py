@@ -1,3 +1,4 @@
+from typing import Callable
 from tkinter import *
 
 from tools.dde_project import DDEScreen
@@ -12,7 +13,14 @@ HALF_CELL_WIDTH = int(CELL_WIDTH / 2)
 HALF_CELL_HEIGHT = int(CELL_HEIGHT / 2)
 
 class BackgroundCell:
-    def __init__(self, background_grid, row: int, col: int, screen: DDEScreen, click_callback):
+    def __init__(
+            self,
+            background_grid: Misc,
+            row: int,
+            col: int,
+            screen: DDEScreen,
+            click_callback: Callable[['BackgroundCell', bool], None]
+        ):
         self.row = row
         self.col = col
         self.screen = screen

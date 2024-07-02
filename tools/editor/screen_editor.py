@@ -9,19 +9,19 @@ from tools.editor.interactables_panel import InteractablesPanel
 from tools.editor.common import get_app_icon, FONT
 
 class ScreenEditor(Toplevel):
-    def __init__(self, dde_project: DDEProject, screen_index: int, tk_root, save_callback, focus_callback):
-        super().__init__(tk_root)
+    def __init__(self, dde_project: DDEProject, screen_index: int, root: Misc, save_callback, focus_callback):
+        super().__init__(root)
         self.dde_project = copy.deepcopy(dde_project)
         self.screen_index = screen_index
-        self.tk_root = tk_root
+        self.root = root
         self.save_callback = save_callback
         self.focus_callback = focus_callback
 
         self.was_destroyed = False
         self.protocol("WM_DELETE_WINDOW", lambda: self.close())
 
-        self.background_cells = []
-        self.selected_cell = None
+        self.background_cells: list[list[BackgroundCell]] = []
+        self.selected_cell: BackgroundCell | None = None
         self.react_to_cell_entry = True
 
         self.wm_iconphoto(False, get_app_icon())
@@ -130,13 +130,13 @@ class ScreenEditor(Toplevel):
     def save(self):
         self.save_callback(self.dde_project.screens[self.screen_index], self.screen_index)
 
-    def on_cell_clicked(self, cell, is_selected):
+    def on_cell_clicked(self, cell: BackgroundCell, is_selected: bool):
         if not is_selected:
             self.set_selected_cell(None)
         else:
             self.set_selected_cell(cell)
 
-    def set_selected_cell(self, new_cell):
+    def set_selected_cell(self, new_cell: BackgroundCell):
         if new_cell is not None and self.selected_cell != new_cell:
             for row in self.background_cells:
                 for cell in row:

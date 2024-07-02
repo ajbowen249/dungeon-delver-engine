@@ -12,13 +12,13 @@ from tools.dde_project import DDEProject
 VALID_LABEL_CHARS = 'abcdefghijklmnopqrstuvwxyz_0123456789'
 
 class Editor:
-    def __init__(self, path):
+    def __init__(self, path: str | None):
         self.path = path
-        self.dde_project = None
-        self.open_screen_editors = []
+        self.dde_project: DDEProject | None = None
+        self.open_screen_editors: list[ScreenEditor] = []
 
-        self.tile_palette = None
-        self.focused_screen_editor = None
+        self.tile_palette: TilePalette | None = None
+        self.focused_screen_editor: ScreenEditor | None = None
 
         self.root = Tk()
         self.root.wm_iconphoto(False, get_app_icon())
@@ -88,7 +88,7 @@ class Editor:
         with open(self.path, 'w', encoding='utf-8') as out_file:
             json.dump(self.dde_project.to_dict(), out_file, indent=4)
 
-    def try_open(self, path):
+    def try_open(self, path: str):
         self.close_all_open_windows()
         try:
             with open(path, 'r', encoding='utf-8') as in_file:
@@ -99,7 +99,7 @@ class Editor:
         except Exception as e:
             messagebox.showerror('Error', str(e))
 
-    def edit_screen(self, index):
+    def edit_screen(self, index: int):
         if self.tile_palette is None:
             self.tile_palette = TilePalette(self.root, lambda c: self.on_tile_palette_click(c))
         else:
@@ -171,10 +171,10 @@ class Editor:
         self.set_menu_state()
         self.edit_screen(len(screens) - 1)
 
-    def set_focused_screen_editor(self, editor):
+    def set_focused_screen_editor(self, editor: ScreenEditor):
         self.focused_screen_editor = editor
 
-    def on_tile_palette_click(self, character):
+    def on_tile_palette_click(self, character: str):
         if self.focused_screen_editor is None:
             return
 
