@@ -5,11 +5,12 @@ from tkinter import *
 from tools.constants import BACKGROUND_COLS, BACKGROUND_ROWS, TILE_CHARACTERS
 from tools.editor.background_cell import CELL_HEIGHT, BackgroundCell
 from tools.editor.common import get_app_icon
+from tools.dde_project import DDEProject
 
 FONT = ('Arial', 15)
 
 class ScreenEditor(Toplevel):
-    def __init__(self, dde_project, screen_index, tk_root, save_callback, focus_callback):
+    def __init__(self, dde_project: DDEProject, screen_index: int, tk_root, save_callback, focus_callback):
         super().__init__(tk_root)
         self.dde_project = copy.deepcopy(dde_project)
         self.screen_index = screen_index
@@ -25,13 +26,13 @@ class ScreenEditor(Toplevel):
         self.react_to_cell_entry = True
 
         self.wm_iconphoto(False, get_app_icon())
-        screen = self.dde_project['screens'][self.screen_index]
-        self.title(screen['name'])
+        screen = self.dde_project.screens[self.screen_index]
+        self.title(screen.name)
 
         self.bind("<FocusIn>", lambda e: self.on_focus())
 
-        if screen.get('is_custom', False):
-            custom_label = Label(self, text=f'{screen["name"]} is a custom screen')
+        if screen.is_custom:
+            custom_label = Label(self, text=f'{screen.name} is a custom screen')
             custom_label.pack(side='top')
         else:
             top_bar = Frame(self)
@@ -50,24 +51,24 @@ class ScreenEditor(Toplevel):
             label = Label(props_frame, text='Name', font=FONT)
             label.grid(column=0, row=0)
 
-            text = Label(props_frame, text=screen['name'], font=FONT)
+            text = Label(props_frame, text=screen.name, font=FONT)
             text.grid(column=1, row=0)
 
             def bind_prop(prop, source, name):
                 def set_prop():
-                    source[name] = prop.get()
+                    setattr(source, name, prop.get())
                 prop.trace_add('write', lambda v, i, m: set_prop())
 
-            self.title_var = StringVar(props_frame, screen['title'])
+            self.title_var = StringVar(props_frame, screen.title)
             bind_prop(self.title_var, screen, 'title')
             add_props_box('Title', self.title_var, 1)
 
-            start_location = screen['start_location']
-            self.start_x_var = StringVar(props_frame, str(start_location['col']))
+            start_location = screen.start_location
+            self.start_x_var = StringVar(props_frame, str(start_location.col))
             bind_prop(self.start_x_var, start_location, 'col')
             add_props_box('Start X', self.start_x_var, 2)
 
-            self.start_y_var = StringVar(props_frame, str(start_location['row']))
+            self.start_y_var = StringVar(props_frame, str(start_location.row))
             bind_prop(self.start_y_var, start_location, 'row')
             add_props_box('Start Y', self.start_y_var, 3)
 
@@ -79,7 +80,7 @@ class ScreenEditor(Toplevel):
             background_grid = Frame(middle_bar)
             self.background_cells = []
 
-            screen = self.dde_project['screens'][self.screen_index]
+            screen = self.dde_project.screens[self.screen_index]
 
             for row in range(0, BACKGROUND_ROWS):
                 row_cells = []
@@ -125,7 +126,7 @@ class ScreenEditor(Toplevel):
             self.destroy()
 
     def save(self):
-        self.save_callback(self.dde_project['screens'][self.screen_index], self.screen_index)
+        self.save_callback(self.dde_project.screens[self.screen_index], self.screen_index)
 
     def on_cell_clicked(self, cell, is_selected):
         if not is_selected:
@@ -152,7 +153,7 @@ class ScreenEditor(Toplevel):
             cell = self.selected_cell
             self.cell_location_label.configure(text=f'{cell.col + 1}, {cell.row + 1}')
 
-            cell_character = self.dde_project['screens'][self.screen_index]['background'][cell.row][cell.col]
+            cell_character = self.dde_project.screens[self.screen_index].background[cell.row][cell.col]
             self.set_selected_cell_value_text(cell_character)
 
     def set_selected_cell_value_text(self, text, react = False):
