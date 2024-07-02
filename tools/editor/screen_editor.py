@@ -2,12 +2,11 @@ import copy
 
 from tkinter import *
 
+from tools.dde_project import DDEProject
 from tools.constants import BACKGROUND_COLS, BACKGROUND_ROWS, TILE_CHARACTERS
 from tools.editor.background_cell import CELL_HEIGHT, BackgroundCell
-from tools.editor.common import get_app_icon
-from tools.dde_project import DDEProject
-
-FONT = ('Arial', 15)
+from tools.editor.interactables_panel import InteractablesPanel
+from tools.editor.common import get_app_icon, FONT
 
 class ScreenEditor(Toplevel):
     def __init__(self, dde_project: DDEProject, screen_index: int, tk_root, save_callback, focus_callback):
@@ -97,6 +96,9 @@ class ScreenEditor(Toplevel):
                 self.background_cells.append(row_cells)
 
             background_grid.pack(side='left')
+
+            self.interactables_panel = InteractablesPanel(middle_bar, screen)
+            self.interactables_panel.pack(side='right', anchor='n')
 
             cell_props_frame = Frame(top_bar)
 
