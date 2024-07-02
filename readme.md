@@ -131,8 +131,9 @@ Screen backgrounds (and eventually more) can be edited via the Python applicatio
 python tools/editor ./src/apps/test_campaign/dde_project.json
 ```
 
-![demo](/gh_media/editor_demo_2.gif)
+The screen editor uses `tkinter`, which is included with Python by default on Windows, but needs to be [installed](https://tkdocs.com/tutorial/install.html) on other platforms.
 
+![demo](/gh_media/editor_demo_2.gif)
 
 ### Text Compression
 A simple string compression algorithm allows for apps to store their strings in a JSON file and run it through `tools/compressor` to generate an assembly file where all strings are declared, but up to 126 of the most-common sequences of characters will be extracted to the top, and a single-byte reference to each sequence in the lookup table is used as a byte in each original string with its MSB flagged. To print them, use `print_compressed_string`, `PRINT_COMPRESSED_AT_LOCATION`, or `BLOCK_PRINT`. Note that compressible text may not contain characters above value `126` (`~`), though that range does include most typeable, non-graphical characters. Make sure to include the generated output file somewhere in your source code.

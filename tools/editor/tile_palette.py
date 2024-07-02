@@ -6,7 +6,7 @@ from tools.editor.common import get_app_icon
 ROWS = 8
 
 class TilePalette(Toplevel):
-    def __init__(self, root, click_callback):
+    def __init__(self, root: Misc, click_callback):
         super().__init__(root)
         self.click_callback = click_callback
         self.title('Tile Palette')

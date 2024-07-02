@@ -5,7 +5,7 @@ from tools.constants import MAX_INTERACTABLES
 from tools.dde_project import DDEScreen
 
 class InteractablesPanel(Frame):
-    def __init__(self, root, screen: DDEScreen):
+    def __init__(self, root: Misc, screen: DDEScreen):
         super().__init__(root, padx=10)
         self.screen = screen
 
