@@ -6,6 +6,7 @@ from tools.dde_project import DDEProject
 from tools.constants import BACKGROUND_COLS, BACKGROUND_ROWS, TILE_CHARACTERS
 from tools.editor.background_cell import CELL_HEIGHT, BackgroundCell
 from tools.editor.interactables_panel import InteractablesPanel
+from tools.editor.text_field import TextField, to_int
 from tools.editor.common import get_app_icon, FONT
 
 class ScreenEditor(Toplevel):
@@ -38,38 +39,10 @@ class ScreenEditor(Toplevel):
             top_bar.pack(side='top', fill='x')
             props_frame = Frame(top_bar)
 
-            def add_props_box(label, var, row):
-                label = Label(props_frame, text=label, font=FONT)
-                label.grid(column=0, row=row)
-
-                text = Entry(props_frame, font=FONT, textvariable=var)
-                text.grid(column=1, row=row)
-
-                return text
-
-            label = Label(props_frame, text='Name', font=FONT)
-            label.grid(column=0, row=0)
-
-            text = Label(props_frame, text=screen.name, font=FONT)
-            text.grid(column=1, row=0)
-
-            def bind_prop(prop, source, name):
-                def set_prop():
-                    setattr(source, name, prop.get())
-                prop.trace_add('write', lambda v, i, m: set_prop())
-
-            self.title_var = StringVar(props_frame, screen.title)
-            bind_prop(self.title_var, screen, 'title')
-            add_props_box('Title', self.title_var, 1)
-
+            TextField(props_frame, 'Title', screen, 'title').pack(side='top')
             start_location = screen.start_location
-            self.start_x_var = StringVar(props_frame, str(start_location.col))
-            bind_prop(self.start_x_var, start_location, 'col')
-            add_props_box('Start X', self.start_x_var, 2)
-
-            self.start_y_var = StringVar(props_frame, str(start_location.row))
-            bind_prop(self.start_y_var, start_location, 'row')
-            add_props_box('Start Y', self.start_y_var, 3)
+            TextField(props_frame, 'Start X', start_location, 'col', to_int).pack(side='top')
+            TextField(props_frame, 'Start Y', start_location, 'row', to_int).pack(side='top')
 
             props_frame.pack(side='left', anchor='n')
 
