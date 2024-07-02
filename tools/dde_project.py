@@ -28,13 +28,18 @@ class DDELocation:
         }
 
 class DDEExitActionArgs:
-    def __init__(self, exit_code: str, exit_id: str):
+    def __init__(self, exit_code: str, exit_id: str, hook_before: bool):
         self.exit_code = exit_code
         self.exit_id = exit_id
+        self.hook_before = hook_before
 
     def from_dict(dict):
         get = lambda key: require(dict, 'DDEExitActionArgs', key)
-        return DDEExitActionArgs(get('exit_code'), get('exit_id'))
+        return DDEExitActionArgs(
+            get('exit_code'),
+            get('exit_id'),
+            dict.get('hook_before', False)
+        )
 
 class DDECallActionArgs:
     def __init__(self, call_label: str):
@@ -46,12 +51,10 @@ class DDECallActionArgs:
 class DDEAction:
     def __init__(
         self,
-        hook_before: bool,
         store_location: DDELocation | None,
         exit: DDEExitActionArgs | None,
         call: DDECallActionArgs | None
     ):
-        self.hook_before = hook_before
         self.store_location = store_location
         if exit is not None and call is not None:
             raise TypeError('DDEAction got multiple sets of type argument')
@@ -60,6 +63,7 @@ class DDEAction:
             self.type = 'exit'
             self.exit_code = exit.exit_code
             self.exit_id = exit.exit_id
+            self.hook_before = exit.hook_before
         elif call is not None:
             self.type = 'call'
             self.call_label = call.call_label
@@ -85,7 +89,6 @@ class DDEAction:
             store_location = DDELocation.from_dict(store_location)
 
         return DDEAction(
-            dict.get('hook_before', False),
             store_location,
             exit,
             call
@@ -94,7 +97,6 @@ class DDEAction:
     def to_dict(self) -> dict:
         dict = {
             "type": self.type,
-            "hook_before": self.hook_before,
             "store_location": self.store_location.to_dict() if self.store_location is not None else None,
         }
 
@@ -102,6 +104,7 @@ class DDEAction:
             case 'exit':
                 dict['exit_code'] = self.exit_code
                 dict['exit_id'] = self.exit_id
+                dict['hook_before'] = self.hook_before
             case 'call':
                 dict['call_label'] = self.call_label
             case _:
