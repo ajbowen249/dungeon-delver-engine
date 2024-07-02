@@ -116,7 +116,7 @@ class DDEInteractable:
             type: str,
             flags: str,
             location: DDELocation,
-            prompt_label: str | None,
+            prompt_label: str,
             action: DDEAction | None,
         ):
         self.label = label
@@ -139,7 +139,7 @@ class DDEInteractable:
             get('type'),
             get('flags'),
             DDELocation.from_dict(get('location')),
-            dict.get('prompt_label', None),
+            dict.get('prompt_label', ''),
             action,
         )
 
@@ -149,7 +149,7 @@ class DDEInteractable:
             "type": self.type,
             "flags": self.flags,
             "location": self.location.to_dict(),
-            "prompt_label": self.prompt_label,
+            "prompt_label": self.prompt_label if self.prompt_label != '' else None,
             "action": self.action.to_dict() if self.action is not None else None,
         }
 
