@@ -56,7 +56,7 @@ class TextField(Frame):
 
     def rebind(self, new_source: object):
         self.source_object = None
-        self.var.set(str(getattr(new_source, self.source_attr)))
+        self.var.set(str(getattr(new_source, self.source_attr)) if new_source is not None else '')
         self.source_object = new_source
         self.update_enablement()
 

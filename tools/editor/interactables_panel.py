@@ -1,15 +1,57 @@
 from tkinter import *
 from typing import Callable
 
+from tools.dde_project import DDEScreen, DDEInteractable, DDELocation
+
 from tools.editor.common import FONT
-from tools.editor.text_field import TextField
+from tools.editor.text_field import TextField, to_int
 from tools.editor.bool_field import BoolField
 from tools.editor.select_field import SelectField
 from tools.constants import MAX_INTERACTABLES
-from tools.dde_project import DDEScreen, DDEInteractable
 
 ACTION_CHOICE_CUSTOM = 'custom'
 SELECTION_ACTION_TYPES = (ACTION_CHOICE_CUSTOM, 'exit', 'call')
+
+class StoreLocationPanel(Frame):
+    def __init__(self, root: Misc, interactable: DDEInteractable):
+        super().__init__(root, pady=5)
+        self.interactable = interactable
+        self.should_store_location = False
+
+        self.store_checkbox = BoolField(self, 'Store Location', self, 'should_store_location')
+        self.store_checkbox.grid(row=0, column=0, columnspan=2)
+        self.store_checkbox.add_observer(lambda v: self.on_store_changed(v))
+
+        self.x_field = TextField(self, 'X', None, 'col', to_int, width=9)
+        self.x_field.grid(row=1, column=0)
+
+        self.y_field = TextField(self, 'Y', None, 'row', to_int, width=9)
+        self.y_field.grid(row=1, column=1)
+
+        self.setup_data()
+
+    def setup_data(self):
+        self.should_store_location = self.interactable.action is not None and self.interactable.action.store_location is not None
+        self.store_checkbox.rebind(self)
+
+        if self.should_store_location:
+            self.x_field.rebind(self.interactable.action.store_location)
+            self.y_field.rebind(self.interactable.action.store_location)
+        else:
+            self.x_field.rebind(None)
+            self.y_field.rebind(None)
+
+    def rebind(self, interactable: DDEInteractable):
+        self.interactable = interactable
+        self.setup_data()
+
+    def on_store_changed(self, value: bool):
+        if value and self.interactable.action is not None and self.interactable.action.store_location is None:
+            self.interactable.action.store_location = DDELocation(0, 0)
+        elif not value and self.interactable.action is not None and self.interactable.action.store_location is not None:
+            self.interactable.action.store_location = None
+
+        self.setup_data()
 
 class CustomActionPanel(Frame):
     def __init__(self, root: Misc, interactable: DDEInteractable):
@@ -33,10 +75,14 @@ class CallActionPanel(Frame):
         super().__init__(root)
         self.type = interactable.type
         self.label_field = TextField(self, 'Call Label', interactable.action, 'call_label')
-        self.label_field.pack()
+        self.label_field.pack(side='top')
+
+        self.store_location_panel = StoreLocationPanel(self, interactable)
+        self.store_location_panel.pack(side='top')
 
     def rebind(self, interactable: DDEInteractable):
         self.label_field.rebind(interactable.action)
+        self.store_location_panel.rebind(self, interactable)
 
 class BaseInteractableProps(Frame):
     class PanelData:
@@ -70,9 +116,9 @@ class BaseInteractableProps(Frame):
         location_frame.grid(row=4, column=0)
         location = interactable.location if interactable is not None else None
 
-        self.x_field = TextField(location_frame, 'X', location, 'col', width=9)
+        self.x_field = TextField(location_frame, 'X', location, 'col', to_int, width=9)
         self.x_field.pack(side='left')
-        self.y_field = TextField(location_frame, 'Y', location, 'row', width=9)
+        self.y_field = TextField(location_frame, 'Y', location, 'row', to_int, width=9)
         self.y_field.pack(side='left')
 
     def set_selected_action_type(self, interactable: DDEInteractable | None):

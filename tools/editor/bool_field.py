@@ -18,9 +18,8 @@ class BoolField(Frame):
 
         self.var.trace_add('write', lambda v, i, m: self.set_prop())
 
-        Label(self, text=label).grid(row=0, column=0, sticky=W)
         self.checkbutton = Checkbutton(self, text=label, variable=self.var)
-        self.checkbutton.grid(row=1, column=0)
+        self.checkbutton.pack()
         self.update_enablement()
 
     def get_source_val(self):
@@ -35,7 +34,7 @@ class BoolField(Frame):
         if self.source_object is None:
             return
 
-        setattr(self.source_object, self.source_attr, self.converter(self.var.get()))
+        setattr(self.source_object, self.source_attr, self.var.get())
         for observer in self.observers:
             observer(self.var.get())
 
