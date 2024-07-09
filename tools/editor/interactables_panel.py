@@ -11,6 +11,23 @@ from tools.dde_project import DDEScreen, DDEInteractable
 ACTION_CHOICE_CUSTOM = 'custom'
 SELECTION_ACTION_TYPES = (ACTION_CHOICE_CUSTOM, 'exit', 'call')
 
+class CustomActionPanel(Frame):
+    def __init__(self, root: Misc, interactable: DDEInteractable):
+        super().__init__(root)
+        self.type = None
+        self.interactable = interactable
+        Label(self, text='Compiler will expect label:').pack(side='top')
+        self.required_label_label = Label(self)
+        self.required_label_label.pack(side='top')
+        self.set_label()
+
+    def set_label(self):
+        self.required_label_label.configure(text=f'on_{self.interactable.label}')
+
+    def rebind(self, interactable: DDEInteractable):
+        self.interactable = interactable
+        self.set_label()
+
 class BaseInteractableProps(Frame):
     class PanelData:
         def __init__(self):
@@ -32,6 +49,7 @@ class BaseInteractableProps(Frame):
         self.prompt_field.grid(row=3, column=0)
 
         self.columnconfigure(1, minsize=200)
+        self.action_panel = None
         self.set_selected_action_type(interactable)
         self.action_selector = SelectField(self, 'Action', SELECTION_ACTION_TYPES, self.data, 'selected_action')
         self.action_selector.grid(row=0, column=1)
@@ -50,9 +68,17 @@ class BaseInteractableProps(Frame):
     def set_selected_action_type(self, interactable: DDEInteractable | None):
         if interactable is None:
             self.data = None
+            if self.action_panel is not None:
+                self.action_panel.destroy()
+                self.action_panel = None
         else:
             self.data = BaseInteractableProps.PanelData()
-            self.data.selected_action = ACTION_CHOICE_CUSTOM if interactable.action is None else interactable.action.type
+            action_type = None if interactable.action is None else interactable.action.type
+            self.data.selected_action = ACTION_CHOICE_CUSTOM if action_type is None else action_type
+            if self.action_panel is None or self.action_panel.type != action_type:
+                self.create_action_panel(interactable)
+            else:
+                self.action_panel.rebind(interactable)
 
     def set_interactable(self, interactable: DDEInteractable):
         self.set_selected_action_type(interactable)
@@ -69,6 +95,17 @@ class BaseInteractableProps(Frame):
 
     def focus_label(self):
         self.label_field.focus_entry()
+
+    def create_action_panel(self, interactable: DDEInteractable):
+        if self.action_panel is not None:
+            self.action_panel.destroy()
+            self.action_panel = None
+
+        if interactable.action is None:
+            self.action_panel = CustomActionPanel(self, interactable)
+
+        if self.action_panel is not None:
+            self.action_panel.grid(row=1, column = 1, rowspan=3)
 
 class InteractablesPanel(Frame):
     def __init__(self, root: Misc, screen: DDEScreen):
