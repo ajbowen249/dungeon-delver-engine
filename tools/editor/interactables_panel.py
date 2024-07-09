@@ -7,7 +7,7 @@ from tools.editor.common import FONT
 from tools.editor.text_field import TextField, to_int
 from tools.editor.bool_field import BoolField
 from tools.editor.select_field import SelectField
-from tools.constants import MAX_INTERACTABLES
+from tools.constants import MAX_INTERACTABLES, EXIT_CODE_OPTIONS
 
 ACTION_CHOICE_CUSTOM = 'custom'
 SELECTION_ACTION_TYPES = (ACTION_CHOICE_CUSTOM, 'exit', 'call')
@@ -84,6 +84,29 @@ class CallActionPanel(Frame):
         self.label_field.rebind(interactable.action)
         self.store_location_panel.rebind(self, interactable)
 
+class ExitActionPanel(Frame):
+    def __init__(self, root: Misc, interactable: DDEInteractable):
+        super().__init__(root)
+        self.type = interactable.type
+
+        self.code_field = SelectField(self, 'Exit Code', EXIT_CODE_OPTIONS, interactable.action, 'exit_code')
+        self.code_field.pack(side='top')
+
+        self.id_field = TextField(self, 'Exit ID', interactable.action, 'exit_id')
+        self.id_field.pack(side='top')
+
+        self.hook_before_field = BoolField(self, 'Hook Before', interactable.action, 'hook_before')
+        self.hook_before_field.pack(side='top')
+
+        self.store_location_panel = StoreLocationPanel(self, interactable)
+        self.store_location_panel.pack(side='top')
+
+    def rebind(self, interactable: DDEInteractable):
+        self.id_field.rebind(interactable.action)
+        self.code_field.rebind(interactable.action)
+        self.hook_before_field.rebind(interactable.action)
+        self.store_location_panel.rebind(self, interactable)
+
 class BaseInteractableProps(Frame):
     class PanelData:
         def __init__(self):
@@ -104,13 +127,13 @@ class BaseInteractableProps(Frame):
         self.prompt_field = TextField(self, 'Prompt Label', interactable, 'prompt_label')
         self.prompt_field.grid(row=3, column=0)
 
-        self.columnconfigure(1, minsize=200)
+        self.columnconfigure(1, minsize=250)
+        self.rowconfigure(1, minsize=75)
+        self.rowconfigure(2, minsize=75)
         self.action_panel = None
         self.set_selected_action_type(interactable)
         self.action_selector = SelectField(self, 'Action', SELECTION_ACTION_TYPES, self.data, 'selected_action')
         self.action_selector.grid(row=0, column=1)
-        #self.hook_before_field = BoolField(self, 'Hook Before', SELECTION_ACTION_TYPES, interactable, 'hook_before')
-        #self.hook_before_field.grid(row=0, column=1)
 
         location_frame = Frame(self)
         location_frame.grid(row=4, column=0)
@@ -161,6 +184,8 @@ class BaseInteractableProps(Frame):
             match interactable.action.type:
                 case 'call':
                     self.action_panel = CallActionPanel(self, interactable)
+                case 'exit':
+                    self.action_panel = ExitActionPanel(self, interactable)
         else:
             self.action_panel = CustomActionPanel(self, interactable)
 
@@ -233,3 +258,5 @@ class InteractablesPanel(Frame):
         self.build_list()
         self.listbox.selection_set(selection[0])
         self.base_props_panel.focus_label()
+        if self.base_props_panel.action_panel.type is None:
+            self.base_props_panel.action_panel.set_label()

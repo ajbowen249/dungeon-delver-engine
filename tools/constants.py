@@ -10,3 +10,8 @@ TILE_CHARACTERS = ' !"#$%&\'()+,-./0123456789:;<=>?@|\\[]_{}~`'
 TILE_CHARACTERS = TILE_CHARACTERS + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 TILE_CHARACTERS = TILE_CHARACTERS + '▛▜▙▟▌▐▀▄█▘▝▗▖▚▞▔▂▓┌┐└┘│─┬├┴┤┼◤◥◣◢'
 TILE_CHARACTERS = TILE_CHARACTERS + '↕◇✝⌂£¶옷왓∩€ㅑ'
+
+EXIT_CODE_OPTIONS = [
+    'ec_door',
+    'ec_encounter',
+]
