@@ -28,6 +28,16 @@ class CustomActionPanel(Frame):
         self.interactable = interactable
         self.set_label()
 
+class CallActionPanel(Frame):
+    def __init__(self, root: Misc, interactable: DDEInteractable):
+        super().__init__(root)
+        self.type = interactable.type
+        self.label_field = TextField(self, 'Call Label', interactable.action, 'call_label')
+        self.label_field.pack()
+
+    def rebind(self, interactable: DDEInteractable):
+        self.label_field.rebind(interactable.action)
+
 class BaseInteractableProps(Frame):
     class PanelData:
         def __init__(self):
@@ -101,7 +111,11 @@ class BaseInteractableProps(Frame):
             self.action_panel.destroy()
             self.action_panel = None
 
-        if interactable.action is None:
+        if interactable.action is not None:
+            match interactable.action.type:
+                case 'call':
+                    self.action_panel = CallActionPanel(self, interactable)
+        else:
             self.action_panel = CustomActionPanel(self, interactable)
 
         if self.action_panel is not None:
