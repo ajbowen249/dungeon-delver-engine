@@ -112,6 +112,12 @@ class DDEAction:
 
         return dict
 
+    def default_call():
+        return DDEAction(None, None, DDECallActionArgs(''))
+
+    def default_exit():
+        return DDEAction(None, DDEExitActionArgs('ec_door', '', False), None)
+
 class DDEInteractable:
     def __init__(
             self,
@@ -155,6 +161,9 @@ class DDEInteractable:
             "prompt_label": self.prompt_label if self.prompt_label != '' else None,
             "action": self.action.to_dict() if self.action is not None else None,
         }
+
+    def default(label: str) -> 'DDEInteractable':
+        return DDEInteractable(label, 'in_button', 'iflags_normal', DDELocation(1, 1), '', None)
 
 # These flatten into DDEScreen, but I'm packing them together to show they're all or nothing together
 class DDEScreenProps:
