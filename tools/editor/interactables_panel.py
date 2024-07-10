@@ -1,7 +1,7 @@
 from tkinter import *
 from typing import Callable
 
-from tools.dde_project import DDEScreen, DDEInteractable, DDELocation
+from tools.dde_project import DDEScreen, DDEInteractable, DDELocation, DDEAction
 
 from tools.editor.common import FONT
 from tools.editor.text_field import TextField, to_int
@@ -114,6 +114,7 @@ class BaseInteractableProps(Frame):
 
     def __init__(self, root: Misc, interactable: DDEInteractable, update_label: Callable[[str], None]):
         super().__init__(root)
+        self.interactable = interactable
         self.label_field = TextField(self, 'Label', interactable, 'label')
         self.label_field.grid(row=0, column=0)
         self.label_field.add_observer(lambda s: update_label(s))
@@ -133,6 +134,7 @@ class BaseInteractableProps(Frame):
         self.action_panel = None
         self.set_selected_action_type(interactable)
         self.action_selector = SelectField(self, 'Action', SELECTION_ACTION_TYPES, self.data, 'selected_action')
+        self.action_selector.add_observer(lambda v: self.on_action_type_changed(v))
         self.action_selector.grid(row=0, column=1)
 
         location_frame = Frame(self)
@@ -160,6 +162,7 @@ class BaseInteractableProps(Frame):
                 self.action_panel.rebind(interactable)
 
     def set_interactable(self, interactable: DDEInteractable):
+        self.interactable = interactable
         self.set_selected_action_type(interactable)
         self.action_selector.rebind(self.data)
 
@@ -191,6 +194,21 @@ class BaseInteractableProps(Frame):
 
         if self.action_panel is not None:
             self.action_panel.grid(row=1, column = 1, rowspan=3)
+
+    def on_action_type_changed(self, v: str):
+        old_action_type = None if self.interactable.action is None else self.interactable.action.type
+        new_action_type = None if v == ACTION_CHOICE_CUSTOM else v
+        if old_action_type != new_action_type:
+            match new_action_type:
+                case 'call':
+                    self.interactable.action = DDEAction.default_call()
+                case 'exit':
+                    self.interactable.action = DDEAction.default_exit()
+                case _:
+                    self.interactable.action = None
+
+            self.set_interactable(self.interactable)
+
 
 class InteractablesPanel(Frame):
     def __init__(self, root: Misc, screen: DDEScreen):
