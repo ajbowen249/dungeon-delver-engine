@@ -202,7 +202,7 @@ class InteractablesPanel(Frame):
         buttons_frame = Frame(self)
         buttons_frame.grid(row=0, column=0)
 
-        self.add_button = Button(buttons_frame, text='+')
+        self.add_button = Button(buttons_frame, text='+', command=lambda: self.create_interactable())
         self.add_button.pack(side='left', anchor='n')
         self.remove_button = Button(buttons_frame, text='-', command=lambda: self.delete_selected_interactable())
         self.remove_button.pack(side='right', anchor='n')
@@ -262,3 +262,12 @@ class InteractablesPanel(Frame):
         self.base_props_panel.focus_label()
         if self.base_props_panel.action_panel.type is None:
             self.base_props_panel.action_panel.set_label()
+
+    def create_interactable(self):
+        index = len(self.screen.interactables)
+        label = f'int_{index}'
+        new_interactable: DDEInteractable = DDEInteractable.default(label)
+        self.screen.interactables.append(new_interactable)
+        self.build_list()
+        self.listbox.selection_set(index)
+        self.on_selected_interactable_changed()
