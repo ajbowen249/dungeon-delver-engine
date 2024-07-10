@@ -238,6 +238,8 @@ class InteractablesPanel(Frame):
 
         del self.screen.interactables[selection[0]]
         self.build_list()
+        self.base_props_panel.set_interactable(None)
+        self.on_selected_interactable_changed()
 
     def build_list(self):
         end = self.listbox.index('end')
