@@ -7,7 +7,7 @@ from tools.editor.common import FONT
 from tools.editor.text_field import TextField, to_int
 from tools.editor.bool_field import BoolField
 from tools.editor.select_field import SelectField
-from tools.constants import MAX_INTERACTABLES, EXIT_CODE_OPTIONS
+from tools.constants import MAX_INTERACTABLES, INTERACTABLE_TYPE_OPTIONS, INTERACTABLE_FLAGS_OPTIONS, EXIT_CODE_OPTIONS
 from tools.editor.context import ctx
 
 ACTION_CHOICE_CUSTOM = 'custom'
@@ -120,10 +120,10 @@ class BaseInteractableProps(Frame):
         self.label_field.grid(row=0, column=0)
         self.label_field.add_observer(lambda s: update_label(s))
 
-        self.type_field = TextField(self, 'Type', interactable, 'type')
+        self.type_field = SelectField(self, 'Type', INTERACTABLE_TYPE_OPTIONS, interactable, 'type')
         self.type_field.grid(row=1, column=0)
 
-        self.flags_field = TextField(self, 'Flags', interactable, 'flags')
+        self.flags_field = SelectField(self, 'Flags', INTERACTABLE_FLAGS_OPTIONS, interactable, 'flags')
         self.flags_field.grid(row=2, column=0)
 
         string_labels = ctx().get_all_string_labels()
