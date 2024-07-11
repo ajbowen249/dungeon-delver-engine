@@ -270,7 +270,10 @@ def build_dde_game(bld, path, **kwargs):
     if dde_project_json.exists() and not is_legacy:
         with open(dde_project_json.abspath(), 'r', encoding='utf-8') as dde_project_file:
             dde_project = DDEProject.from_dict(json.load(dde_project_file))
-            text_json = [bld.path.find_node(p) for p in dde_project.string_paths]
+            text_json = [path.find_node(p) for p in dde_project.string_paths]
+            for text_path in text_json:
+                if text_path is None:
+                    exit(f'Could not find file in {dde_project.string_paths}')
 
     for platform in platforms:
         if platform not in platform_filter:
