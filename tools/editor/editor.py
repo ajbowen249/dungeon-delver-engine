@@ -7,14 +7,14 @@ from tkinter import filedialog, messagebox, simpledialog
 from tools.editor.screen_editor import ScreenEditor
 from tools.editor.common import get_app_icon
 from tools.editor.tile_palette import TilePalette
-from tools.dde_project import DDEProject
+from tools.dde_project import DDEProject, load_strings
+from tools.editor.context import Context, ctx, has_ctx
 
 VALID_LABEL_CHARS = 'abcdefghijklmnopqrstuvwxyz_0123456789'
 
 class Editor:
     def __init__(self, path: str | None):
         self.path = path
-        self.dde_project: DDEProject | None = None
         self.open_screen_editors: list[ScreenEditor] = []
 
         self.tile_palette: TilePalette | None = None
@@ -62,18 +62,18 @@ class Editor:
     def set_menu_state(self):
         self.file_menu.entryconfig('Save', state='normal' if self.path is not None else 'disabled')
 
-        project_dep_state='normal' if self.dde_project is not None else 'disabled'
+        project_dep_state='normal' if has_ctx() else 'disabled'
         self.menu_bar.entryconfig('Screen', state=project_dep_state)
 
         self.path_label.configure(text=self.path if self.path is not None else '<none>')
 
-        if self.dde_project is not None:
+        if has_ctx():
             index = self.edit_screen_menu.index('end')
             if index is not None:
                 self.edit_screen_menu.delete(0, index)
 
-            for i in range(0, len(self.dde_project.screens)):
-                screen = self.dde_project.screens[i]
+            for i in range(0, len(ctx().dde_project.screens)):
+                screen = ctx().dde_project.screens[i]
                 name = screen.name
                 self.edit_screen_menu.add_command(label=name, command=lambda si=i: self.edit_screen(si))
 
@@ -86,16 +86,13 @@ class Editor:
             return
 
         with open(self.path, 'w', encoding='utf-8') as out_file:
-            json.dump(self.dde_project.to_dict(), out_file, indent=4)
+            json.dump(ctx().dde_project.to_dict(), out_file, indent=4)
 
     def try_open(self, path: str):
         self.close_all_open_windows()
         try:
-            with open(path, 'r', encoding='utf-8') as in_file:
-                new_dde_project = DDEProject.from_dict(json.load(in_file))
-                self.path = path
-                self.dde_project = new_dde_project
-                self.set_menu_state()
+            Context(path)
+            self.set_menu_state()
         except Exception as e:
             messagebox.showerror('Error', str(e))
 
@@ -106,7 +103,7 @@ class Editor:
             self.tile_palette.focus_set()
 
         def set_screen(s, i):
-            self.dde_project.screens[i] = s
+            ctx().dde_project.screens[i] = s
 
         self.open_screen_editors = [ed for ed in self.open_screen_editors if not ed.was_destroyed]
 
@@ -116,7 +113,7 @@ class Editor:
                 return
 
         self.open_screen_editors.append(ScreenEditor(
-            self.dde_project,
+            ctx().dde_project,
             index,
             self.root,
             set_screen,
@@ -147,7 +144,7 @@ class Editor:
                 messagebox.showerror('Invalid Name', f'Name may only contain "{VALID_LABEL_CHARS}"')
                 return
 
-        screens = self.dde_project.screens
+        screens = ctx().dde_project.screens
         screens.append({
             "name": screen_name,
             "title": screen_name,
