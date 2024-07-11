@@ -2,6 +2,12 @@ from waflib import TaskGen
 from waflib.Task import Task
 
 import os
+import sys
+import json
+
+sys.path.append(os.path.dirname(__file__))
+
+from dde_project import DDEProject
 
 GENERATED_DISCLAIMER = '; File is auto-generated. Changes will not be saved.\n'
 
@@ -254,6 +260,18 @@ def build_dde_game(bld, path, **kwargs):
     name = path.name
     platforms = kwargs.get('platforms', ALL_PLATFORMS)
 
+    text_json = kwargs.get('text_json', None)
+    is_legacy = False
+    if text_json is not None:
+        is_legacy = True
+        print('warning: text_json has been deprecated in favor of dde_project_json. It will soon be removed.')
+
+    dde_project_json = path.find_node('dde_project.json')
+    if dde_project_json.exists() and not is_legacy:
+        with open(dde_project_json.abspath(), 'r', encoding='utf-8') as dde_project_file:
+            dde_project = DDEProject.from_dict(json.load(dde_project_file))
+            text_json = [bld.path.find_node(p) for p in dde_project.string_paths]
+
     for platform in platforms:
         if platform not in platform_filter:
             continue
@@ -266,7 +284,7 @@ def build_dde_game(bld, path, **kwargs):
             name = name,
             platform = platform,
             main_asm = path.find_node('main.asm'),
-            text_json = kwargs.get('text_json', []),
+            text_json = text_json,
             all_asm = bld.path.ant_glob('**/*.asm', excl=['build']),
             project_json = path.find_node('dde_project.json'),
             out_hex = platform_node.make_node(f'{name}.hex'),

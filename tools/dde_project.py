@@ -268,12 +268,14 @@ class DDEProject:
             menu_label: str,
             player_party_label: str,
             party_size_label: str,
+            string_paths: list[str],
             screens: list[DDEScreen]
         ):
         self.name = name
         self.menu_label = menu_label
         self.player_party_label = player_party_label
         self.party_size_label = party_size_label
+        self.string_paths = string_paths
         self.screens = screens
 
     def from_dict(dict) -> 'DDEProject':
@@ -285,14 +287,16 @@ class DDEProject:
             get('menu_label'),
             get('player_party_label'),
             get('party_size_label'),
+            dict.get('string_paths', []),
             [DDEScreen.from_dict(s) for s in get('screens')]
         )
 
     def to_dict(self) -> dict:
         return {
-            "name": self.name,
-            "menu_label": self.menu_label,
-            "player_party_label": self.player_party_label,
-            "party_size_label": self.party_size_label,
-            "screens": [s.to_dict() for s in self.screens],
+            'name': self.name,
+            'menu_label': self.menu_label,
+            'player_party_label': self.player_party_label,
+            'party_size_label': self.party_size_label,
+            'string_paths': self.string_paths,
+            'screens': [s.to_dict() for s in self.screens],
         }
