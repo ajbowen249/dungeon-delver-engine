@@ -1,5 +1,8 @@
 # Core DDE Project Definition
 
+import os
+import json
+
 from tools.constants import MAX_INTERACTABLES, SCREEN_TITLE_MAX_LENGTH, BACKGROUND_COLS, BACKGROUND_ROWS, TILE_CHARACTERS
 
 def require(dict, dict_name, attr):
@@ -300,3 +303,12 @@ class DDEProject:
             'string_paths': self.string_paths,
             'screens': [s.to_dict() for s in self.screens],
         }
+
+def load_strings(project: DDEProject, base_path: str) -> dict[str, dict[str, str | list[str]]]:
+    out_dict: dict[str, dict[str, str | list[str]]] = {}
+
+    for path in project.string_paths:
+        with open(os.path.join(base_path, path), 'r', encoding='utf-8') as string_file:
+            out_dict[path] = json.load(string_file)
+
+    return out_dict
