@@ -8,6 +8,7 @@ from tools.editor.text_field import TextField, to_int
 from tools.editor.bool_field import BoolField
 from tools.editor.select_field import SelectField
 from tools.constants import MAX_INTERACTABLES, EXIT_CODE_OPTIONS
+from tools.editor.context import ctx
 
 ACTION_CHOICE_CUSTOM = 'custom'
 SELECTION_ACTION_TYPES = (ACTION_CHOICE_CUSTOM, 'exit', 'call')
@@ -125,7 +126,10 @@ class BaseInteractableProps(Frame):
         self.flags_field = TextField(self, 'Flags', interactable, 'flags')
         self.flags_field.grid(row=2, column=0)
 
-        self.prompt_field = TextField(self, 'Prompt Label', interactable, 'prompt_label')
+        string_labels = ctx().get_all_string_labels()
+        string_labels.insert(0, '')
+        string_labels.sort()
+        self.prompt_field = SelectField(self, 'Prompt Label', string_labels, interactable, 'prompt_label')
         self.prompt_field.grid(row=3, column=0)
 
         self.columnconfigure(1, minsize=250)
