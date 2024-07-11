@@ -11,6 +11,19 @@ TILE_CHARACTERS = TILE_CHARACTERS + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 TILE_CHARACTERS = TILE_CHARACTERS + '▛▜▙▟▌▐▀▄█▘▝▗▖▚▞▔▂▓┌┐└┘│─┬├┴┤┼◤◥◣◢'
 TILE_CHARACTERS = TILE_CHARACTERS + '↕◇✝⌂£¶옷왓∩€ㅑ'
 
+INTERACTABLE_TYPE_OPTIONS = [
+    'in_none',
+    'in_chest',
+    'in_dialog',
+    'in_door',
+    'in_npc',
+]
+
+INTERACTABLE_FLAGS_OPTIONS = [
+    'iflags_normal',
+    'iflags_door',
+]
+
 EXIT_CODE_OPTIONS = [
     'ec_door',
     'ec_encounter',
