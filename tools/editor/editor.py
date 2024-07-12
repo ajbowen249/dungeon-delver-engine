@@ -7,7 +7,6 @@ from tkinter import filedialog, messagebox, simpledialog
 from tools.editor.screen_editor import ScreenEditor
 from tools.editor.common import get_app_icon
 from tools.editor.tile_palette import TilePalette
-from tools.dde_project import DDEProject, load_strings
 from tools.editor.context import Context, ctx, has_ctx
 
 VALID_LABEL_CHARS = 'abcdefghijklmnopqrstuvwxyz_0123456789'
@@ -86,7 +85,7 @@ class Editor:
             return
 
         with open(self.path, 'w', encoding='utf-8') as out_file:
-            json.dump(ctx().dde_project.to_dict(), out_file, indent=4)
+            json.dump(ctx().dde_project.to_dict(), out_file, indent=4, ensure_ascii=False)
 
     def try_open(self, path: str):
         self.close_all_open_windows()
@@ -131,7 +130,11 @@ class Editor:
         self.open_screen_editors = []
 
     def new_screen(self):
-        screen_name = simpledialog.askstring('New screen', prompt='Screen Name (lower-case letters, numbers, and underscores only)')
+        screen_name = simpledialog.askstring(
+            'New screen',
+            prompt='Screen Name (lower-case letters, numbers, and underscores only)'
+        )
+
         if screen_name is None:
             return
 
